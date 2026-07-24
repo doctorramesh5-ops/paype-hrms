@@ -1,4 +1,3 @@
-// PHASE2-BUILD-2026-JULY24
 const express  = require('express');
 const cors     = require('cors');
 const bcrypt   = require('bcryptjs');
@@ -84,7 +83,7 @@ app.get('/', (req, res) => {
   res.json({
     success: true,
     message: '🚀 PayPe HRMS API',
-    version: "2.0.0",
+    version: '1.0.0',
     company: 'PayPe Technologies Pvt. Ltd.',
     domain:  'hr.paype.co.in',
     links: {
@@ -110,7 +109,7 @@ app.get('/api/health', async (req, res) => {
     success: true,
     status:  'healthy',
     service: 'PayPe HRMS API',
-    version: "2.0.0",
+    version: '1.0.0',
     domain:  'hr.paype.co.in',
     db:      dbStatus,
     time:    new Date().toISOString()
@@ -121,7 +120,7 @@ app.get('/api/health', async (req, res) => {
 app.get('/api/docs', (req, res) => {
   res.json({
     name:    'PayPe HRMS API',
-    version: "2.0.0",
+    version: '1.0.0',
     base:    'https://hr.paype.co.in/api',
     auth:    'Authorization: Bearer <token>',
     routes: {
@@ -767,6 +766,20 @@ app.patch('/api/notifications/:id/read', auth, async (req, res) => {
   } catch (e) { res.status(500).json({ success: false, message: e.message }); }
 });
 
+// ── 404 & ERROR ───────────────────────────────────
+
+app.use((req, res) => {
+  res.status(404).json({
+    success: false,
+    message: `${req.method} ${req.path} not found`,
+    hint: 'See /api/docs for all available endpoints'
+  });
+});
+
+app.use((err, req, res, next) => {
+  console.error('Unhandled error:', err.message);
+  res.status(500).json({ success: false, message: err.message });
+});
 
 
 // ═══════════════════════════════════════════════════
@@ -1201,15 +1214,187 @@ app.get('/api/recruitment/stats', auth, async (req, res) => {
 });
 
 
+// ═══════════════════════════════════════════════════
+// PHASE 3 — CAREER PAGE + OFFER LETTERS + SELF SERVICE
+// ═══════════════════════════════════════════════════
 
-// ── 404 & ERROR ───────────────────────────────────
-app.use((req, res) => {
-  res.status(404).json({ success: false, message: req.method + " " + req.path + " not found", hint: "See /api/docs for all available endpoints" });
+// ── PUBLIC CAREER PAGE ────────────────────────────
+app.get('/api/careers/jobs', async (req, res) => {
+  try {
+    const r = await db(`SELECT j.id, j.title, j.location, j.job_type, j.experience_min, j.experience_max,
+      j.salary_min, j.salary_max, j.description, j.requirements, j.openings, j.closes_at, j.posted_at,
+      d.name AS department_name FROM jobs j LEFT JOIN departments d ON d.id=j.department_id
+      WHERE j.status='Active' ORDER BY j.created_at DESC`);
+    res.json({ success: true, data: r.rows });
+  } catch(e) { res.status(500).json({ success: false, message: e.message }); }
 });
 
-app.use((err, req, res, next) => {
-  console.error("Unhandled error:", err.message);
-  res.status(500).json({ success: false, message: err.message });
+app.post('/api/careers/apply', async (req, res) => {
+  try {
+    const { firstName, lastName, email, mobile, currentCompany, currentPosition, experienceYrs, expectedCtc, noticePeriod, jobId, coverLetter } = req.body;
+    if (!firstName || !lastName || !email || !jobId) return res.status(400).json({ success: false, message: 'Name, email and job required' });
+    let candidateId;
+    const existing = await db('SELECT id FROM candidates WHERE email=$1', [email.toLowerCase()]);
+    if (existing.rows.length) {
+      candidateId = existing.rows[0].id;
+    } else {
+      const c = await db(`INSERT INTO candidates (first_name, last_name, email, mobile, current_company, current_position, experience_yrs, expected_ctc, notice_period, source)
+        VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,'Career Page') RETURNING id`,
+        [firstName, lastName, email.toLowerCase(), mobile||null, currentCompany||null, currentPosition||null, experienceYrs||null, expectedCtc||null, noticePeriod||null]);
+      candidateId = c.rows[0].id;
+    }
+    const app2 = await db(`INSERT INTO applications (job_id, candidate_id) VALUES ($1,$2) ON CONFLICT (job_id, candidate_id) DO NOTHING RETURNING id`, [jobId, candidateId]);
+    res.json({ success: true, message: 'Application submitted successfully! We will contact you soon.' });
+  } catch(e) { res.status(500).json({ success: false, message: e.message }); }
 });
+
+// ── OFFER LETTER DATA ──────────────────────────────
+app.get('/api/offers/:id', auth, async (req, res) => {
+  try {
+    const r = await db(`SELECT o.*, c.first_name, c.last_name, c.email, c.mobile, c.current_position,
+      d.name AS department_name FROM offer_letters o
+      JOIN candidates c ON c.id=o.candidate_id
+      LEFT JOIN departments d ON d.id=o.department_id
+      WHERE o.id=$1`, [req.params.id]);
+    if (!r.rows.length) return res.status(404).json({ success: false, message: 'Offer not found' });
+    res.json({ success: true, data: r.rows[0] });
+  } catch(e) { res.status(500).json({ success: false, message: e.message }); }
+});
+
+// ── CHANGE PASSWORD ────────────────────────────────
+// ── UPDATE PROFILE ─────────────────────────────────
+app.put('/api/employees/:id/profile', auth, async (req, res) => {
+  try {
+    const { mobile, bloodGroup, emergencyContact, address } = req.body;
+    const sets = [], params = [];
+    if (mobile) { params.push(mobile); sets.push(`mobile=$${params.length}`); }
+    if (bloodGroup) { params.push(bloodGroup); sets.push(`blood_group=$${params.length}`); }
+    if (emergencyContact) { params.push(emergencyContact); sets.push(`emergency_contact=$${params.length}`); }
+    if (address) { params.push(address); sets.push(`address=$${params.length}`); }
+    if (!sets.length) return res.status(400).json({ success: false, message: 'Nothing to update' });
+    params.push(req.params.id);
+    await db(`UPDATE employees SET ${sets.join(',')}, updated_at=NOW() WHERE id=$${params.length}`, params);
+    res.json({ success: true, message: 'Profile updated successfully' });
+  } catch(e) { res.status(500).json({ success: false, message: e.message }); }
+});
+
+// ── EMPLOYEE DOCUMENTS ────────────────────────────
+app.get('/api/documents/:employeeId', auth, async (req, res) => {
+  try {
+    const r = await db('SELECT * FROM employee_documents WHERE employee_id=$1 ORDER BY created_at DESC', [req.params.employeeId]);
+    res.json({ success: true, data: r.rows });
+  } catch(e) { res.status(500).json({ success: false, message: e.message }); }
+});
+
+app.post('/api/documents', auth, async (req, res) => {
+  try {
+    const { employeeId, name, docType, fileUrl } = req.body;
+    if (!employeeId || !name) return res.status(400).json({ success: false, message: 'employeeId and name required' });
+    const r = await db(`INSERT INTO employee_documents (employee_id, name, doc_type, file_url, uploaded_by)
+      VALUES ($1,$2,$3,$4,$5) RETURNING *`,
+      [employeeId, name, docType||null, fileUrl||null, req.user.id]);
+    res.status(201).json({ success: true, message: 'Document added', data: r.rows[0] });
+  } catch(e) { res.status(500).json({ success: false, message: e.message }); }
+});
+
+// ── NOTIFICATIONS ─────────────────────────────────
+app.get('/api/notifications', auth, async (req, res) => {
+  try {
+    const r = await db(`SELECT * FROM notifications WHERE user_id=$1 ORDER BY created_at DESC LIMIT 20`, [req.user.id]);
+    res.json({ success: true, data: r.rows });
+  } catch(e) { res.status(500).json({ success: false, message: e.message }); }
+});
+
+app.put('/api/notifications/:id/read', auth, async (req, res) => {
+  try {
+    await db(`UPDATE notifications SET is_read=true WHERE id=$1 AND user_id=$2`, [req.params.id, req.user.id]);
+    res.json({ success: true, message: 'Notification marked as read' });
+  } catch(e) { res.status(500).json({ success: false, message: e.message }); }
+});
+
+console.log('Phase 3 API routes loaded!');
+
+// ═══════════════════════════════════════════════════
+// PHASE 3B — INTERVIEWS + PHOTO + PAYSLIP PDF
+// ═══════════════════════════════════════════════════
+
+// ── INTERVIEW FEEDBACK FORM ───────────────────────
+app.get('/api/interviews/upcoming', auth, async (req, res) => {
+  try {
+    const r = await db(`SELECT i.*, 
+      e.first_name AS interviewer_first, e.last_name AS interviewer_last,
+      c.first_name AS candidate_first, c.last_name AS candidate_last,
+      j.title AS job_title, a.id AS application_id
+      FROM interviews i
+      LEFT JOIN employees e ON e.id=i.interviewer_id
+      JOIN applications a ON a.id=i.application_id
+      JOIN candidates c ON c.id=a.candidate_id
+      JOIN jobs j ON j.id=a.job_id
+      WHERE i.status='Scheduled'
+      ORDER BY i.scheduled_at ASC LIMIT 20`);
+    res.json({ success: true, data: r.rows });
+  } catch(e) { res.status(500).json({ success: false, message: e.message }); }
+});
+
+app.get('/api/interviews/all', auth, async (req, res) => {
+  try {
+    const r = await db(`SELECT i.*, 
+      e.first_name AS interviewer_first, e.last_name AS interviewer_last,
+      c.first_name AS candidate_first, c.last_name AS candidate_last,
+      c.email AS candidate_email,
+      j.title AS job_title
+      FROM interviews i
+      LEFT JOIN employees e ON e.id=i.interviewer_id
+      JOIN applications a ON a.id=i.application_id
+      JOIN candidates c ON c.id=a.candidate_id
+      JOIN jobs j ON j.id=a.job_id
+      ORDER BY i.scheduled_at DESC LIMIT 50`);
+    res.json({ success: true, data: r.rows });
+  } catch(e) { res.status(500).json({ success: false, message: e.message }); }
+});
+
+// ── PROFILE PHOTO (Base64 stored in DB) ──────────
+app.put('/api/employees/:id/photo', auth, async (req, res) => {
+  try {
+    const { photoBase64 } = req.body;
+    if (!photoBase64) return res.status(400).json({ success: false, message: 'Photo data required' });
+    if (photoBase64.length > 500000) return res.status(400).json({ success: false, message: 'Photo too large. Max 500KB.' });
+    await db(`UPDATE employees SET photo_url=$1, updated_at=NOW() WHERE id=$2`, [photoBase64, req.params.id]);
+    res.json({ success: true, message: 'Profile photo updated!' });
+  } catch(e) { res.status(500).json({ success: false, message: e.message }); }
+});
+
+// ── PAYSLIP PDF DATA ──────────────────────────────
+app.get('/api/payroll/payslip/pdf/:employeeId/:month/:year', auth, async (req, res) => {
+  try {
+    const { employeeId, month, year } = req.params;
+    const r = await db(`SELECT ps.*, 
+      e.first_name, e.last_name, e.employee_id AS emp_code, e.work_location,
+      e.work_email, e.mobile, e.date_of_joining,
+      d.name AS department_name
+      FROM payslips ps
+      JOIN employees e ON e.id=ps.employee_id
+      LEFT JOIN departments d ON d.id=e.department_id
+      WHERE ps.employee_id=$1 AND ps.month=$2 AND ps.year=$3`, 
+      [employeeId, parseInt(month), parseInt(year)]);
+    if (!r.rows.length) return res.status(404).json({ success: false, message: 'Payslip not found' });
+    res.json({ success: true, data: r.rows[0] });
+  } catch(e) { res.status(500).json({ success: false, message: e.message }); }
+});
+
+// ── SCHEDULE INTERVIEW ────────────────────────────
+app.post('/api/interviews/schedule', auth, async (req, res) => {
+  try {
+    const { applicationId, round, roundName, interviewType, scheduledAt, durationMins, interviewerId, meetLink } = req.body;
+    if (!applicationId || !scheduledAt) return res.status(400).json({ success: false, message: 'applicationId and scheduledAt required' });
+    const r = await db(`INSERT INTO interviews (application_id, round, round_name, interview_type, scheduled_at, duration_mins, interviewer_id, meet_link)
+      VALUES ($1,$2,$3,$4,$5,$6,$7,$8) RETURNING *`,
+      [applicationId, round||1, roundName||'HR Round', interviewType||'Video', scheduledAt, durationMins||60, interviewerId||null, meetLink||null]);
+    await db(`UPDATE applications SET stage='Interview', updated_at=NOW() WHERE id=$1`, [applicationId]);
+    res.status(201).json({ success: true, message: 'Interview scheduled!', data: r.rows[0] });
+  } catch(e) { res.status(500).json({ success: false, message: e.message }); }
+});
+
+console.log('Phase 3B routes loaded!');
 
 module.exports = app;
