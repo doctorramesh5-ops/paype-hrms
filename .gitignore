@@ -1,5 +1,4 @@
-.vercel
-.env*
-node_modules
-.vercel
+node_modules/
+package-lock.json
+.vercel/
 .env*
