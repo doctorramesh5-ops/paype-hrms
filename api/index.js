@@ -1,3 +1,4 @@
+// PHASE2-BUILD-2026-JULY24
 const express  = require('express');
 const cors     = require('cors');
 const bcrypt   = require('bcryptjs');
@@ -83,7 +84,7 @@ app.get('/', (req, res) => {
   res.json({
     success: true,
     message: '🚀 PayPe HRMS API',
-    version: '1.0.0',
+    version: "2.0.0",
     company: 'PayPe Technologies Pvt. Ltd.',
     domain:  'hr.paype.co.in',
     links: {
@@ -109,7 +110,7 @@ app.get('/api/health', async (req, res) => {
     success: true,
     status:  'healthy',
     service: 'PayPe HRMS API',
-    version: '1.0.0',
+    version: "2.0.0",
     domain:  'hr.paype.co.in',
     db:      dbStatus,
     time:    new Date().toISOString()
@@ -120,7 +121,7 @@ app.get('/api/health', async (req, res) => {
 app.get('/api/docs', (req, res) => {
   res.json({
     name:    'PayPe HRMS API',
-    version: '1.0.0',
+    version: "2.0.0",
     base:    'https://hr.paype.co.in/api',
     auth:    'Authorization: Bearer <token>',
     routes: {
