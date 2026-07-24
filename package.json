@@ -8,5 +8,5 @@
     "pg": "^8.11.3",
     "cors": "^2.8.5"
   },
-  "engines": { "node": "24.x" }
+  "engines": { "node": "22.x" }
 }
