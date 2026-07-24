@@ -175,7 +175,7 @@ tr:hover td{background:#F7FAFC;}
       </div>
       <div id="lerr"></div>
       <div class="fi"><label>Email</label><input type="email" id="lem" placeholder="Enter your email"></div>
-      <div class="fi"><label>Password</label><input type="password" id="lpw" placeholder="Enter your password" onkeydown="if(event.key==='Enter')doLogin()"></div>
+      <div class="fi"><label>Password</label><input type="password" id="lpw" placeholder="Enter your password" onkeydown="if(event.key===String.fromCharCode(13))doLogin()"></div>
       <button id="lbtn" onclick="doLogin()">Sign In</button>
       <div class="lft">PayPe Technologies Pvt. Ltd. &nbsp;|&nbsp; <span style="color:#00C2A8">hr.paype.co.in</span></div>
     </div>
@@ -688,11 +688,11 @@ async function loadDash() {
   h += '<div class="card"><div class="ch"><div class="ct">Quick Actions</div></div><div class="cb">';
   h += '<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">';
   var acts = [
-    {ic:'&#x23F0;',lb:'Attendance',fn:'attendance'},{ic:'&#x1F4C5;',lb:'Apply Leave',fn:'leave'},
-    {ic:'&#x1F4B0;',lb:'My Payslip',fn:'payroll'},{ic:'&#x1F464;',lb:'My Profile',fn:'profile'}
+    {ic:'Time',lb:'Attendance',fn:'attendance'},{ic:'Leave',lb:'Apply Leave',fn:'leave'},
+    {ic:'Pay',lb:'My Payslip',fn:'payroll'},{ic:'Me',lb:'My Profile',fn:'profile'}
   ];
   if (role === 'admin' || role === 'hr') {
-    acts = [{ic:'&#x1F3AF;',lb:'Recruitment',fn:'recruitment'},{ic:'&#x1F4CB;',lb:'Job Listings',fn:'jobs'},{ic:'&#x1F465;',lb:'Candidates',fn:'candidates'},{ic:'&#x2705;',lb:'Onboarding',fn:'onboarding'}];
+    acts = [{ic:'ATS',lb:'Recruitment',fn:'recruitment'},{ic:'Jobs',lb:'Job Listings',fn:'jobs'},{ic:'People',lb:'Candidates',fn:'candidates'},{ic:'Done',lb:'Onboarding',fn:'onboarding'}];
   }
   for (var i = 0; i < acts.length; i++) {
     h += '<div onclick="goPage(' + "'" + acts[i].fn + "'" + ')" style="background:#F7FAFC;border:1.5px solid #E2E8F0;border-radius:9px;padding:12px;cursor:pointer;text-align:center;" onmouseover="this.style.borderColor=' + "'#00C2A8'" + '" onmouseout="this.style.borderColor=' + "'#E2E8F0'" + '">';
@@ -1249,8 +1249,8 @@ async function loadProf() {
   var profHeader = document.getElementById('pfc');
   if (profHeader) {
     var btnDiv = '<div style="display:flex;gap:8px;margin-bottom:15px;">';
-    btnDiv += '<button class="btn btp" onclick="openPhotoUpload()">&#x1F4F7; Update Photo</button>';
-    btnDiv += '<button class="btn bto" onclick="downloadPayslip()">&#x1F4C4; Download Payslip PDF</button>';
+    btnDiv += '<button class="btn btp" onclick="openPhotoUpload()">Photo Update Photo</button>';
+    btnDiv += '<button class="btn bto" onclick="downloadPayslip()">PDF Download Payslip PDF</button>';
     btnDiv += '</div>';
     h = btnDiv + h;
   }
