@@ -781,7 +781,6 @@ app.use((err, req, res, next) => {
   res.status(500).json({ success: false, message: err.message });
 });
 
-module.exports = app;
 
 // ═══════════════════════════════════════════════════
 // PHASE 2 — RECRUITMENT + ONBOARDING + EMPLOYEE MGT
@@ -1214,4 +1213,5 @@ app.get('/api/recruitment/stats', auth, async (req, res) => {
   } catch(e) { res.status(500).json({ success: false, message: e.message }); }
 });
 
-console.log('Phase 2 API routes loaded!');
+
+module.exports = app;
