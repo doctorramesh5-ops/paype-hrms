@@ -767,20 +767,6 @@ app.patch('/api/notifications/:id/read', auth, async (req, res) => {
   } catch (e) { res.status(500).json({ success: false, message: e.message }); }
 });
 
-// ── 404 & ERROR ───────────────────────────────────
-
-app.use((req, res) => {
-  res.status(404).json({
-    success: false,
-    message: `${req.method} ${req.path} not found`,
-    hint: 'See /api/docs for all available endpoints'
-  });
-});
-
-app.use((err, req, res, next) => {
-  console.error('Unhandled error:', err.message);
-  res.status(500).json({ success: false, message: err.message });
-});
 
 
 // ═══════════════════════════════════════════════════
@@ -1214,5 +1200,16 @@ app.get('/api/recruitment/stats', auth, async (req, res) => {
   } catch(e) { res.status(500).json({ success: false, message: e.message }); }
 });
 
+
+
+// ── 404 & ERROR ───────────────────────────────────
+app.use((req, res) => {
+  res.status(404).json({ success: false, message: req.method + " " + req.path + " not found", hint: "See /api/docs for all available endpoints" });
+});
+
+app.use((err, req, res, next) => {
+  console.error("Unhandled error:", err.message);
+  res.status(500).json({ success: false, message: err.message });
+});
 
 module.exports = app;
