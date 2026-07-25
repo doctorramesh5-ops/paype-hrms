@@ -224,13 +224,33 @@ tr:hover td{background:#F7FAFC;}
         <div class="tw"><div id="etbl"><div class="ld"><div class="sp"></div>Loading...</div></div></div>
       </div>
     </div>
-    <div class="pg" id="pg-attendance"><div class="ph"><div><h1>Attendance</h1></div></div><div id="atc"><div class="ld"><div class="sp"></div>Loading...</div></div></div>
+    <div class="pg" id="pg-attendance">
+      <div class="ph"><div><h1>Attendance</h1><p>Punch, shifts and overtime</p></div>
+        <button class="btn btp" id="att-export-btn" onclick="exportAttendanceReport()">Export</button>
+      </div>
+      <div style="display:flex;gap:5px;margin-bottom:16px;background:white;padding:5px;border-radius:10px;border:1px solid #E2E8F0;flex-wrap:wrap;">
+        <button class="btn btp" id="att-tab1" onclick="showAttTab('today',this)" style="flex:1;justify-content:center;min-width:80px;">Today</button>
+        <button class="btn bto" id="att-tab2" onclick="showAttTab('my',this)" style="flex:1;justify-content:center;min-width:80px;">My Records</button>
+        <button class="btn bto" id="att-tab3" onclick="showAttTab('shifts',this)" style="flex:1;justify-content:center;min-width:80px;">Shifts</button>
+        <button class="btn bto" id="att-tab4" onclick="showAttTab('overtime',this)" style="flex:1;justify-content:center;min-width:80px;">Overtime</button>
+      </div>
+      <div id="atc"><div class="ld"><div class="sp"></div>Loading...</div></div>
+    </div>
     <div class="pg" id="pg-leave">
       <div class="ph"><div><h1>Leave</h1><p>Manage leave requests</p></div><button class="btn btp" onclick="openMod('lvm')" id="albtn" style="display:none">+ Apply Leave</button></div>
       <div id="lvc"><div class="ld"><div class="sp"></div>Loading...</div></div>
     </div>
     <div class="pg" id="pg-payroll">
-      <div class="ph"><div><h1>Payroll</h1><p>Salary and payslips</p></div><button class="btn btp" onclick="runPayroll()" id="rpbtn" style="display:none">Run Payroll</button></div>
+      <div class="ph"><div><h1>Payroll & Compliance</h1><p>Salary, PF, ESI and statutory</p></div>
+        <div style="display:flex;gap:7px;"><button class="btn btp" onclick="runPayroll()" id="rpbtn" style="display:none">Run Payroll</button></div>
+      </div>
+      <div style="display:flex;gap:5px;margin-bottom:16px;background:white;padding:5px;border-radius:10px;border:1px solid #E2E8F0;flex-wrap:wrap;">
+        <button class="btn btp" id="pay-tab1" onclick="showPayTab('payroll',this)" style="flex:1;justify-content:center;min-width:80px;">Payroll</button>
+        <button class="btn bto" id="pay-tab2" onclick="showPayTab('pf',this)" style="flex:1;justify-content:center;min-width:80px;">PF</button>
+        <button class="btn bto" id="pay-tab3" onclick="showPayTab('esi',this)" style="flex:1;justify-content:center;min-width:80px;">ESI</button>
+        <button class="btn bto" id="pay-tab4" onclick="showPayTab('tax',this)" style="flex:1;justify-content:center;min-width:80px;">Tax & TDS</button>
+        <button class="btn bto" id="pay-tab5" onclick="showPayTab('bulk',this)" style="flex:1;justify-content:center;min-width:80px;">Bulk Run</button>
+      </div>
       <div id="prc"><div class="ld"><div class="sp"></div>Loading...</div></div>
     </div>
     <div class="pg" id="pg-recruitment">
@@ -492,6 +512,18 @@ tr:hover td{background:#F7FAFC;}
 
     <!-- NOTIFICATIONS BELL - shown in topbar -->
 
+
+    <div class="pg" id="pg-helpdesk">
+      <div class="ph"><div><h1>Helpdesk</h1><p>Tickets, IT requests and complaints</p></div>
+        <button class="btn btp" onclick="openMod('hdm')">+ Raise Ticket</button>
+      </div>
+      <div style="display:flex;gap:5px;margin-bottom:16px;background:white;padding:5px;border-radius:10px;border:1px solid #E2E8F0;">
+        <button class="btn btp" id="hd-tab1" onclick="showHDTab('my',this)" style="flex:1;justify-content:center;">My Tickets</button>
+        <button class="btn bto" id="hd-tab2" onclick="showHDTab('all',this)" style="flex:1;justify-content:center;">All Tickets</button>
+        <button class="btn bto" id="hd-tab3" onclick="showHDTab('it',this)" style="flex:1;justify-content:center;">IT Requests</button>
+      </div>
+      <div id="hdc"><div class="ld"><div class="sp"></div>Loading...</div></div>
+    </div>
   </main>
 </div>
 
@@ -583,6 +615,37 @@ tr:hover td{background:#F7FAFC;}
   </div>
 </div>
 
+<div class="ov" id="hdm" onclick="if(event.target===this)closeMod('hdm')">
+  <div class="mo">
+    <div class="mh"><div class="mt">Raise Ticket</div><button class="mx" onclick="closeMod('hdm')">&#x2715;</button></div>
+    <div class="mb">
+      <div class="ff"><label>Category *</label>
+        <select id="hd1">
+          <option value="">Select category</option>
+          <option value="IT">IT Issue</option>
+          <option value="HR">HR Query</option>
+          <option value="Payroll">Payroll Issue</option>
+          <option value="Facilities">Facilities</option>
+          <option value="Leave">Leave Related</option>
+          <option value="Other">Other</option>
+        </select>
+      </div>
+      <div class="ff"><label>Priority</label>
+        <select id="hd2">
+          <option value="Low">Low</option>
+          <option value="Medium" selected>Medium</option>
+          <option value="High">High</option>
+          <option value="Critical">Critical</option>
+        </select>
+      </div>
+      <div class="ff"><label>Subject *</label><input id="hd3" placeholder="Brief description of issue"></div>
+      <div class="ff"><label>Description *</label>
+        <textarea id="hd4" rows="4" style="border:1.5px solid #E2E8F0;border-radius:8px;padding:8px;font-family:inherit;font-size:13px;width:100%;resize:vertical;" placeholder="Detailed description..."></textarea>
+      </div>
+    </div>
+    <div class="mf"><button class="btn bto" onclick="closeMod('hdm')">Cancel</button><button class="btn btp" onclick="submitTicket()">Submit Ticket</button></div>
+  </div>
+</div>
 <div class="ov" id="sim" onclick="if(event.target===this)closeMod('sim')">
   <div class="mo">
     <div class="mh"><div class="mt">Schedule Interview</div><button class="mx" onclick="closeMod('sim')">&#x2715;</button></div>
@@ -828,6 +891,7 @@ function buildNav() {
     { id:'digitalid', label:'Digital ID', svg:'user', roles:['admin','hr','employee'], sec:'Identity' },
     { id:'orgchart', label:'Org Chart', svg:'users', roles:['admin','hr'] },
     { id:'reports', label:'Reports', svg:'grid', roles:['admin','hr'], sec:'Analytics' },
+    { id:'helpdesk', label:'Helpdesk', svg:'brief', roles:['admin','hr','employee'] },
     { id:'performance', label:'Performance', svg:'target', roles:['admin','hr','employee'] },
     { id:'profile', label:'My Profile', svg:'user', roles:['admin','hr','employee'], sec:'Account' },
     { id:'settings', label:'Settings', svg:'user', roles:['admin','hr','employee'] }
@@ -850,10 +914,10 @@ function showAllOff(title) {
   for (var i = 0; i < navs.length; i++) navs[i].classList.remove('on');
   document.getElementById('sb').classList.remove('on');
   document.getElementById('tbti').textContent = title;
-  var pgId = title==='Reports'?'pg-reports':title==='Performance'?'pg-performance':title==='Digital ID'?'pg-digitalid':title==='Org Chart'?'pg-orgchart':title==='Offer Letters'?'pg-offers':title==='Interviews'?'pg-interviews':'pg-settings';
+  var pgId = title==='Helpdesk'?'pg-helpdesk':title==='Reports'?'pg-reports':title==='Performance'?'pg-performance':title==='Digital ID'?'pg-digitalid':title==='Org Chart'?'pg-orgchart':title==='Offer Letters'?'pg-offers':title==='Interviews'?'pg-interviews':'pg-settings';
   var pgEl = document.getElementById(pgId);
   if (pgEl) pgEl.classList.add('on');
-  var niId = title==='Reports'?'ni-reports':title==='Performance'?'ni-performance':title==='Digital ID'?'ni-digitalid':title==='Org Chart'?'ni-orgchart':title==='Offer Letters'?'ni-offers':title==='Interviews'?'ni-interviews':'ni-settings';
+  var niId = title==='Helpdesk'?'ni-helpdesk':title==='Reports'?'ni-reports':title==='Performance'?'ni-performance':title==='Digital ID'?'ni-digitalid':title==='Org Chart'?'ni-orgchart':title==='Offer Letters'?'ni-offers':title==='Interviews'?'ni-interviews':'ni-settings';
   var niEl = document.getElementById(niId);
   if (niEl) niEl.classList.add('on');
 }
@@ -861,6 +925,7 @@ function showAllOff(title) {
 function goPage(name) {
   if (name === 'interviews') { showAllOff('Interviews'); loadInterviews(); return; }
   if (name === 'reports') { showAllOff('Reports'); loadReports(); return; }
+  if (name === 'helpdesk') { showAllOff('Helpdesk'); loadHelpdesk(); return; }
   if (name === 'performance') { showAllOff('Performance'); loadPerformance(); return; }
   if (name === 'digitalid') { showAllOff('Digital ID'); loadDigitalID(); return; }
   if (name === 'orgchart') { showAllOff('Org Chart'); loadOrgChart(); return; }
@@ -3658,6 +3723,638 @@ function applyTheme(key) {
 function initTheme() {
   var key = localStorage.getItem('paype_theme') || 'default';
   if (key !== 'default') applyTheme(key);
+}
+
+
+// ═══════════════════════════════════════════════════
+// PHASE 7 — PAYROLL ENHANCED, ATTENDANCE, HELPDESK, PF/ESI
+// ═══════════════════════════════════════════════════
+
+// ── PAYROLL TABS ──────────────────────────────────
+function showPayTab(tab, el) {
+  document.querySelectorAll('#pg-payroll .btn').forEach(function(b) {
+    if (b.id && b.id.startsWith('pay-tab')) b.className = b.className.replace('btp','bto');
+  });
+  el.className = el.className.replace('bto','btp');
+  loadPayTab(tab);
+}
+
+async function loadPayTab(tab) {
+  var c = document.getElementById('prc');
+  if (c) c.innerHTML = '<div class="ld"><div class="sp"></div>Loading...</div>';
+
+  if (tab === 'payroll') {
+    // Original payroll load
+    await loadPay2();
+  }
+  else if (tab === 'pf') {
+    loadPFTab();
+  }
+  else if (tab === 'esi') {
+    loadESITab();
+  }
+  else if (tab === 'tax') {
+    loadTaxTab();
+  }
+  else if (tab === 'bulk') {
+    loadBulkPayroll();
+  }
+}
+
+async function loadPFTab() {
+  var c = document.getElementById('prc');
+  var empRes = await req('GET', '/api/employees');
+  var emps = empRes.success ? (empRes.data.employees||[]) : [];
+  var pfRate = 12, pfLimit = 15000;
+  var month = new Date().getMonth()+1, year = new Date().getFullYear();
+  var mnArr = ['','Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+
+  var h = '<div class="card" style="margin-bottom:14px;">';
+  h += '<div class="ch"><div class="ct">PF Summary - ' + mnArr[month] + ' ' + year + '</div>';
+  h += '<button class="btn bto btsm" onclick="exportPFChallan()">Download Challan</button></div>';
+  h += '<div class="cb">';
+  h += '<div style="background:rgba(0,194,168,.06);border:1px solid rgba(0,194,168,.2);border-radius:8px;padding:12px;margin-bottom:14px;font-size:12px;">';
+  h += '<strong>PF Rules:</strong> Employee: 12% of Basic (max Rs 15,000) | Employer: 12% of Basic | EPF: 3.67% | EPS: 8.33%</div>';
+  h += '<div class="tw"><table><thead><tr><th>Employee</th><th>Basic (Monthly)</th><th>PF Eligible</th><th>Emp PF (12%)</th><th>Employer PF (12%)</th><th>Total PF</th><th>UAN</th></tr></thead><tbody>';
+
+  var totalEmpPF = 0, totalErPF = 0;
+  emps.forEach(function(e) {
+    var basic = e.basic_salary || Math.round((e.annual_ctc||0)/12*0.4) || 0;
+    var pfBasic = Math.min(basic, pfLimit);
+    var empPF = Math.round(pfBasic * 0.12);
+    var erPF = Math.round(pfBasic * 0.12);
+    var totalPF = empPF + erPF;
+    totalEmpPF += empPF;
+    totalErPF += erPF;
+    var nm = e.first_name + ' ' + e.last_name;
+    h += '<tr><td><strong>' + nm + '</strong><br><span style="font-size:10px;color:#718096;">' + e.employee_id + '</span></td>';
+    h += '<td>Rs ' + basic.toLocaleString('en-IN') + '</td>';
+    h += '<td>Rs ' + pfBasic.toLocaleString('en-IN') + '</td>';
+    h += '<td style="color:#E63329;">Rs ' + empPF.toLocaleString('en-IN') + '</td>';
+    h += '<td style="color:#E63329;">Rs ' + erPF.toLocaleString('en-IN') + '</td>';
+    h += '<td style="font-weight:700;">Rs ' + totalPF.toLocaleString('en-IN') + '</td>';
+    h += '<td><input style="border:1px solid #E2E8F0;border-radius:5px;padding:3px 7px;font-size:11px;width:110px;" placeholder="UAN Number" id="uan-' + e.id + '"></td>';
+    h += '</tr>';
+  });
+  h += '<tr style="background:#F7FAFC;font-weight:700;"><td>TOTAL</td><td></td><td></td>';
+  h += '<td style="color:#E63329;">Rs ' + totalEmpPF.toLocaleString('en-IN') + '</td>';
+  h += '<td style="color:#E63329;">Rs ' + totalErPF.toLocaleString('en-IN') + '</td>';
+  h += '<td>Rs ' + (totalEmpPF+totalErPF).toLocaleString('en-IN') + '</td><td></td></tr>';
+  h += '</tbody></table></div>';
+  h += '<div style="margin-top:12px;padding:12px;background:#F0F4F8;border-radius:8px;font-size:12px;">';
+  h += '<div style="font-weight:700;color:#0D1B3E;margin-bottom:6px;">PF Remittance Details</div>';
+  h += '<div style="color:#718096;">EPFO Establishment: <strong>PayPe Technologies Pvt. Ltd.</strong></div>';
+  h += '<div style="color:#718096;">Due Date: 15th of every month</div>';
+  h += '<div style="color:#718096;">Payment Mode: EPFO Online Portal (www.epfindia.gov.in)</div>';
+  h += '</div></div></div>';
+  c.innerHTML = h;
+}
+
+function exportPFChallan() {
+  var month = new Date().getMonth()+1, year = new Date().getFullYear();
+  var mnArr = ['','Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+  var csv = 'PF Challan - ' + mnArr[month] + ' ' + year + '\nPayPe Technologies Pvt. Ltd.\n\n';
+  csv += 'Employee ID,Employee Name,Basic,PF Eligible,Employee PF (12%),Employer PF (12%),Total PF\n';
+  req('GET', '/api/employees').then(function(res) {
+    (res.data.employees||[]).forEach(function(e) {
+      var basic = Math.round((e.annual_ctc||0)/12*0.4);
+      var pfBasic = Math.min(basic, 15000);
+      var empPF = Math.round(pfBasic*0.12);
+      csv += [e.employee_id, e.first_name+' '+e.last_name, basic, pfBasic, empPF, empPF, empPF*2].join(',') + '\n';
+    });
+    var blob = new Blob([csv], {type:'text/csv'});
+    var a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = 'PF_Challan_' + mnArr[month] + '_' + year + '.csv';
+    a.click();
+    toast('PF Challan downloaded!');
+  });
+}
+
+async function loadESITab() {
+  var c = document.getElementById('prc');
+  var empRes = await req('GET', '/api/employees');
+  var emps = empRes.success ? (empRes.data.employees||[]) : [];
+  var esiLimit = 21000;
+  var month = new Date().getMonth()+1, year = new Date().getFullYear();
+  var mnArr = ['','Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+
+  var h = '<div class="card" style="margin-bottom:14px;">';
+  h += '<div class="ch"><div class="ct">ESI Summary - ' + mnArr[month] + ' ' + year + '</div>';
+  h += '<button class="btn bto btsm" onclick="exportESIChallan()">Download Challan</button></div>';
+  h += '<div class="cb">';
+  h += '<div style="background:rgba(128,90,213,.06);border:1px solid rgba(128,90,213,.2);border-radius:8px;padding:12px;margin-bottom:14px;font-size:12px;">';
+  h += '<strong>ESI Rules:</strong> Applicable if Gross Salary &le; Rs 21,000/month | Employee: 0.75% | Employer: 3.25%</div>';
+  h += '<div class="tw"><table><thead><tr><th>Employee</th><th>Gross Salary</th><th>ESI Applicable</th><th>Emp ESI (0.75%)</th><th>Employer ESI (3.25%)</th><th>Total ESI</th></tr></thead><tbody>';
+
+  var totalEmpESI = 0, totalErESI = 0;
+  emps.forEach(function(e) {
+    var gross = Math.round((e.annual_ctc||0)/12);
+    var applicable = gross <= esiLimit;
+    var empESI = applicable ? Math.round(gross*0.0075) : 0;
+    var erESI = applicable ? Math.round(gross*0.0325) : 0;
+    totalEmpESI += empESI;
+    totalErESI += erESI;
+    var nm = e.first_name + ' ' + e.last_name;
+    h += '<tr><td><strong>' + nm + '</strong></td>';
+    h += '<td>Rs ' + gross.toLocaleString('en-IN') + '</td>';
+    h += '<td><span class="b ' + (applicable?'bg':'br') + '">' + (applicable?'Yes':'No - Exempt') + '</span></td>';
+    h += '<td style="color:#E63329;">' + (applicable?'Rs '+empESI.toLocaleString('en-IN'):'--') + '</td>';
+    h += '<td style="color:#E63329;">' + (applicable?'Rs '+erESI.toLocaleString('en-IN'):'--') + '</td>';
+    h += '<td style="font-weight:700;">' + (applicable?'Rs '+(empESI+erESI).toLocaleString('en-IN'):'--') + '</td></tr>';
+  });
+  h += '<tr style="background:#F7FAFC;font-weight:700;"><td>TOTAL</td><td></td><td></td>';
+  h += '<td style="color:#E63329;">Rs ' + totalEmpESI.toLocaleString('en-IN') + '</td>';
+  h += '<td style="color:#E63329;">Rs ' + totalErESI.toLocaleString('en-IN') + '</td>';
+  h += '<td>Rs ' + (totalEmpESI+totalErESI).toLocaleString('en-IN') + '</td></tr>';
+  h += '</tbody></table></div>';
+  h += '<div style="margin-top:12px;padding:12px;background:#F0F4F8;border-radius:8px;font-size:12px;">';
+  h += '<div style="font-weight:700;color:#0D1B3E;margin-bottom:6px;">ESI Remittance Details</div>';
+  h += '<div style="color:#718096;">Due Date: 15th of every month</div>';
+  h += '<div style="color:#718096;">Payment Mode: ESIC Online Portal (www.esic.in)</div>';
+  h += '<div style="color:#718096;">Employer Code: Register at ESIC portal</div>';
+  h += '</div></div></div>';
+  c.innerHTML = h;
+}
+
+function exportESIChallan() {
+  var month = new Date().getMonth()+1, year = new Date().getFullYear();
+  var mnArr = ['','Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+  var csv = 'ESI Challan - ' + mnArr[month] + ' ' + year + '\nPayPe Technologies Pvt. Ltd.\n\n';
+  csv += 'Employee ID,Employee Name,Gross,Applicable,Emp ESI (0.75%),Employer ESI (3.25%),Total\n';
+  req('GET', '/api/employees').then(function(res) {
+    (res.data.employees||[]).forEach(function(e) {
+      var gross = Math.round((e.annual_ctc||0)/12);
+      var applicable = gross <= 21000;
+      var empESI = applicable ? Math.round(gross*0.0075) : 0;
+      var erESI = applicable ? Math.round(gross*0.0325) : 0;
+      csv += [e.employee_id, e.first_name+' '+e.last_name, gross, applicable?'Yes':'No', empESI, erESI, empESI+erESI].join(',') + '\n';
+    });
+    var blob = new Blob([csv], {type:'text/csv'});
+    var a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = 'ESI_Challan_' + mnArr[month] + '_' + year + '.csv';
+    a.click();
+    toast('ESI Challan downloaded!');
+  });
+}
+
+async function loadTaxTab() {
+  var c = document.getElementById('prc');
+  var empRes = await req('GET', '/api/employees');
+  var emps = empRes.success ? (empRes.data.employees||[]) : [];
+
+  function calcTax(income) {
+    // New Tax Regime FY 2026-27
+    var tax = 0;
+    if (income <= 300000) tax = 0;
+    else if (income <= 700000) tax = (income-300000)*0.05;
+    else if (income <= 1000000) tax = 20000+(income-700000)*0.10;
+    else if (income <= 1200000) tax = 50000+(income-1000000)*0.15;
+    else if (income <= 1500000) tax = 80000+(income-1200000)*0.20;
+    else tax = 140000+(income-1500000)*0.30;
+    return Math.round(tax);
+  }
+
+  var h = '<div class="card" style="margin-bottom:14px;">';
+  h += '<div class="ch"><div class="ct">Tax & TDS Computation FY 2026-27</div>';
+  h += '<button class="btn bto btsm" onclick="exportTDSSheet()">Export TDS Sheet</button></div>';
+  h += '<div class="cb">';
+  h += '<div style="background:rgba(214,158,46,.08);border:1px solid rgba(214,158,46,.3);border-radius:8px;padding:12px;margin-bottom:14px;font-size:12px;">';
+  h += '<strong>New Tax Regime (FY 2026-27):</strong> 0-3L: Nil | 3-7L: 5% | 7-10L: 10% | 10-12L: 15% | 12-15L: 20% | 15L+: 30%</div>';
+  h += '<div class="tw"><table><thead><tr><th>Employee</th><th>Annual CTC</th><th>PF Deduction</th><th>Taxable Income</th><th>Annual Tax</th><th>Monthly TDS</th></tr></thead><tbody>';
+
+  var totalTDS = 0;
+  emps.forEach(function(e) {
+    var ctc = e.annual_ctc || 0;
+    var basic = Math.round(ctc/12*0.4)*12;
+    var pf = Math.round(Math.min(basic/12,15000)*0.12)*12;
+    var taxable = Math.max(0, ctc - pf - 50000); // std deduction 50k
+    var tax = calcTax(taxable);
+    var monthlyTDS = Math.round(tax/12);
+    totalTDS += monthlyTDS;
+    var nm = e.first_name + ' ' + e.last_name;
+    h += '<tr><td><strong>' + nm + '</strong><br><span style="font-size:10px;color:#718096;">' + e.employee_id + '</span></td>';
+    h += '<td>Rs ' + Number(ctc).toLocaleString('en-IN') + '</td>';
+    h += '<td style="color:#E63329;">Rs ' + pf.toLocaleString('en-IN') + '</td>';
+    h += '<td>Rs ' + taxable.toLocaleString('en-IN') + '</td>';
+    h += '<td style="color:#D69E2E;font-weight:600;">Rs ' + tax.toLocaleString('en-IN') + '</td>';
+    h += '<td style="font-weight:700;">Rs ' + monthlyTDS.toLocaleString('en-IN') + '</td></tr>';
+  });
+  h += '<tr style="background:#F7FAFC;font-weight:700;"><td colspan="5">Total Monthly TDS Liability</td><td>Rs ' + totalTDS.toLocaleString('en-IN') + '</td></tr>';
+  h += '</tbody></table></div></div></div>';
+  c.innerHTML = h;
+}
+
+function exportTDSSheet() {
+  req('GET', '/api/employees').then(function(res) {
+    var csv = 'TDS Sheet FY 2026-27\nPayPe Technologies Pvt. Ltd.\n\n';
+    csv += 'Employee ID,Name,Annual CTC,PF Deduction,Taxable Income,Annual Tax,Monthly TDS\n';
+    function calcTax(income) {
+      var tax = 0;
+      if (income <= 300000) tax = 0;
+      else if (income <= 700000) tax = (income-300000)*0.05;
+      else if (income <= 1000000) tax = 20000+(income-700000)*0.10;
+      else if (income <= 1200000) tax = 50000+(income-1000000)*0.15;
+      else if (income <= 1500000) tax = 80000+(income-1200000)*0.20;
+      else tax = 140000+(income-1500000)*0.30;
+      return Math.round(tax);
+    }
+    (res.data.employees||[]).forEach(function(e) {
+      var ctc = e.annual_ctc||0;
+      var pf = Math.round(Math.min(ctc/12*0.4,15000)*0.12)*12;
+      var taxable = Math.max(0, ctc-pf-50000);
+      var tax = calcTax(taxable);
+      csv += [e.employee_id, e.first_name+' '+e.last_name, ctc, pf, taxable, tax, Math.round(tax/12)].join(',') + '\n';
+    });
+    var blob = new Blob([csv], {type:'text/csv'});
+    var a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = 'TDS_Sheet_FY2026-27.csv';
+    a.click();
+    toast('TDS sheet downloaded!');
+  });
+}
+
+async function loadBulkPayroll() {
+  var c = document.getElementById('prc');
+  var empRes = await req('GET', '/api/employees');
+  var emps = empRes.success ? (empRes.data.employees||[]).filter(function(e){return e.employment_status==='Active';}) : [];
+  var month = new Date().getMonth()+1, year = new Date().getFullYear();
+  var mnArr = ['','Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+
+  var h = '<div class="card">';
+  h += '<div class="ch"><div class="ct">Bulk Payroll Run - ' + mnArr[month] + ' ' + year + '</div></div>';
+  h += '<div class="cb">';
+  h += '<div style="background:rgba(56,161,105,.06);border:1px solid rgba(56,161,105,.2);border-radius:8px;padding:12px;margin-bottom:14px;">';
+  h += '<div style="font-size:13px;font-weight:600;color:#0D1B3E;margin-bottom:4px;">Ready to run payroll for ' + emps.length + ' active employees</div>';
+  h += '<div style="font-size:12px;color:#718096;">This will calculate salary, PF, ESI and TDS for all employees and generate payslips.</div></div>';
+  h += '<div class="tw"><table><thead><tr><th>Employee</th><th>Gross</th><th>PF (Emp)</th><th>ESI (Emp)</th><th>TDS</th><th>Net Pay</th><th>Send Slip</th></tr></thead><tbody>';
+
+  var totalGross = 0, totalNet = 0;
+  emps.forEach(function(e) {
+    var ctc = e.annual_ctc || 0;
+    var gross = Math.round(ctc/12);
+    var basic = Math.round(gross*0.4);
+    var pfBasic = Math.min(basic, 15000);
+    var empPF = Math.round(pfBasic*0.12);
+    var empESI = gross <= 21000 ? Math.round(gross*0.0075) : 0;
+    var taxable = Math.max(0, ctc - empPF*12 - 50000);
+    var monthlyTDS = Math.round(calcIncomeTax(taxable)/12);
+    var net = gross - empPF - empESI - monthlyTDS;
+    totalGross += gross;
+    totalNet += net;
+    var nm = e.first_name + ' ' + e.last_name;
+    h += '<tr><td><strong>' + nm + '</strong><br><span style="font-size:10px;color:#718096;">' + e.employee_id + '</span></td>';
+    h += '<td>Rs ' + gross.toLocaleString('en-IN') + '</td>';
+    h += '<td style="color:#E63329;">Rs ' + empPF.toLocaleString('en-IN') + '</td>';
+    h += '<td style="color:#E63329;">Rs ' + empESI.toLocaleString('en-IN') + '</td>';
+    h += '<td style="color:#D69E2E;">Rs ' + monthlyTDS.toLocaleString('en-IN') + '</td>';
+    h += '<td style="font-weight:700;color:#38A169;">Rs ' + net.toLocaleString('en-IN') + '</td>';
+    h += '<td><button class="btn bto btsm" onclick="sendPayslipWA(' + "'" + (e.mobile||'') + "','" + nm + "'," + (new Date().getMonth()+1) + "," + new Date().getFullYear() + ',' + net + ')">WA</button></td>';
+    h += '</tr>';
+  });
+  h += '<tr style="background:#F7FAFC;font-weight:700;"><td>TOTAL</td>';
+  h += '<td>Rs ' + totalGross.toLocaleString('en-IN') + '</td><td></td><td></td><td></td>';
+  h += '<td style="color:#38A169;">Rs ' + totalNet.toLocaleString('en-IN') + '</td><td></td></tr>';
+  h += '</tbody></table></div>';
+  h += '<div style="display:flex;gap:8px;margin-top:14px;">';
+  h += '<button class="btn btp" onclick="runBulkPayroll()">Run Payroll for All</button>';
+  h += '<button class="btn bto" onclick="exportPayrollReport()">Export Report</button>';
+  h += '</div></div></div>';
+  c.innerHTML = h;
+}
+
+function calcIncomeTax(income) {
+  if (income <= 300000) return 0;
+  if (income <= 700000) return (income-300000)*0.05;
+  if (income <= 1000000) return 20000+(income-700000)*0.10;
+  if (income <= 1200000) return 50000+(income-1000000)*0.15;
+  if (income <= 1500000) return 80000+(income-1200000)*0.20;
+  return 140000+(income-1500000)*0.30;
+}
+
+async function runBulkPayroll() {
+  if (!confirm('Run payroll for all active employees this month?')) return;
+  var res = await req('POST', '/api/payroll/run', {
+    month: new Date().getMonth()+1,
+    year: new Date().getFullYear()
+  });
+  if (res.success) {
+    toast('Payroll run successfully!');
+    loadPayTab('bulk');
+  } else toast(res.message||'Failed','err');
+}
+
+async function loadPay2() {
+  var c = document.getElementById('prc');
+  var rpbtn = document.getElementById('rpbtn');
+  if (rpbtn && (CU.role==='admin'||CU.role==='hr')) rpbtn.style.display = 'inline-flex';
+
+  if (CU.role === 'employee') {
+    var res = await req('GET', '/api/payroll/my');
+    if (!res.success) { c.innerHTML = '<div class="em"><h3>No payslips found</h3></div>'; return; }
+    var slips = res.data || [];
+    var mnArr = ['','Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+    var h = '<div class="card"><div class="ch"><div class="ct">My Payslips</div></div><div class="tw"><table><thead><tr><th>Month</th><th>Gross</th><th>Deductions</th><th>Net Pay</th><th>Action</th></tr></thead><tbody>';
+    if (!slips.length) {
+      h += '<tr><td colspan="5" style="text-align:center;color:#718096;">No payslips generated yet</td></tr>';
+    } else {
+      slips.forEach(function(s) {
+        h += '<tr><td>' + mnArr[s.month] + ' ' + s.year + '</td>';
+        h += '<td>Rs ' + Number(s.gross_salary||0).toLocaleString('en-IN') + '</td>';
+        h += '<td style="color:#E63329;">Rs ' + Number(s.total_deductions||0).toLocaleString('en-IN') + '</td>';
+        h += '<td style="font-weight:700;color:#38A169;">Rs ' + Number(s.net_salary||0).toLocaleString('en-IN') + '</td>';
+        h += '<td><button class="btn bto btsm" onclick="downloadPayslip()">Download</button></td></tr>';
+      });
+    }
+    h += '</tbody></table></div></div>';
+    c.innerHTML = h;
+  } else {
+    var res = await req('GET', '/api/payroll/runs?limit=6');
+    var mnArr = ['','Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+    var h = '';
+    if (res.success && res.data && res.data.length) {
+      h += '<div class="card"><div class="ch"><div class="ct">Recent Payroll Runs</div></div><div class="tw"><table><thead><tr><th>Month</th><th>Employees</th><th>Gross</th><th>Net</th><th>Status</th></tr></thead><tbody>';
+      res.data.forEach(function(p) {
+        h += '<tr><td>' + mnArr[p.month] + ' ' + p.year + '</td>';
+        h += '<td>' + (p.employee_count||0) + '</td>';
+        h += '<td>Rs ' + Number(p.total_gross||0).toLocaleString('en-IN') + '</td>';
+        h += '<td style="font-weight:700;color:#38A169;">Rs ' + Number(p.total_net||0).toLocaleString('en-IN') + '</td>';
+        h += '<td><span class="b bg">' + (p.status||'Completed') + '</span></td></tr>';
+      });
+      h += '</tbody></table></div></div>';
+    } else {
+      h = '<div class="card"><div class="cb"><div class="em"><h3>No payroll runs yet</h3><p>Use Bulk Run tab to run payroll</p></div></div></div>';
+    }
+    c.innerHTML = h;
+  }
+}
+
+// ── ATTENDANCE TABS ───────────────────────────────
+function showAttTab(tab, el) {
+  document.querySelectorAll('#pg-attendance .btn').forEach(function(b) {
+    if (b.id && b.id.startsWith('att-tab')) b.className = b.className.replace('btp','bto');
+  });
+  el.className = el.className.replace('bto','btp');
+  loadAttTab(tab);
+}
+
+async function loadAtt() {
+  loadAttTab('today');
+}
+
+async function loadAttTab(tab) {
+  var c = document.getElementById('atc');
+  if (c) c.innerHTML = '<div class="ld"><div class="sp"></div>Loading...</div>';
+
+  if (tab === 'today') {
+    var res = await req('GET', '/api/attendance/today');
+    var myRes = await req('GET', '/api/attendance/my-today');
+    var now = new Date();
+    var timeStr = now.toLocaleTimeString('en-IN',{hour:'2-digit',minute:'2-digit'});
+
+    var h = '';
+    // Punch card
+    if (CU.role === 'employee' || myRes.success) {
+      var myAtt = myRes.success ? myRes.data : null;
+      var punchedIn = myAtt && myAtt.punch_in && !myAtt.punch_out;
+      var punchedOut = myAtt && myAtt.punch_out;
+      h += '<div class="card" style="margin-bottom:14px;">';
+      h += '<div class="ch"><div class="ct">My Attendance - Today</div><div style="font-size:12px;color:#718096;">' + now.toLocaleDateString('en-IN',{weekday:'long',day:'2-digit',month:'long'}) + '</div></div>';
+      h += '<div class="cb" style="text-align:center;padding:20px;">';
+      h += '<div style="font-size:36px;font-weight:800;color:#0D1B3E;margin-bottom:6px;">' + timeStr + '</div>';
+      if (punchedOut) {
+        h += '<div style="color:#38A169;font-size:14px;font-weight:600;margin-bottom:14px;">Day Complete</div>';
+        var hrs = ((new Date(myAtt.punch_out)-new Date(myAtt.punch_in))/3600000).toFixed(1);
+        h += '<div style="font-size:13px;color:#718096;">In: ' + new Date(myAtt.punch_in).toLocaleTimeString('en-IN',{hour:'2-digit',minute:'2-digit'}) + ' | Out: ' + new Date(myAtt.punch_out).toLocaleTimeString('en-IN',{hour:'2-digit',minute:'2-digit'}) + ' | ' + hrs + ' hours</div>';
+      } else if (punchedIn) {
+        h += '<div style="color:#00C2A8;font-size:14px;font-weight:600;margin-bottom:14px;">Currently Working</div>';
+        h += '<div style="font-size:12px;color:#718096;margin-bottom:16px;">Punched in at: ' + new Date(myAtt.punch_in).toLocaleTimeString('en-IN',{hour:'2-digit',minute:'2-digit'}) + '</div>';
+        h += '<button class="btn btr" onclick="punchInOut()" style="padding:12px 32px;font-size:14px;">Punch Out</button>';
+      } else {
+        h += '<div style="color:#718096;font-size:14px;margin-bottom:16px;">Not punched in yet</div>';
+        h += '<button class="btn btg" onclick="punchInOut()" style="padding:12px 32px;font-size:14px;">Punch In</button>';
+      }
+      h += '</div></div>';
+    }
+
+    // Today summary (admin/hr)
+    if (CU.role !== 'employee' && res.success) {
+      var recs = res.data || [];
+      var present = recs.filter(function(r){return r.punch_in;}).length;
+      h += '<div style="display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:14px;">';
+      h += '<div class="kp"><div class="kv" style="color:#38A169;">' + present + '</div><div class="kl">Present</div></div>';
+      h += '<div class="kp"><div class="kv" style="color:#00C2A8;">' + recs.filter(function(r){return r.punch_in&&!r.punch_out;}).length + '</div><div class="kl">Working</div></div>';
+      h += '<div class="kp"><div class="kv" style="color:#718096;">' + recs.filter(function(r){return r.punch_out;}).length + '</div><div class="kl">Completed</div></div>';
+      h += '<div class="kp"><div class="kv" style="color:#E63329;">' + Math.max(0,(allEmps.length||0)-present) + '</div><div class="kl">Absent</div></div>';
+      h += '</div>';
+      h += '<div class="card"><div class="ch"><div class="ct">Today\'s Attendance</div><button class="btn bto btsm" onclick="exportAttendanceReport()">Export</button></div><div class="tw"><table><thead><tr><th>Employee</th><th>Punch In</th><th>Punch Out</th><th>Hours</th><th>Status</th></tr></thead><tbody>';
+      recs.forEach(function(a) {
+        var nm = (a.first_name||'') + ' ' + (a.last_name||'');
+        var pIn = a.punch_in ? new Date(a.punch_in).toLocaleTimeString('en-IN',{hour:'2-digit',minute:'2-digit'}) : '--';
+        var pOut = a.punch_out ? new Date(a.punch_out).toLocaleTimeString('en-IN',{hour:'2-digit',minute:'2-digit'}) : '--';
+        var hrs = (a.punch_in && a.punch_out) ? ((new Date(a.punch_out)-new Date(a.punch_in))/3600000).toFixed(1)+'h' : '--';
+        var sc = a.punch_out?'bg':a.punch_in?'bt':'br';
+        var st = a.punch_out?'Complete':a.punch_in?'Working':'--';
+        h += '<tr><td><strong>' + nm + '</strong></td><td>' + pIn + '</td><td>' + pOut + '</td><td>' + hrs + '</td><td><span class="b ' + sc + '">' + st + '</span></td></tr>';
+      });
+      h += '</tbody></table></div></div>';
+    }
+    c.innerHTML = h;
+  }
+
+  else if (tab === 'my') {
+    var res = await req('GET', '/api/attendance/my?limit=30');
+    var mnArr = ['','Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+    var h = '<div class="card"><div class="ch"><div class="ct">My Attendance - Last 30 Days</div></div><div class="tw"><table><thead><tr><th>Date</th><th>Punch In</th><th>Punch Out</th><th>Hours</th><th>Status</th></tr></thead><tbody>';
+    if (res.success && res.data && res.data.length) {
+      res.data.forEach(function(a) {
+        var dt = new Date(a.attendance_date||a.punch_in);
+        var pIn = a.punch_in ? new Date(a.punch_in).toLocaleTimeString('en-IN',{hour:'2-digit',minute:'2-digit'}) : '--';
+        var pOut = a.punch_out ? new Date(a.punch_out).toLocaleTimeString('en-IN',{hour:'2-digit',minute:'2-digit'}) : '--';
+        var hrs = (a.punch_in && a.punch_out) ? ((new Date(a.punch_out)-new Date(a.punch_in))/3600000).toFixed(1)+'h' : '--';
+        var sc = a.punch_out?'bg':a.punch_in?'bt':'by';
+        h += '<tr><td>' + dt.toLocaleDateString('en-IN',{day:'2-digit',month:'short',year:'numeric'}) + '</td>';
+        h += '<td>' + pIn + '</td><td>' + pOut + '</td><td>' + hrs + '</td>';
+        h += '<td><span class="b ' + sc + '">' + (a.punch_out?'Complete':a.punch_in?'Working':'Absent') + '</span></td></tr>';
+      });
+    } else {
+      h += '<tr><td colspan="5" style="text-align:center;color:#718096;">No records found</td></tr>';
+    }
+    h += '</tbody></table></div></div>';
+    c.innerHTML = h;
+  }
+
+  else if (tab === 'shifts') {
+    var h = '<div class="card"><div class="ch"><div class="ct">Shift Management</div>';
+    if (CU.role==='admin'||CU.role==='hr') h += '<button class="btn btp btsm" onclick="addShift()">+ Add Shift</button>';
+    h += '</div><div class="cb">';
+    var shifts = JSON.parse(localStorage.getItem('paype_shifts')||'[]');
+    if (!shifts.length) {
+      // Default shifts
+      shifts = [
+        {name:'Morning Shift', start:'09:00', end:'18:00', days:'Mon-Sat', grace:15},
+        {name:'Night Shift', start:'21:00', end:'06:00', days:'Mon-Sat', grace:15},
+        {name:'General Shift', start:'10:00', end:'19:00', days:'Mon-Fri', grace:15}
+      ];
+      localStorage.setItem('paype_shifts', JSON.stringify(shifts));
+    }
+    h += '<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:12px;">';
+    shifts.forEach(function(s, i) {
+      h += '<div style="background:#F7FAFC;border:1px solid #E2E8F0;border-radius:10px;padding:14px;">';
+      h += '<div style="font-size:14px;font-weight:700;color:#0D1B3E;margin-bottom:6px;">' + s.name + '</div>';
+      h += '<div style="font-size:12px;color:#718096;margin-bottom:4px;">Time: ' + s.start + ' - ' + s.end + '</div>';
+      h += '<div style="font-size:12px;color:#718096;margin-bottom:4px;">Days: ' + s.days + '</div>';
+      h += '<div style="font-size:12px;color:#718096;">Grace: ' + s.grace + ' mins</div>';
+      h += '</div>';
+    });
+    h += '</div></div></div>';
+    c.innerHTML = h;
+  }
+
+  else if (tab === 'overtime') {
+    var res = await req('GET', '/api/attendance/my?limit=30');
+    var h = '<div class="card"><div class="ch"><div class="ct">Overtime Report</div></div><div class="tw"><table><thead><tr><th>Date</th><th>Employee</th><th>Hours Worked</th><th>Standard</th><th>OT Hours</th><th>OT Amount</th></tr></thead><tbody>';
+    var stdHours = 9;
+    if (res.success && res.data && res.data.length) {
+      res.data.forEach(function(a) {
+        if (!a.punch_in || !a.punch_out) return;
+        var hrs = (new Date(a.punch_out)-new Date(a.punch_in))/3600000;
+        var ot = Math.max(0, hrs-stdHours);
+        if (ot <= 0) return;
+        var nm = (a.first_name||'') + ' ' + (a.last_name||'');
+        var hourlyRate = Math.round((a.annual_ctc||300000)/(12*26*9));
+        var otAmt = Math.round(ot * hourlyRate * 2); // 2x OT
+        var dt = new Date(a.punch_in).toLocaleDateString('en-IN',{day:'2-digit',month:'short'});
+        h += '<tr><td>' + dt + '</td><td><strong>' + nm + '</strong></td>';
+        h += '<td>' + hrs.toFixed(1) + 'h</td><td>' + stdHours + 'h</td>';
+        h += '<td style="color:#D69E2E;font-weight:600;">' + ot.toFixed(1) + 'h</td>';
+        h += '<td style="font-weight:700;">Rs ' + otAmt.toLocaleString('en-IN') + '</td></tr>';
+      });
+    }
+    h += '</tbody></table></div></div>';
+    c.innerHTML = h;
+  }
+}
+
+function addShift() {
+  var name = prompt('Shift name:');
+  if (!name) return;
+  var start = prompt('Start time (HH:MM):', '09:00');
+  var end = prompt('End time (HH:MM):', '18:00');
+  var days = prompt('Working days:', 'Mon-Sat');
+  var shifts = JSON.parse(localStorage.getItem('paype_shifts')||'[]');
+  shifts.push({name:name, start:start, end:end, days:days, grace:15});
+  localStorage.setItem('paype_shifts', JSON.stringify(shifts));
+  toast('Shift added!');
+  loadAttTab('shifts');
+}
+
+// ── HELPDESK ──────────────────────────────────────
+function showHDTab(tab, el) {
+  document.querySelectorAll('#pg-helpdesk .btn').forEach(function(b) {
+    if (b.id && b.id.startsWith('hd-tab')) b.className = b.className.replace('btp','bto');
+  });
+  el.className = el.className.replace('bto','btp');
+  loadHDTab(tab);
+}
+
+async function loadHelpdesk() {
+  loadHDTab('my');
+}
+
+async function loadHDTab(tab) {
+  var c = document.getElementById('hdc');
+  if (c) c.innerHTML = '<div class="ld"><div class="sp"></div>Loading...</div>';
+
+  var res = await req('GET', '/api/helpdesk/tickets' + (tab==='all'?'':tab==='it'?'?category=IT':'?my=true'));
+  var tickets = res.success ? (res.data||[]) : [];
+
+  var h = '';
+  if (!tickets.length) {
+    h = '<div class="card"><div class="cb"><div class="em"><h3>No tickets found</h3><p>Click + Raise Ticket to create one</p></div></div></div>';
+  } else {
+    h = '<div class="card"><div class="tw"><table><thead><tr><th>Ticket #</th><th>Subject</th><th>Category</th><th>Priority</th><th>Status</th><th>Raised By</th><th>Date</th><th>Action</th></tr></thead><tbody>';
+    tickets.forEach(function(t) {
+      var priClr = t.priority==='Critical'?'br':t.priority==='High'?'br':t.priority==='Medium'?'by':'bg';
+      var stClr = t.status==='Resolved'?'bg':t.status==='In Progress'?'bt':t.status==='Closed'?'bn':'by';
+      h += '<tr><td style="font-size:11px;color:#718096;">#' + (t.ticket_no||t.id.slice(-6)) + '</td>';
+      h += '<td><strong>' + t.subject + '</strong></td>';
+      h += '<td><span class="b bn">' + t.category + '</span></td>';
+      h += '<td><span class="b ' + priClr + '">' + t.priority + '</span></td>';
+      h += '<td><span class="b ' + stClr + '">' + t.status + '</span></td>';
+      h += '<td>' + (t.first_name||'') + ' ' + (t.last_name||'') + '</td>';
+      h += '<td>' + new Date(t.created_at).toLocaleDateString('en-IN') + '</td>';
+      h += '<td><div style="display:flex;gap:4px;">';
+      h += '<button class="btn bto btsm" onclick="viewTicket(' + "'" + t.id + "'" + ')">View</button>';
+      if (CU.role==='admin'||CU.role==='hr') h += '<button class="btn btt btsm" onclick="updateTicket(' + "'" + t.id + "'" + ')">Update</button>';
+      h += '</div></td></tr>';
+    });
+    h += '</tbody></table></div></div>';
+  }
+  c.innerHTML = h;
+}
+
+async function submitTicket() {
+  var body = {
+    category: document.getElementById('hd1').value,
+    priority: document.getElementById('hd2').value,
+    subject: document.getElementById('hd3').value.trim(),
+    description: document.getElementById('hd4').value.trim()
+  };
+  if (!body.category||!body.subject||!body.description) { toast('All fields required','err'); return; }
+  var res = await req('POST', '/api/helpdesk/tickets', body);
+  if (res.success) {
+    toast('Ticket raised! #' + (res.data.ticket_no||''));
+    closeMod('hdm');
+    ['hd3','hd4'].forEach(function(id){document.getElementById(id).value='';});
+    loadHDTab('my');
+    // WhatsApp to HR for high priority
+    if (body.priority === 'High' || body.priority === 'Critical') {
+      var msg = 'PayPe HRMS - ' + body.priority + ' Helpdesk Ticket!' +
+        ' Category: ' + body.category +
+        ' Subject: ' + body.subject +
+        ' Raised by: ' + CU.firstName + ' ' + CU.lastName +
+        ' | Login to resolve: https://hr.paype.co.in';
+      window.open('https://wa.me/?text=' + encodeURIComponent(msg), '_blank');
+    }
+  } else toast(res.message||'Failed','err');
+}
+
+async function viewTicket(id) {
+  var res = await req('GET', '/api/helpdesk/tickets/' + id);
+  if (!res.success) { toast('Error','err'); return; }
+  var t = res.data;
+  var h = '<div style="font-size:13px;">';
+  h += '<div style="margin-bottom:12px;"><strong style="color:#0D1B3E;">' + t.subject + '</strong></div>';
+  h += '<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:12px;font-size:12px;">';
+  h += '<div><span style="color:#718096;">Category:</span> <strong>' + t.category + '</strong></div>';
+  h += '<div><span style="color:#718096;">Priority:</span> <strong>' + t.priority + '</strong></div>';
+  h += '<div><span style="color:#718096;">Status:</span> <strong>' + t.status + '</strong></div>';
+  h += '<div><span style="color:#718096;">Date:</span> ' + new Date(t.created_at).toLocaleDateString('en-IN') + '</div>';
+  h += '</div>';
+  h += '<div style="background:#F7FAFC;border-radius:8px;padding:12px;font-size:13px;color:#1A202C;">' + (t.description||'') + '</div>';
+  if (t.resolution) {
+    h += '<div style="margin-top:12px;background:rgba(56,161,105,.06);border:1px solid rgba(56,161,105,.2);border-radius:8px;padding:12px;">';
+    h += '<div style="font-size:11px;font-weight:700;color:#38A169;margin-bottom:6px;">RESOLUTION</div>';
+    h += '<div style="font-size:13px;">' + t.resolution + '</div></div>';
+  }
+  h += '</div>';
+  var mod = document.createElement('div');
+  mod.className = 'ov on';
+  mod.onclick = function(ev) { if(ev.target===mod) mod.remove(); };
+  mod.innerHTML = ["<div class=\"mo\" style=\"max-width:480px;\">","<div class=\"mh\"><div class=\"mt\">Ticket #"+(t.ticket_no||t.id.slice(-6))+"</div>","<button class=\"mx\" onclick=\"this.parentElement.parentElement.parentElement.remove()\">X</button></div>","<div class=\"mb\">"+h+"</div></div>"].join("");
+  document.body.appendChild(mod);
+}
+
+async function updateTicket(id) {
+  var status = prompt('New status (Open/In Progress/Resolved/Closed):');
+  if (!status) return;
+  var resolution = status==='Resolved' ? prompt('Resolution notes:') : null;
+  var res = await req('PUT', '/api/helpdesk/tickets/' + id, {status, resolution});
+  if (res.success) { toast('Ticket updated!'); loadHDTab('all'); }
+  else toast(res.message,'err');
 }
 
 if (tok && CU) { startApp(); } else { document.getElementById('LP').style.display = 'flex'; document.getElementById('AP').style.display = 'none'; }

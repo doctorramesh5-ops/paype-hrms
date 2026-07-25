@@ -1606,6 +1606,131 @@ app.post('/api/performance/ratings', auth, async (req, res) => {
 
 console.log('Phase 6 Performance API loaded!');
 
+
+// ═══════════════════════════════════════════════════
+// PHASE 7 — HELPDESK API
+// ═══════════════════════════════════════════════════
+
+app.get('/api/helpdesk/tickets', auth, async (req, res) => {
+  try {
+    await db(`CREATE TABLE IF NOT EXISTS helpdesk_tickets (
+      id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+      ticket_no SERIAL,
+      employee_id UUID REFERENCES employees(id) ON DELETE SET NULL,
+      category VARCHAR(50), priority VARCHAR(20) DEFAULT 'Medium',
+      subject VARCHAR(300) NOT NULL, description TEXT,
+      status VARCHAR(30) DEFAULT 'Open',
+      assigned_to UUID REFERENCES employees(id),
+      resolution TEXT, resolved_at TIMESTAMPTZ,
+      created_at TIMESTAMPTZ DEFAULT NOW(), updated_at TIMESTAMPTZ DEFAULT NOW()
+    )`);
+    let query, params = [];
+    const { my, category } = req.query;
+    if (my === 'true') {
+      query = `SELECT h.*, e.first_name, e.last_name FROM helpdesk_tickets h
+        LEFT JOIN employees e ON e.id=h.employee_id
+        WHERE h.employee_id=(SELECT id FROM employees WHERE id=(SELECT employee_id FROM users WHERE id=$1))
+        ORDER BY h.created_at DESC LIMIT 50`;
+      params = [req.user.userId];
+    } else if (category) {
+      query = `SELECT h.*, e.first_name, e.last_name FROM helpdesk_tickets h
+        LEFT JOIN employees e ON e.id=h.employee_id WHERE h.category=$1 ORDER BY h.created_at DESC LIMIT 50`;
+      params = [category];
+    } else {
+      query = `SELECT h.*, e.first_name, e.last_name FROM helpdesk_tickets h
+        LEFT JOIN employees e ON e.id=h.employee_id ORDER BY h.created_at DESC LIMIT 100`;
+    }
+    const r = await db(query, params);
+    res.json({ success: true, data: r.rows });
+  } catch(e) { res.status(500).json({ success: false, message: e.message }); }
+});
+
+app.get('/api/helpdesk/tickets/:id', auth, async (req, res) => {
+  try {
+    const r = await db(`SELECT h.*, e.first_name, e.last_name FROM helpdesk_tickets h
+      LEFT JOIN employees e ON e.id=h.employee_id WHERE h.id=$1`, [req.params.id]);
+    if (!r.rows.length) return res.status(404).json({ success: false, message: 'Ticket not found' });
+    res.json({ success: true, data: r.rows[0] });
+  } catch(e) { res.status(500).json({ success: false, message: e.message }); }
+});
+
+app.post('/api/helpdesk/tickets', auth, async (req, res) => {
+  try {
+    const { category, priority, subject, description } = req.body;
+    if (!subject || !description) return res.status(400).json({ success: false, message: 'Subject and description required' });
+    const emp = await db('SELECT id FROM employees WHERE id=(SELECT employee_id FROM users WHERE id=$1)', [req.user.userId]);
+    const empId = emp.rows[0]?.id || null;
+    const r = await db(`INSERT INTO helpdesk_tickets (employee_id,category,priority,subject,description)
+      VALUES ($1,$2,$3,$4,$5) RETURNING *`,
+      [empId, category||'Other', priority||'Medium', subject, description]);
+    // Notify HR
+    try {
+      const hrs = await db("SELECT id FROM users WHERE role='hr' OR role='admin' LIMIT 3");
+      for (const u of hrs.rows) {
+        await db('INSERT INTO notifications (user_id,title,message) VALUES ($1,$2,$3)',
+          [u.id, 'New Helpdesk Ticket', subject]);
+      }
+    } catch(e2) {}
+    res.status(201).json({ success: true, message: 'Ticket raised!', data: r.rows[0] });
+  } catch(e) { res.status(500).json({ success: false, message: e.message }); }
+});
+
+app.put('/api/helpdesk/tickets/:id', auth, async (req, res) => {
+  try {
+    const { status, resolution, assignedTo } = req.body;
+    const sets = [], params = [];
+    if (status) { params.push(status); sets.push('status=$'+params.length); }
+    if (resolution) { params.push(resolution); sets.push('resolution=$'+params.length); }
+    if (assignedTo) { params.push(assignedTo); sets.push('assigned_to=$'+params.length); }
+    if (status === 'Resolved') sets.push('resolved_at=NOW()');
+    if (!sets.length) return res.status(400).json({ success: false, message: 'Nothing to update' });
+    params.push(req.params.id);
+    await db(`UPDATE helpdesk_tickets SET ${sets.join(',')},updated_at=NOW() WHERE id=$${params.length}`, params);
+    res.json({ success: true, message: 'Ticket updated!' });
+  } catch(e) { res.status(500).json({ success: false, message: e.message }); }
+});
+
+// Attendance my-today endpoint
+app.get('/api/attendance/my-today', auth, async (req, res) => {
+  try {
+    const today = new Date().toISOString().split('T')[0];
+    const r = await db(`SELECT a.* FROM attendance a
+      JOIN employees e ON e.id=a.employee_id
+      WHERE e.id=(SELECT employee_id FROM users WHERE id=$1)
+      AND DATE(a.punch_in)=$2 ORDER BY a.punch_in DESC LIMIT 1`,
+      [req.user.userId, today]);
+    if (!r.rows.length) return res.json({ success: false, message: 'No record today' });
+    res.json({ success: true, data: r.rows[0] });
+  } catch(e) { res.status(500).json({ success: false, message: e.message }); }
+});
+
+// Attendance my records
+app.get('/api/attendance/my', auth, async (req, res) => {
+  try {
+    const limit = parseInt(req.query.limit)||30;
+    const r = await db(`SELECT a.*, e.first_name, e.last_name FROM attendance a
+      JOIN employees e ON e.id=a.employee_id
+      WHERE e.id=(SELECT employee_id FROM users WHERE id=$1)
+      ORDER BY a.punch_in DESC LIMIT $2`,
+      [req.user.userId, limit]);
+    res.json({ success: true, data: r.rows });
+  } catch(e) { res.status(500).json({ success: false, message: e.message }); }
+});
+
+// Payroll my slips
+app.get('/api/payroll/my', auth, async (req, res) => {
+  try {
+    const r = await db(`SELECT ps.* FROM payslips ps
+      JOIN employees e ON e.id=ps.employee_id
+      WHERE e.id=(SELECT employee_id FROM users WHERE id=$1)
+      ORDER BY ps.year DESC, ps.month DESC LIMIT 12`,
+      [req.user.userId]);
+    res.json({ success: true, data: r.rows });
+  } catch(e) { res.status(500).json({ success: false, message: e.message }); }
+});
+
+console.log('Phase 7 Helpdesk + Attendance + Payroll API loaded!');
+
 // ── 404 & ERROR ───────────────────────────────────
 
 app.use((req, res) => {
