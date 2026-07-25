@@ -253,11 +253,17 @@ tr:hover td{background:#F7FAFC;}
     </div>
     <div class="pg" id="pg-profile">
       <div class="ph"><div><h1>My Profile</h1><p>Your information and documents</p></div></div>
-      <div style="display:flex;gap:6px;margin-bottom:16px;background:white;padding:5px;border-radius:10px;border:1px solid #E2E8F0;">
-        <button class="btn btp" id="prof-tab1" onclick="showProfTab('info',this)" style="flex:1;justify-content:center;">My Info</button>
-        <button class="btn bto" id="prof-tab2" onclick="showProfTab('docs',this)" style="flex:1;justify-content:center;">My Documents</button>
+      <div style="display:flex;gap:5px;margin-bottom:16px;background:white;padding:5px;border-radius:10px;border:1px solid #E2E8F0;flex-wrap:wrap;">
+        <button class="btn btp" id="prof-tab1" onclick="showProfTab('info',this)" style="flex:1;justify-content:center;min-width:80px;">My Info</button>
+        <button class="btn bto" id="prof-tab2" onclick="showProfTab('edit',this)" style="flex:1;justify-content:center;min-width:80px;">Edit Profile</button>
+        <button class="btn bto" id="prof-tab3" onclick="showProfTab('education',this)" style="flex:1;justify-content:center;min-width:80px;">Education</button>
+        <button class="btn bto" id="prof-tab4" onclick="showProfTab('experience',this)" style="flex:1;justify-content:center;min-width:80px;">Experience</button>
+        <button class="btn bto" id="prof-tab5" onclick="showProfTab('docs',this)" style="flex:1;justify-content:center;min-width:80px;">Documents</button>
       </div>
       <div id="prof-info"><div id="pfc"><div class="ld"><div class="sp"></div>Loading...</div></div></div>
+      <div id="prof-edit" style="display:none;"><div id="prof-edit-content"></div></div>
+      <div id="prof-education" style="display:none;"><div id="prof-edu-content"></div></div>
+      <div id="prof-experience" style="display:none;"><div id="prof-exp-content"></div></div>
       <div id="prof-docs" style="display:none;">
         <div id="my-docs-content"><div class="ld"><div class="sp"></div>Loading documents...</div></div>
       </div>
@@ -815,6 +821,7 @@ async function loadDash() {
     h += '<div class="sc c6" onclick="goPage(&apos;interviews&apos;)"><div class="sv">' + rs2.upcomingInterviews + '</div><div class="sl">Interviews Today</div></div>';
     h += '</div>';
   }
+  if (role === 'admin' || role === 'hr') {
   h += '<div class="g2">';
   h += '<div class="card"><div class="ch"><div class="ct">Department Headcount</div></div><div class="cb">';
   if (d.departmentStats && d.departmentStats.length) {
@@ -845,6 +852,7 @@ async function loadDash() {
     h += '<div style="font-size:12px;font-weight:600;color:#0D1B3E;">' + acts[i].lb + '</div></div>';
   }
   h += '</div></div></div></div>';
+  } // end admin/hr only
   // Employee quick links
   if (role === 'employee') {
     h += '<div class="g2" style="margin-top:14px;">';
@@ -1927,13 +1935,20 @@ function sendAgreementLinksManual(empId) {
 
 // ── MY DOCUMENTS (Employee Self Service) ──────────
 function showProfTab(tab, el) {
-  document.getElementById('prof-info').style.display = tab === 'info' ? 'block' : 'none';
-  document.getElementById('prof-docs').style.display = tab === 'docs' ? 'block' : 'none';
+  ['info','edit','education','experience','docs'].forEach(function(t) {
+    var el2 = document.getElementById('prof-' + t);
+    if (el2) el2.style.display = t === tab ? 'block' : 'none';
+  });
   document.querySelectorAll('#pg-profile .btn').forEach(function(b) {
-    if (b.id && b.id.startsWith('prof-tab')) b.className = b.className.replace('btp','bto');
+    if (b.id && b.id.startsWith('prof-tab')) {
+      b.className = b.className.replace('btp','bto');
+    }
   });
   el.className = el.className.replace('bto','btp');
   if (tab === 'docs') loadMyDocs();
+  if (tab === 'edit') loadEditProfile();
+  if (tab === 'education') loadEducation();
+  if (tab === 'experience') loadExperience();
 }
 
 function loadMyDocs() {
@@ -2395,6 +2410,312 @@ function generatePayslipPDF(s, month, year) {
   win.document.write('</body></html>');
   win.document.close();
   setTimeout(function() { win.print(); }, 500);
+}
+
+
+// ── EDIT PROFILE ──────────────────────────────────
+function loadEditProfile() {
+  if (!CU || !CU.employeeId) { document.getElementById('prof-edit-content').innerHTML = '<div class="em"><h3>Profile not linked</h3></div>'; return; }
+  req('GET', '/api/employees/' + CU.employeeId).then(function(res) {
+    if (!res.success) return;
+    var e = res.data;
+    var saved = JSON.parse(localStorage.getItem('profile_' + CU.employeeId) || '{}');
+    var h = '<div class="card"><div class="ch"><div class="ct">Personal Details</div></div><div class="cb">';
+    h += '<div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">';
+    h += '<div class="ff"><label>Date of Birth</label><input id="ep-dob" type="date" value="' + (saved.dob||e.date_of_birth||'') + '"></div>';
+    h += '<div class="ff"><label>Gender</label><select id="ep-gender"><option value="">Select</option><option' + (saved.gender==='Male'||e.gender==='Male'?' selected':'') + '>Male</option><option' + (saved.gender==='Female'||e.gender==='Female'?' selected':'') + '>Female</option><option' + (saved.gender==='Other'||e.gender==='Other'?' selected':'') + '>Other</option></select></div>';
+    h += '<div class="ff"><label>Blood Group</label><select id="ep-blood"><option value="">Select</option><option' + ((saved.blood||e.blood_group)==='A+'?' selected':'') + '>A+</option><option' + ((saved.blood||e.blood_group)==='A-'?' selected':'') + '>A-</option><option' + ((saved.blood||e.blood_group)==='B+'?' selected':'') + '>B+</option><option' + ((saved.blood||e.blood_group)==='B-'?' selected':'') + '>B-</option><option' + ((saved.blood||e.blood_group)==='O+'?' selected':'') + '>O+</option><option' + ((saved.blood||e.blood_group)==='O-'?' selected':'') + '>O-</option><option' + ((saved.blood||e.blood_group)==='AB+'?' selected':'') + '>AB+</option><option' + ((saved.blood||e.blood_group)==='AB-'?' selected':'') + '>AB-</option></select></div>';
+    h += '<div class="ff"><label>Marital Status</label><select id="ep-marital"><option value="">Select</option><option' + (saved.marital==='Single'?' selected':'') + '>Single</option><option' + (saved.marital==='Married'?' selected':'') + '>Married</option><option' + (saved.marital==='Divorced'?' selected':'') + '>Divorced</option><option' + (saved.marital==='Widowed'?' selected':'') + '>Widowed</option></select></div>';
+    h += '<div class="ff"><label>Personal Mobile</label><input id="ep-mobile2" placeholder="Alternate mobile" value="' + (saved.mobile2||'') + '"></div>';
+    h += '<div class="ff"><label>Personal Email</label><input id="ep-email2" type="email" placeholder="Personal email" value="' + (saved.email2||'') + '"></div>';
+    h += '</div></div></div>';
+
+    h += '<div class="card" style="margin-top:12px;"><div class="ch"><div class="ct">Address</div></div><div class="cb">';
+    h += '<div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">';
+    h += '<div class="ff" style="grid-column:span 2;"><label>Current Address</label><textarea id="ep-addr" rows="2" style="border:1.5px solid #E2E8F0;border-radius:8px;padding:8px;font-family:inherit;font-size:13px;width:100%;resize:vertical;">' + (saved.addr||e.address||'') + '</textarea></div>';
+    h += '<div class="ff"><label>City</label><input id="ep-city" placeholder="City" value="' + (saved.city||'') + '"></div>';
+    h += '<div class="ff"><label>State</label><input id="ep-state" placeholder="State" value="' + (saved.state||'Tamil Nadu') + '"></div>';
+    h += '<div class="ff"><label>PIN Code</label><input id="ep-pin" placeholder="641001" value="' + (saved.pin||'') + '"></div>';
+    h += '<div class="ff"><label>Country</label><input id="ep-country" placeholder="India" value="' + (saved.country||'India') + '"></div>';
+    h += '</div></div></div>';
+
+    h += '<div class="card" style="margin-top:12px;"><div class="ch"><div class="ct">Emergency Contact</div></div><div class="cb">';
+    h += '<div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">';
+    h += '<div class="ff"><label>Contact Name</label><input id="ep-ec-name" placeholder="Name" value="' + (saved.ecName||'') + '"></div>';
+    h += '<div class="ff"><label>Relationship</label><input id="ep-ec-rel" placeholder="e.g. Father, Spouse" value="' + (saved.ecRel||'') + '"></div>';
+    h += '<div class="ff"><label>Mobile</label><input id="ep-ec-mob" placeholder="Mobile number" value="' + (saved.ecMob||'') + '"></div>';
+    h += '<div class="ff"><label>Email</label><input id="ep-ec-email" placeholder="Email" value="' + (saved.ecEmail||'') + '"></div>';
+    h += '</div></div></div>';
+
+    h += '<div class="card" style="margin-top:12px;"><div class="ch"><div class="ct">Bank Details</div></div><div class="cb">';
+    h += '<div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">';
+    h += '<div class="ff"><label>Bank Name</label><input id="ep-bank" placeholder="e.g. SBI, HDFC" value="' + (saved.bank||'') + '"></div>';
+    h += '<div class="ff"><label>Account Number</label><input id="ep-acc" placeholder="Account number" value="' + (saved.acc||'') + '"></div>';
+    h += '<div class="ff"><label>IFSC Code</label><input id="ep-ifsc" placeholder="e.g. SBIN0001234" value="' + (saved.ifsc||'') + '"></div>';
+    h += '<div class="ff"><label>Branch</label><input id="ep-branch" placeholder="Branch name" value="' + (saved.branch||'') + '"></div>';
+    h += '<div class="ff"><label>Aadhaar Number</label><input id="ep-aadhaar" placeholder="XXXX XXXX XXXX" maxlength="14" value="' + (saved.aadhaar||'') + '"></div>';
+    h += '<div class="ff"><label>PAN Number</label><input id="ep-pan" placeholder="ABCDE1234F" maxlength="10" value="' + (saved.pan||'') + '"></div>';
+    h += '</div></div></div>';
+
+    h += '<div style="display:flex;gap:8px;margin-top:14px;">';
+    h += '<button class="btn btp" onclick="saveEditProfile()" style="flex:1;">Save Profile</button>';
+    h += '<button class="btn bto" onclick="saveProfileAndUpdateID()" style="flex:1;">Save & Update ID Card</button>';
+    h += '</div>';
+
+    document.getElementById('prof-edit-content').innerHTML = h;
+  });
+}
+
+function saveEditProfile() {
+  var data = {
+    dob: document.getElementById('ep-dob').value,
+    gender: document.getElementById('ep-gender').value,
+    blood: document.getElementById('ep-blood').value,
+    marital: document.getElementById('ep-marital').value,
+    mobile2: document.getElementById('ep-mobile2').value,
+    email2: document.getElementById('ep-email2').value,
+    addr: document.getElementById('ep-addr').value,
+    city: document.getElementById('ep-city').value,
+    state: document.getElementById('ep-state').value,
+    pin: document.getElementById('ep-pin').value,
+    country: document.getElementById('ep-country').value,
+    ecName: document.getElementById('ep-ec-name').value,
+    ecRel: document.getElementById('ep-ec-rel').value,
+    ecMob: document.getElementById('ep-ec-mob').value,
+    ecEmail: document.getElementById('ep-ec-email').value,
+    bank: document.getElementById('ep-bank').value,
+    acc: document.getElementById('ep-acc').value,
+    ifsc: document.getElementById('ep-ifsc').value,
+    branch: document.getElementById('ep-branch').value,
+    aadhaar: document.getElementById('ep-aadhaar').value,
+    pan: document.getElementById('ep-pan').value
+  };
+  localStorage.setItem('profile_' + CU.employeeId, JSON.stringify(data));
+  // Also update in DB
+  req('PUT', '/api/employees/' + CU.employeeId, {
+    bloodGroup: data.blood,
+    gender: data.gender,
+    maritalStatus: data.marital,
+    address: data.addr + (data.city ? ', ' + data.city : '') + (data.pin ? ' - ' + data.pin : ''),
+    emergencyContact: data.ecName + ' (' + data.ecRel + ') ' + data.ecMob
+  }).then(function() {});
+  toast('Profile saved successfully!');
+}
+
+function saveProfileAndUpdateID() {
+  saveEditProfile();
+  setTimeout(function() {
+    showProfTab('info', document.getElementById('prof-tab1'));
+  }, 500);
+  toast('Profile saved! ID Card updated.');
+}
+
+// ── EDUCATION ─────────────────────────────────────
+var eduItems = [];
+var eduCount = 0;
+
+function loadEducation() {
+  var saved = JSON.parse(localStorage.getItem('education_' + (CU ? CU.employeeId : '')) || '[]');
+  eduItems = saved;
+  renderEducation();
+}
+
+function renderEducation() {
+  var h = '<div class="card"><div class="ch"><div class="ct">Education & Certifications</div>';
+  h += '<button class="btn btp btsm" onclick="addEduItem()">+ Add</button></div><div class="cb">';
+  h += '<div id="edu-list">';
+  if (!eduItems.length) {
+    h += '<div style="text-align:center;padding:20px;color:#718096;">No education records. Click + Add to start.</div>';
+  } else {
+    eduItems.forEach(function(item, i) {
+      h += renderEduItem(item, i);
+    });
+  }
+  h += '</div>';
+  h += '<div style="display:flex;gap:8px;margin-top:14px;">';
+  h += '<button class="btn btp" onclick="saveEducation()" style="flex:1;">Save All</button>';
+  h += '</div>';
+  h += '</div></div>';
+  document.getElementById('prof-edu-content').innerHTML = h;
+}
+
+function renderEduItem(item, idx) {
+  item = item || {};
+  var typeOpts = ['School (10th)','School (12th)','Diploma','UG Degree','PG Degree','PhD','Certification','Course','Other'];
+  var typeHtml = typeOpts.map(function(t) { return '<option' + (item.type===t?' selected':'') + '>' + t + '</option>'; }).join('');
+  return '<div id="edu-item-' + idx + '" style="background:#F7FAFC;border:1px solid #E2E8F0;border-radius:10px;padding:14px;margin-bottom:12px;position:relative;">' +
+    '<button onclick="removeEduItem(' + idx + ')" style="position:absolute;top:10px;right:10px;background:#E63329;color:white;border:none;border-radius:6px;padding:3px 9px;font-size:11px;cursor:pointer;font-weight:600;">Remove</button>' +
+    '<div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:4px;">' +
+    '<div class="ff"><label>Type *</label><select id="edu-type-' + idx + '"><option value="">Select Type</option>' + typeHtml + '</select></div>' +
+    '<div class="ff"><label>Institution Name *</label><input id="edu-inst-' + idx + '" placeholder="School/College/Platform name" value="' + (item.inst||'') + '"></div>' +
+    '<div class="ff"><label>Course / Degree / Subject</label><input id="edu-course-' + idx + '" placeholder="e.g. B.Com, HSC, Python" value="' + (item.course||'') + '"></div>' +
+    '<div class="ff"><label>Specialization / Stream</label><input id="edu-spec-' + idx + '" placeholder="e.g. Computer Science, Commerce" value="' + (item.spec||'') + '"></div>' +
+    '<div class="ff"><label>Year of Completion</label><input id="edu-year-' + idx + '" type="number" placeholder="2022" min="1980" max="2030" value="' + (item.year||'') + '"></div>' +
+    '<div class="ff"><label>Percentage / Grade / CGPA</label><input id="edu-score-' + idx + '" placeholder="e.g. 85% or 8.5 CGPA" value="' + (item.score||'') + '"></div>' +
+    '<div class="ff"><label>Certificate Number</label><input id="edu-certno-' + idx + '" placeholder="e.g. CERT-2022-001" value="' + (item.certno||'') + '"></div>' +
+    '<div class="ff"><label>Certificate Upload</label>' +
+    '<div style="border:1.5px dashed #E2E8F0;border-radius:8px;padding:8px;text-align:center;cursor:pointer;background:white;" onclick="triggerCertUpload(' + idx + ')">' +
+    (item.certFile ? '<div style="color:#38A169;font-size:12px;font-weight:600;">Uploaded</div>' : '<div style="color:#718096;font-size:11px;">Click to upload certificate</div>') +
+    '</div><input type="file" id="edu-cert-' + idx + '" accept=".pdf,.jpg,.jpeg,.png" style="display:none;" onchange="handleCertUpload(' + idx + ',this)"></div>' +
+    '<div class="ff" style="grid-column:span 2;"><label>Board / University / Organization</label><input id="edu-board-' + idx + '" placeholder="e.g. CBSE, Anna University, Google" value="' + (item.board||'') + '"></div>' +
+    '</div></div>';
+}
+
+function addEduItem() {
+  eduItems.push({});
+  eduCount++;
+  var list = document.getElementById('edu-list');
+  var div = document.createElement('div');
+  div.innerHTML = renderEduItem({}, eduItems.length - 1);
+  list.appendChild(div.firstChild);
+}
+
+function removeEduItem(idx) {
+  eduItems.splice(idx, 1);
+  renderEducation();
+}
+
+function triggerCertUpload(idx) {
+  document.getElementById('edu-cert-' + idx).click();
+}
+
+function handleCertUpload(idx, input) {
+  var file = input.files[0];
+  if (!file) return;
+  if (file.size > 2000000) { toast('File too large! Max 2MB.','err'); return; }
+  var reader = new FileReader();
+  reader.onload = function(e) {
+    if (!eduItems[idx]) eduItems[idx] = {};
+    eduItems[idx].certFile = e.target.result;
+    eduItems[idx].certFileName = file.name;
+    // Update display
+    var uploadDiv = input.previousElementSibling;
+    if (uploadDiv) uploadDiv.innerHTML = '<div style="color:#38A169;font-size:12px;font-weight:600;">' + file.name + '</div>';
+    toast('Certificate uploaded!');
+  };
+  reader.readAsDataURL(file);
+}
+
+function saveEducation() {
+  // Collect all items from DOM
+  var items = [];
+  for (var i = 0; i < eduItems.length; i++) {
+    var item = {
+      type: (document.getElementById('edu-type-' + i) ? document.getElementById('edu-type-' + i).value : '') || '',
+      inst: (document.getElementById('edu-inst-' + i) ? document.getElementById('edu-inst-' + i).value : '') || '',
+      course: (document.getElementById('edu-course-' + i) ? document.getElementById('edu-course-' + i).value : '') || '',
+      spec: (document.getElementById('edu-spec-' + i) ? document.getElementById('edu-spec-' + i).value : '') || '',
+      year: (document.getElementById('edu-year-' + i) ? document.getElementById('edu-year-' + i).value : '') || '',
+      score: (document.getElementById('edu-score-' + i) ? document.getElementById('edu-score-' + i).value : '') || '',
+      certno: (document.getElementById('edu-certno-' + i) ? document.getElementById('edu-certno-' + i).value : '') || '',
+      board: (document.getElementById('edu-board-' + i) ? document.getElementById('edu-board-' + i).value : '') || '',
+      certFile: eduItems[i] ? eduItems[i].certFile : null,
+      certFileName: eduItems[i] ? eduItems[i].certFileName : null
+    };
+    if (item.type || item.inst) items.push(item);
+  }
+  eduItems = items;
+  localStorage.setItem('education_' + CU.employeeId, JSON.stringify(items));
+  toast('Education records saved!');
+}
+
+// ── EXPERIENCE ────────────────────────────────────
+var expItems = [];
+
+function loadExperience() {
+  var saved = JSON.parse(localStorage.getItem('experience_' + (CU ? CU.employeeId : '')) || '[]');
+  expItems = saved;
+  renderExperience();
+}
+
+function renderExperience() {
+  var h = '<div class="card"><div class="ch"><div class="ct">Work Experience</div>';
+  h += '<button class="btn btp btsm" onclick="addExpItem()">+ Add</button></div><div class="cb">';
+  h += '<div id="exp-list">';
+  if (!expItems.length) {
+    h += '<div style="text-align:center;padding:20px;color:#718096;">No experience records. Click + Add to start.</div>';
+  } else {
+    expItems.forEach(function(item, i) { h += renderExpItem(item, i); });
+  }
+  h += '</div>';
+  h += '<div style="display:flex;gap:8px;margin-top:14px;">';
+  h += '<button class="btn btp" onclick="saveExperience()" style="flex:1;">Save All</button>';
+  h += '</div></div></div>';
+  document.getElementById('prof-exp-content').innerHTML = h;
+}
+
+function renderExpItem(item, idx) {
+  item = item || {};
+  return '<div id="exp-item-' + idx + '" style="background:#F7FAFC;border:1px solid #E2E8F0;border-radius:10px;padding:14px;margin-bottom:12px;position:relative;">' +
+    '<button onclick="removeExpItem(' + idx + ')" style="position:absolute;top:10px;right:10px;background:#E63329;color:white;border:none;border-radius:6px;padding:3px 9px;font-size:11px;cursor:pointer;font-weight:600;">Remove</button>' +
+    '<div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:4px;">' +
+    '<div class="ff"><label>Company Name *</label><input id="exp-co-' + idx + '" placeholder="Company name" value="' + (item.company||'') + '"></div>' +
+    '<div class="ff"><label>Designation / Role *</label><input id="exp-role-' + idx + '" placeholder="e.g. Sales Executive" value="' + (item.role||'') + '"></div>' +
+    '<div class="ff"><label>Department</label><input id="exp-dept-' + idx + '" placeholder="e.g. Sales" value="' + (item.dept||'') + '"></div>' +
+    '<div class="ff"><label>Location</label><input id="exp-loc-' + idx + '" placeholder="City" value="' + (item.loc||'') + '"></div>' +
+    '<div class="ff"><label>From (Month/Year)</label><input id="exp-from-' + idx + '" type="month" value="' + (item.from||'') + '"></div>' +
+    '<div class="ff"><label>To (Month/Year)</label><input id="exp-to-' + idx + '" type="month" value="' + (item.to||'') + '"><div style="margin-top:5px;"><input type="checkbox" id="exp-curr-' + idx + '"' + (item.current?' checked':'') + '> <label style="font-size:11px;color:#718096;">Currently working here</label></div></div>' +
+    '<div class="ff"><label>Last Drawn CTC (Annual)</label><input id="exp-ctc-' + idx + '" type="number" placeholder="e.g. 300000" value="' + (item.ctc||'') + '"></div>' +
+    '<div class="ff"><label>Reason for Leaving</label><input id="exp-reason-' + idx + '" placeholder="e.g. Better opportunity" value="' + (item.reason||'') + '"></div>' +
+    '<div class="ff" style="grid-column:span 2;"><label>Key Responsibilities</label><textarea id="exp-resp-' + idx + '" rows="2" style="border:1.5px solid #E2E8F0;border-radius:8px;padding:8px;font-family:inherit;font-size:13px;width:100%;resize:vertical;" placeholder="Brief description...">' + (item.resp||'') + '</textarea></div>' +
+    '<div class="ff"><label>Experience Letter</label>' +
+    '<div style="border:1.5px dashed #E2E8F0;border-radius:8px;padding:8px;text-align:center;cursor:pointer;background:white;" onclick="document.getElementById(' + String.fromCharCode(39) + 'exp-cert-' + idx + String.fromCharCode(39) + ').click()">' +
+    (item.expFile ? '<div style="color:#38A169;font-size:12px;font-weight:600;">Uploaded</div>' : '<div style="color:#718096;font-size:11px;">Upload experience letter</div>') +
+    '</div><input type="file" id="exp-cert-' + idx + '" accept=".pdf,.jpg,.jpeg,.png" style="display:none;" onchange="handleExpUpload(' + idx + ',this)"></div>' +
+    '</div></div>';
+}
+
+function addExpItem() {
+  expItems.push({});
+  var list = document.getElementById('exp-list');
+  var div = document.createElement('div');
+  div.innerHTML = renderExpItem({}, expItems.length - 1);
+  list.appendChild(div.firstChild);
+}
+
+function removeExpItem(idx) {
+  expItems.splice(idx, 1);
+  renderExperience();
+}
+
+function handleExpUpload(idx, input) {
+  var file = input.files[0];
+  if (!file) return;
+  if (file.size > 2000000) { toast('File too large! Max 2MB.','err'); return; }
+  var reader = new FileReader();
+  reader.onload = function(e) {
+    if (!expItems[idx]) expItems[idx] = {};
+    expItems[idx].expFile = e.target.result;
+    expItems[idx].expFileName = file.name;
+    var uploadDiv = input.previousElementSibling;
+    if (uploadDiv) uploadDiv.innerHTML = '<div style="color:#38A169;font-size:12px;font-weight:600;">' + file.name + '</div>';
+    toast('Document uploaded!');
+  };
+  reader.readAsDataURL(file);
+}
+
+function saveExperience() {
+  var items = [];
+  for (var i = 0; i < expItems.length; i++) {
+    var item = {
+      company: (document.getElementById('exp-co-' + i) ? document.getElementById('exp-co-' + i).value : '') || '',
+      role: (document.getElementById('exp-role-' + i) ? document.getElementById('exp-role-' + i).value : '') || '',
+      dept: (document.getElementById('exp-dept-' + i) ? document.getElementById('exp-dept-' + i).value : '') || '',
+      loc: (document.getElementById('exp-loc-' + i) ? document.getElementById('exp-loc-' + i).value : '') || '',
+      from: (document.getElementById('exp-from-' + i) ? document.getElementById('exp-from-' + i).value : '') || '',
+      to: (document.getElementById('exp-to-' + i) ? document.getElementById('exp-to-' + i).value : '') || '',
+      current: document.getElementById('exp-curr-' + i) ? document.getElementById('exp-curr-' + i).checked : false,
+      ctc: (document.getElementById('exp-ctc-' + i) ? document.getElementById('exp-ctc-' + i).value : '') || '',
+      reason: (document.getElementById('exp-reason-' + i) ? document.getElementById('exp-reason-' + i).value : '') || '',
+      resp: (document.getElementById('exp-resp-' + i) ? document.getElementById('exp-resp-' + i).value : '') || '',
+      expFile: expItems[i] ? expItems[i].expFile : null,
+      expFileName: expItems[i] ? expItems[i].expFileName : null
+    };
+    if (item.company || item.role) items.push(item);
+  }
+  expItems = items;
+  localStorage.setItem('experience_' + CU.employeeId, JSON.stringify(items));
+  toast('Experience records saved!');
 }
 
 if (tok && CU) { startApp(); } else { document.getElementById('LP').style.display = 'flex'; document.getElementById('AP').style.display = 'none'; }
