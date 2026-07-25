@@ -1412,6 +1412,82 @@ app.delete('/api/employees/:id', auth, async (req, res) => {
   } catch(e) { res.status(500).json({ success: false, message: e.message }); }
 });
 
+
+// ── EMPLOYEE EDUCATION ────────────────────────────
+app.get('/api/employees/:id/education', auth, async (req, res) => {
+  try {
+    const r = await db('SELECT * FROM employee_education WHERE employee_id=$1 ORDER BY year DESC', [req.params.id]);
+    res.json({ success: true, data: r.rows });
+  } catch(e) { 
+    // Table may not exist yet
+    res.json({ success: true, data: [] }); 
+  }
+});
+
+app.post('/api/employees/:id/education', auth, async (req, res) => {
+  try {
+    const { items } = req.body;
+    // Create table if not exists
+    await db(`CREATE TABLE IF NOT EXISTS employee_education (
+      id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+      employee_id UUID REFERENCES employees(id) ON DELETE CASCADE,
+      type VARCHAR(50), inst VARCHAR(200), course VARCHAR(200),
+      spec VARCHAR(200), year INTEGER, score VARCHAR(50),
+      certno VARCHAR(100), board VARCHAR(200),
+      cert_file TEXT, cert_file_name VARCHAR(200),
+      created_at TIMESTAMPTZ DEFAULT NOW()
+    )`);
+    // Delete existing and re-insert
+    await db('DELETE FROM employee_education WHERE employee_id=$1', [req.params.id]);
+    for (const item of (items||[])) {
+      if (!item.inst && !item.type) continue;
+      await db(`INSERT INTO employee_education (employee_id,type,inst,course,spec,year,score,certno,board,cert_file,cert_file_name)
+        VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11)`,
+        [req.params.id, item.type||null, item.inst||null, item.course||null, item.spec||null,
+         item.year?parseInt(item.year):null, item.score||null, item.certno||null, item.board||null,
+         item.certFile||null, item.certFileName||null]);
+    }
+    res.json({ success: true, message: 'Education saved!' });
+  } catch(e) { res.status(500).json({ success: false, message: e.message }); }
+});
+
+// ── EMPLOYEE EXPERIENCE ───────────────────────────
+app.get('/api/employees/:id/experience', auth, async (req, res) => {
+  try {
+    const r = await db('SELECT * FROM employee_experience WHERE employee_id=$1 ORDER BY from_date DESC', [req.params.id]);
+    res.json({ success: true, data: r.rows });
+  } catch(e) { 
+    res.json({ success: true, data: [] }); 
+  }
+});
+
+app.post('/api/employees/:id/experience', auth, async (req, res) => {
+  try {
+    const { items } = req.body;
+    await db(`CREATE TABLE IF NOT EXISTS employee_experience (
+      id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+      employee_id UUID REFERENCES employees(id) ON DELETE CASCADE,
+      company VARCHAR(200), role VARCHAR(200), dept VARCHAR(100),
+      loc VARCHAR(100), from_date VARCHAR(20), to_date VARCHAR(20),
+      is_current BOOLEAN DEFAULT false, ctc NUMERIC,
+      reason VARCHAR(200), responsibilities TEXT,
+      exp_file TEXT, exp_file_name VARCHAR(200),
+      created_at TIMESTAMPTZ DEFAULT NOW()
+    )`);
+    await db('DELETE FROM employee_experience WHERE employee_id=$1', [req.params.id]);
+    for (const item of (items||[])) {
+      if (!item.company && !item.role) continue;
+      await db(`INSERT INTO employee_experience (employee_id,company,role,dept,loc,from_date,to_date,is_current,ctc,reason,responsibilities,exp_file,exp_file_name)
+        VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13)`,
+        [req.params.id, item.company||null, item.role||null, item.dept||null, item.loc||null,
+         item.from||null, item.to||null, item.current||false,
+         item.ctc?parseFloat(item.ctc):null, item.reason||null, item.resp||null,
+         item.expFile||null, item.expFileName||null]);
+    }
+    res.json({ success: true, message: 'Experience saved!' });
+  } catch(e) { res.status(500).json({ success: false, message: e.message }); }
+});
+
 // ── 404 & ERROR ───────────────────────────────────
 
 app.use((req, res) => {

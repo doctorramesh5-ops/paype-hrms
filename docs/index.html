@@ -2223,30 +2223,174 @@ function viewEmp(id) {
   var e = allEmps.find(function(emp){ return emp.id === id; });
   if (!e) return;
   var nm = e.first_name + ' ' + e.last_name;
-  var h = '<div style="font-size:13px;line-height:1.8;">';
-  h += '<div style="display:flex;align-items:center;gap:12px;margin-bottom:16px;">';
-  h += '<div class="av" style="width:52px;height:52px;font-size:20px;">' + (e.first_name||'?')[0].toUpperCase() + '</div>';
-  h += '<div><div style="font-size:16px;font-weight:700;color:#0D1B3E;">' + nm + '</div>';
-  h += '<div style="font-size:12px;color:#718096;">' + e.employee_id + '</div></div></div>';
-  h += '<table style="width:100%;border-collapse:collapse;">';
-  var rows = [
-    ['Email', e.work_email||'--'], ['Mobile', e.mobile||'--'],
-    ['Department', e.department_name||'--'], ['Designation', e.designation||'--'],
-    ['Location', e.work_location||'--'], ['Status', e.employment_status||'Active'],
-    ['Blood Group', e.blood_group||'--'], ['Joined', e.date_of_joining ? new Date(e.date_of_joining).toLocaleDateString('en-IN') : '--']
-  ];
-  rows.forEach(function(r) {
-    h += '<tr><td style="padding:7px 0;color:#718096;font-size:12px;width:40%;">' + r[0] + '</td><td style="font-weight:600;font-size:13px;">' + r[1] + '</td></tr>';
+  
+  // Get employee self-filled data from their localStorage key
+  // We store it server-side via API - fetch full profile
+  req('GET', '/api/employees/' + id).then(function(res) {
+    var emp = res.success ? res.data : e;
+    
+    // Also try to get education/experience (stored in browser localStorage by employee)
+    // HR can see a summary view
+    var h = '<div style="font-size:13px;">';
+    
+    // Header with photo
+    h += '<div style="display:flex;align-items:center;gap:12px;margin-bottom:16px;padding:14px;background:linear-gradient(135deg,#0D1B3E,#1a3a7c);border-radius:10px;">';
+    if (emp.photo_url) {
+      h += '<img src="' + emp.photo_url + '" style="width:56px;height:56px;border-radius:50%;object-fit:cover;border:2px solid #00C2A8;">';
+    } else {
+      h += '<div style="width:56px;height:56px;border-radius:50%;background:#00C2A8;display:flex;align-items:center;justify-content:center;font-size:22px;font-weight:700;color:white;">' + (emp.first_name||'?')[0].toUpperCase() + '</div>';
+    }
+    h += '<div><div style="font-size:16px;font-weight:700;color:white;">' + nm + '</div>';
+    h += '<div style="font-size:12px;color:rgba(255,255,255,.6);">' + emp.employee_id + ' | ' + (emp.designation||'Staff') + '</div>';
+    h += '<div style="font-size:11px;color:#00C2A8;">' + (emp.department_name||'') + '</div></div></div>';
+
+    // Tabs
+    h += '<div style="display:flex;gap:5px;margin-bottom:14px;background:#F0F4F8;padding:4px;border-radius:8px;">';
+    h += '<button onclick="switchEmpTab(' + "'info'" + ',this)" id="et-info" style="flex:1;padding:6px;border:none;border-radius:6px;background:#0D1B3E;color:white;font-size:11px;font-weight:600;cursor:pointer;">Info</button>';
+    h += '<button onclick="switchEmpTab(' + "'personal'" + ',this)" id="et-personal" style="flex:1;padding:6px;border:none;border-radius:6px;background:transparent;color:#718096;font-size:11px;font-weight:600;cursor:pointer;">Personal</button>';
+    h += '<button onclick="switchEmpTab(' + "'education'" + ',this)" id="et-education" style="flex:1;padding:6px;border:none;border-radius:6px;background:transparent;color:#718096;font-size:11px;font-weight:600;cursor:pointer;">Education</button>';
+    h += '<button onclick="switchEmpTab(' + "'experience'" + ',this)" id="et-experience" style="flex:1;padding:6px;border:none;border-radius:6px;background:transparent;color:#718096;font-size:11px;font-weight:600;cursor:pointer;">Experience</button>';
+    h += '</div>';
+
+    // Info Tab
+    h += '<div id="emp-tab-info">';
+    var infoRows = [
+      ['Work Email', emp.work_email||'--'],
+      ['Mobile', emp.mobile||'--'],
+      ['Department', emp.department_name||'--'],
+      ['Designation', emp.designation||'--'],
+      ['Location', emp.work_location||'--'],
+      ['Employment Status', emp.employment_status||'Active'],
+      ['Blood Group', emp.blood_group||'--'],
+      ['Date of Joining', emp.date_of_joining ? new Date(emp.date_of_joining).toLocaleDateString('en-IN') : '--'],
+      ['Gender', emp.gender||'--'],
+      ['Marital Status', emp.marital_status||'--'],
+      ['Address', emp.address||'--'],
+      ['Emergency Contact', emp.emergency_contact||'--']
+    ];
+    h += '<table style="width:100%;border-collapse:collapse;">';
+    infoRows.forEach(function(r) {
+      h += '<tr style="border-bottom:1px solid #F0F4F8;"><td style="padding:7px 0;color:#718096;font-size:11px;font-weight:600;text-transform:uppercase;width:42%;">' + r[0] + '</td><td style="font-weight:600;font-size:13px;color:#0D1B3E;">' + r[1] + '</td></tr>';
+    });
+    h += '</table></div>';
+
+    // Personal Tab (filled by employee)
+    h += '<div id="emp-tab-personal" style="display:none;">';
+    h += '<div style="background:#FFF8E1;border:1px solid #F6D860;border-radius:8px;padding:10px;margin-bottom:12px;font-size:12px;color:#92400E;">These details are filled by the employee. Some may be saved only on their device.</div>';
+    h += '<table style="width:100%;border-collapse:collapse;">';
+    var personalRows = [
+      ['Aadhaar', emp.aadhaar_number ? '****' + emp.aadhaar_number.slice(-4) : 'Not provided'],
+      ['PAN Number', emp.pan_number||'Not provided'],
+      ['Bank Name', emp.bank_name||'Not provided'],
+      ['Account Number', emp.account_number ? '****' + emp.account_number.slice(-4) : 'Not provided'],
+      ['IFSC Code', emp.ifsc_code||'Not provided'],
+      ['Branch', emp.bank_branch||'Not provided']
+    ];
+    personalRows.forEach(function(r) {
+      h += '<tr style="border-bottom:1px solid #F0F4F8;"><td style="padding:7px 0;color:#718096;font-size:11px;font-weight:600;text-transform:uppercase;width:42%;">' + r[0] + '</td><td style="font-weight:600;font-size:13px;color:#0D1B3E;">' + r[1] + '</td></tr>';
+    });
+    h += '</table></div>';
+
+    // Education Tab
+    h += '<div id="emp-tab-education" style="display:none;">';
+    h += '<div id="emp-edu-data"><div style="text-align:center;padding:20px;color:#718096;">Loading education data...</div></div>';
+    h += '</div>';
+
+    // Experience Tab
+    h += '<div id="emp-tab-experience" style="display:none;">';
+    h += '<div id="emp-exp-data"><div style="text-align:center;padding:20px;color:#718096;">Loading experience data...</div></div>';
+    h += '</div>';
+
+    h += '</div>';
+
+    // Action buttons
+    var footer = '<div style="display:flex;gap:7px;">';
+    footer += '<button class="btn btt btsm" onclick="editEmp(' + "'" + id + "'" + ');document.getElementById(' + String.fromCharCode(39) + 'viewEmpMod' + String.fromCharCode(39) + ').remove()">Edit</button>';
+    footer += '<button class="btn btr btsm" onclick="removeEmp(' + "'" + id + "','" + nm + "'" + ')">Remove</button>';
+    footer += '<button class="btn bto btsm" onclick="document.getElementById(' + String.fromCharCode(39) + 'viewEmpMod' + String.fromCharCode(39) + ').remove()">Close</button>';
+    footer += '</div>';
+
+    var existing = document.getElementById('viewEmpMod');
+    if (existing) existing.remove();
+    var mod = document.createElement('div');
+    mod.id = 'viewEmpMod';
+    mod.className = 'ov on';
+    mod.onclick = function(ev) { if(ev.target===mod) mod.remove(); };
+    mod.innerHTML = '<div class="mo" style="max-width:540px;"><div class="mh"><div class="mt">Employee Profile</div>' + footer + '</div><div class="mb">' + h + '</div></div>';
+    document.body.appendChild(mod);
+
+    // Load education/experience from API
+    loadEmpEducationHR(id);
+    loadEmpExperienceHR(id);
   });
-  h += '</table></div>';
-  var existing = document.getElementById('viewEmpMod');
-  if (existing) existing.remove();
-  var mod = document.createElement('div');
-  mod.id = 'viewEmpMod';
-  mod.className = 'ov on';
-  mod.onclick = function(ev) { if(ev.target===mod) mod.remove(); };
-  mod.innerHTML = '<div class="mo" style="max-width:420px;"><div class="mh"><div class="mt">Employee Profile</div><button class="mx" onclick="document.getElementById(' + String.fromCharCode(39) + 'viewEmpMod' + String.fromCharCode(39) + ').remove()">&#x2715;</button></div><div class="mb">' + h + '</div></div>';
-  document.body.appendChild(mod);
+}
+
+function switchEmpTab(tab, el) {
+  ['info','personal','education','experience'].forEach(function(t) {
+    var el2 = document.getElementById('emp-tab-' + t);
+    if (el2) el2.style.display = t === tab ? 'block' : 'none';
+    var btn = document.getElementById('et-' + t);
+    if (btn) { btn.style.background = 'transparent'; btn.style.color = '#718096'; }
+  });
+  var tabEl = document.getElementById('emp-tab-' + tab);
+  if (tabEl) tabEl.style.display = 'block';
+  if (el) { el.style.background = '#0D1B3E'; el.style.color = 'white'; }
+}
+
+async function loadEmpEducationHR(empId) {
+  // Try to get from API (if we save to DB) or show message
+  var res = await req('GET', '/api/employees/' + empId + '/education');
+  var container = document.getElementById('emp-edu-data');
+  if (!container) return;
+  
+  if (res.success && res.data && res.data.length) {
+    var h = '';
+    res.data.forEach(function(edu) {
+      h += '<div style="background:#F7FAFC;border:1px solid #E2E8F0;border-radius:8px;padding:12px;margin-bottom:10px;">';
+      h += '<div style="display:flex;justify-content:space-between;align-items:flex-start;">';
+      h += '<div>';
+      h += '<div style="font-size:13px;font-weight:700;color:#0D1B3E;">' + (edu.inst||'--') + '</div>';
+      h += '<div style="font-size:12px;color:#718096;">' + (edu.type||'') + (edu.course ? ' | ' + edu.course : '') + (edu.spec ? ' - ' + edu.spec : '') + '</div>';
+      h += '<div style="font-size:11px;color:#00C2A8;margin-top:3px;">' + (edu.board||'') + (edu.year ? ' | ' + edu.year : '') + (edu.score ? ' | ' + edu.score : '') + '</div>';
+      if (edu.certno) h += '<div style="font-size:11px;color:#718096;margin-top:2px;">Cert No: <strong>' + edu.certno + '</strong></div>';
+      h += '</div>';
+      if (edu.cert_file) {
+        h += '<a href="' + edu.cert_file + '" target="_blank" style="font-size:11px;background:#0D1B3E;color:white;padding:4px 10px;border-radius:6px;text-decoration:none;">View Cert</a>';
+      }
+      h += '</div></div>';
+    });
+    container.innerHTML = h;
+  } else {
+    container.innerHTML = '<div style="text-align:center;padding:20px;color:#718096;font-size:13px;">No education records submitted by employee yet.</div>';
+  }
+}
+
+async function loadEmpExperienceHR(empId) {
+  var res = await req('GET', '/api/employees/' + empId + '/experience');
+  var container = document.getElementById('emp-exp-data');
+  if (!container) return;
+  
+  if (res.success && res.data && res.data.length) {
+    var h = '';
+    res.data.forEach(function(exp) {
+      var period = (exp.from||'') + (exp.to ? ' to ' + exp.to : exp.current ? ' to Present' : '');
+      h += '<div style="background:#F7FAFC;border:1px solid #E2E8F0;border-radius:8px;padding:12px;margin-bottom:10px;">';
+      h += '<div style="display:flex;justify-content:space-between;align-items:flex-start;">';
+      h += '<div>';
+      h += '<div style="font-size:13px;font-weight:700;color:#0D1B3E;">' + (exp.company||'--') + '</div>';
+      h += '<div style="font-size:12px;color:#718096;">' + (exp.role||'') + (exp.dept ? ' | ' + exp.dept : '') + (exp.loc ? ' | ' + exp.loc : '') + '</div>';
+      h += '<div style="font-size:11px;color:#00C2A8;margin-top:3px;">' + period + (exp.ctc ? ' | CTC: Rs ' + Number(exp.ctc).toLocaleString('en-IN') : '') + '</div>';
+      if (exp.resp) h += '<div style="font-size:11px;color:#718096;margin-top:4px;">' + exp.resp + '</div>';
+      h += '</div>';
+      if (exp.exp_file) {
+        h += '<a href="' + exp.exp_file + '" target="_blank" style="font-size:11px;background:#0D1B3E;color:white;padding:4px 10px;border-radius:6px;text-decoration:none;">View Letter</a>';
+      }
+      h += '</div></div>';
+    });
+    container.innerHTML = h;
+  } else {
+    container.innerHTML = '<div style="text-align:center;padding:20px;color:#718096;font-size:13px;">No experience records submitted by employee yet.</div>';
+  }
 }
 
 async function suspendEmp(id, currentStatus) {
@@ -2616,7 +2760,11 @@ function saveEducation() {
   }
   eduItems = items;
   localStorage.setItem('education_' + CU.employeeId, JSON.stringify(items));
-  toast('Education records saved!');
+  // Save to API
+  req('POST', '/api/employees/' + CU.employeeId + '/education', { items: items }).then(function(res) {
+    if (res.success) toast('Education records saved!');
+    else toast('Saved locally. Sync failed.','err');
+  });
 }
 
 // ── EXPERIENCE ────────────────────────────────────
@@ -2715,7 +2863,11 @@ function saveExperience() {
   }
   expItems = items;
   localStorage.setItem('experience_' + CU.employeeId, JSON.stringify(items));
-  toast('Experience records saved!');
+  // Save to API
+  req('POST', '/api/employees/' + CU.employeeId + '/experience', { items: items }).then(function(res) {
+    if (res.success) toast('Experience records saved!');
+    else toast('Saved locally. Sync failed.','err');
+  });
 }
 
 if (tok && CU) { startApp(); } else { document.getElementById('LP').style.display = 'flex'; document.getElementById('AP').style.display = 'none'; }
