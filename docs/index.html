@@ -865,6 +865,7 @@ async function loadLvPols() {
   }
 }
 async function loadEmps() {
+  allEmps = []; // always clear cache before loading
   var etbl = document.getElementById('etbl');
   if (etbl) etbl.innerHTML = '<div class="ld"><div class="sp"></div>Loading...</div>';
   var res = await req('GET', '/api/employees');
@@ -2253,6 +2254,7 @@ async function removeEmp(id, nm) {
   var res = await req('DELETE', '/api/employees/' + id);
   if (res.success) {
     toast(nm + ' removed successfully!');
+    allEmps = []; // clear cache
     loadEmps();
   } else toast(res.message || 'Remove failed','err');
 }
