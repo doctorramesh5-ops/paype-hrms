@@ -2276,15 +2276,21 @@ function viewEmp(id) {
 
     // Personal Tab (filled by employee)
     h += '<div id="emp-tab-personal" style="display:none;">';
-    h += '<div style="background:#FFF8E1;border:1px solid #F6D860;border-radius:8px;padding:10px;margin-bottom:12px;font-size:12px;color:#92400E;">These details are filled by the employee. Some may be saved only on their device.</div>';
+    h += '<div style="background:rgba(0,194,168,.08);border:1px solid rgba(0,194,168,.2);border-radius:8px;padding:10px;margin-bottom:12px;font-size:12px;color:#0D1B3E;">Employee-submitted personal and bank details. Sensitive fields are partially masked.</div>';
     h += '<table style="width:100%;border-collapse:collapse;">';
     var personalRows = [
-      ['Aadhaar', emp.aadhaar_number ? '****' + emp.aadhaar_number.slice(-4) : 'Not provided'],
+      ['Date of Birth', emp.date_of_birth ? new Date(emp.date_of_birth).toLocaleDateString('en-IN') : 'Not provided'],
+      ['Gender', emp.gender||'Not provided'],
+      ['Marital Status', emp.marital_status||'Not provided'],
+      ['Personal Email', emp.personal_email||'Not provided'],
+      ['Alternate Mobile', emp.alternate_mobile||'Not provided'],
+      ['Aadhaar', emp.aadhaar_number ? emp.aadhaar_number.replace(/\d(?=\d{4})/g,'*') : 'Not provided'],
       ['PAN Number', emp.pan_number||'Not provided'],
       ['Bank Name', emp.bank_name||'Not provided'],
-      ['Account Number', emp.account_number ? '****' + emp.account_number.slice(-4) : 'Not provided'],
+      ['Account Number', emp.account_number ? '****' + String(emp.account_number).slice(-4) : 'Not provided'],
       ['IFSC Code', emp.ifsc_code||'Not provided'],
-      ['Branch', emp.bank_branch||'Not provided']
+      ['Branch', emp.bank_branch||'Not provided'],
+      ['Emergency Contact', emp.emergency_contact||'Not provided']
     ];
     personalRows.forEach(function(r) {
       h += '<tr style="border-bottom:1px solid #F0F4F8;"><td style="padding:7px 0;color:#718096;font-size:11px;font-weight:600;text-transform:uppercase;width:42%;">' + r[0] + '</td><td style="font-weight:600;font-size:13px;color:#0D1B3E;">' + r[1] + '</td></tr>';
@@ -2635,15 +2641,26 @@ function saveEditProfile() {
     pan: document.getElementById('ep-pan').value
   };
   localStorage.setItem('profile_' + CU.employeeId, JSON.stringify(data));
-  // Also update in DB
+  // Save ALL fields to DB
   req('PUT', '/api/employees/' + CU.employeeId, {
-    bloodGroup: data.blood,
-    gender: data.gender,
-    maritalStatus: data.marital,
-    address: data.addr + (data.city ? ', ' + data.city : '') + (data.pin ? ' - ' + data.pin : ''),
-    emergencyContact: data.ecName + ' (' + data.ecRel + ') ' + data.ecMob
-  }).then(function() {});
-  toast('Profile saved successfully!');
+    bloodGroup: data.blood || undefined,
+    gender: data.gender || undefined,
+    maritalStatus: data.marital || undefined,
+    address: [data.addr, data.city, data.state, data.pin, data.country].filter(Boolean).join(', ') || undefined,
+    emergencyContact: data.ecName ? data.ecName + ' (' + (data.ecRel||'') + ') ' + (data.ecMob||'') : undefined,
+    aadhaarNumber: data.aadhaar || undefined,
+    panNumber: data.pan || undefined,
+    bankName: data.bank || undefined,
+    accountNumber: data.acc || undefined,
+    ifscCode: data.ifsc || undefined,
+    bankBranch: data.branch || undefined,
+    dateOfBirth: data.dob || undefined,
+    alternateMobile: data.mobile2 || undefined,
+    personalEmail: data.email2 || undefined
+  }).then(function(res) {
+    if (res.success) toast('Profile saved to server!');
+    else toast('Saved locally. Server sync failed.','err');
+  });
 }
 
 function saveProfileAndUpdateID() {

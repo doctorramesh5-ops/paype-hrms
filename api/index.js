@@ -419,7 +419,12 @@ app.put('/api/employees/:id', auth, canHR, async (req, res) => {
       dateOfJoining:'date_of_joining', workEmail:'work_email',
       employmentStatus:'employment_status', gender:'gender', 
       maritalStatus:'marital_status', address:'address',
-      emergencyContact:'emergency_contact'
+      emergencyContact:'emergency_contact',
+      aadhaarNumber:'aadhaar_number', panNumber:'pan_number',
+      bankName:'bank_name', accountNumber:'account_number',
+      ifscCode:'ifsc_code', bankBranch:'bank_branch',
+      dateOfBirth:'date_of_birth', personalEmail:'personal_email',
+      alternateMobile:'alternate_mobile'
     };
     const sets = [], params = [];
     for (const [k, v] of Object.entries(req.body)) {
