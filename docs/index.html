@@ -546,7 +546,7 @@ tr:hover td{background:#F7FAFC;}
 <div class="tw2" id="tw2"></div>
 
 <script>
-var APIURL = 'https://hr.paype.co.in';
+var APIURL = 'https://hrapi.paype.co.in';
 var tok = localStorage.getItem('ht') || '';
 var CU = null;
 try { CU = JSON.parse(localStorage.getItem('hu') || 'null'); } catch(e) { CU = null; }
@@ -838,8 +838,18 @@ function filterEmp() {
 async function addEmp() {
   var body = { firstName:document.getElementById('ef1').value.trim(), lastName:document.getElementById('ef2').value.trim(), workEmail:document.getElementById('ef3').value.trim(), mobile:document.getElementById('ef4').value.trim(), departmentId:document.getElementById('ef5').value||undefined, workLocation:document.getElementById('ef6').value.trim(), dateOfJoining:document.getElementById('ef7').value||undefined, annualCtc:document.getElementById('ef8').value?parseFloat(document.getElementById('ef8').value):undefined };
   if (!body.firstName||!body.lastName||!body.workEmail||!body.mobile) { toast('Fill all required fields','err'); return; }
+  window._lastEmpBody = body;
   var res = await req('POST', '/api/employees', body);
-  if (res.success) { toast(res.message||'Employee added!'); closeMod('aem'); loadEmps(); loadDash(); ['ef1','ef2','ef3','ef4','ef6','ef7','ef8'].forEach(function(id){document.getElementById(id).value=''}); document.getElementById('ef5').value=''; }
+  if (res.success) {
+    toast(res.message||'Employee added!');
+    closeMod('aem');
+    loadEmps();
+    loadDash();
+    ['ef1','ef2','ef3','ef4','ef6','ef7','ef8'].forEach(function(id){document.getElementById(id).value='';});
+    document.getElementById('ef5').value='';
+    // Show credentials and send via WhatsApp
+    if (res.data) showNewEmpCredentials(res.data, window._lastEmpBody||{});
+  }
   else toast(res.message||'Failed','err');
 }
 function editEmp(id, status) {
@@ -1401,7 +1411,7 @@ function generateDIDVC(e) {
   el = document.getElementById('vc-mb'); if(el) el.textContent = e.mobile ? '+91 ' + e.mobile : '+91 99448 57191';
   el = document.getElementById('did-vc-title'); if(el) el.textContent = 'Visiting Card - ' + nm;
   el = document.getElementById('did-vc-output'); if(el) el.style.display = 'block';
-  var qrUrl = 'https://hr.paype.co.in/api/employees/' + e.id;
+  var qrUrl = 'https://hrapi.paype.co.in/api/employees/' + e.id;
   var q1 = document.getElementById('vc-qr1'); if(q1) q1.innerHTML = '';
   var q2 = document.getElementById('vc-qr2'); if(q2) q2.innerHTML = '';
   if (window.QRCode) {
@@ -1427,7 +1437,7 @@ function generateDIDIDCard(e) {
   var el2 = document.getElementById('did-id-title'); if(el2) el2.textContent = 'ID Card - ' + nm;
   var el3 = document.getElementById('did-id-output'); if(el3) el3.style.display = 'block';
   var qrEl = document.getElementById('idc-qr'); if(qrEl) qrEl.innerHTML = '';
-  if (window.QRCode && qrEl) new QRCode(qrEl, {text:'https://hr.paype.co.in/api/employees/'+e.id,width:60,height:60,colorDark:'#0D1B3E',colorLight:'#ffffff'});
+  if (window.QRCode && qrEl) new QRCode(qrEl, {text:'https://hrapi.paype.co.in/api/employees/'+e.id,width:60,height:60,colorDark:'#0D1B3E',colorLight:'#ffffff'});
 }
 
 function renderDIDQRGrid() {
@@ -1451,7 +1461,7 @@ function renderDIDQRGrid() {
     allEmps.forEach(function(e) {
       var qid = 'qr-did-' + e.employee_id.replace(/[^a-z0-9]/gi,'');
       var el2 = document.getElementById(qid);
-      if (el2 && window.QRCode) new QRCode(el2,{text:'https://hr.paype.co.in/api/employees/'+e.id,width:90,height:90,colorDark:'#0D1B3E',colorLight:'#ffffff'});
+      if (el2 && window.QRCode) new QRCode(el2,{text:'https://hrapi.paype.co.in/api/employees/'+e.id,width:90,height:90,colorDark:'#0D1B3E',colorLight:'#ffffff'});
     });
   }, 300);
 }
@@ -1753,7 +1763,7 @@ function shareAgreementEmail() {
 // ── AUTO SEND AGREEMENT LINKS ─────────────────────
 function sendAgreementLinks(emp) {
   var nm = emp.first_name + ' ' + emp.last_name;
-  var link = 'https://doctorramesh5-ops.github.io/paype-hrms/agreement-portal.html?emp=' + emp.id;
+  var link = 'https://hr.paype.co.in/';
   var mobile = emp.mobile || '';
 
   // WhatsApp
@@ -2002,6 +2012,73 @@ function buildSignDisplay(e, nm) {
     '<div style="font-size:10px;font-weight:700;color:#0D1B3E;margin-bottom:8px;">EMPLOYEE</div>' +
     signHtml +
     '<div style="font-size:9px;color:#718096;margin-top:5px;">' + nm + ' | ' + (e.employee_id||'') + '</div></div></div>';
+}
+
+
+// ── NEW EMPLOYEE CREDENTIALS ──────────────────────
+function showNewEmpCredentials(emp, body) {
+  var nm = emp.first_name + ' ' + emp.last_name;
+  var email = emp.work_email || body.workEmail || '';
+  var mobile = emp.mobile || body.mobile || '';
+  var empCode = emp.employee_id || '';
+  var defaultPass = 'PayPe@' + new Date().getFullYear();
+  var hrmsUrl = 'https://hr.paype.co.in';
+
+  // Show credentials modal
+  var h = '<div style="text-align:center;margin-bottom:16px;">';
+  h += '<div style="width:56px;height:56px;border-radius:50%;background:#00C2A8;display:flex;align-items:center;justify-content:center;font-size:22px;font-weight:700;color:white;margin:0 auto 10px;">' + (emp.first_name||'E')[0].toUpperCase() + '</div>';
+  h += '<div style="font-family:Syne,sans-serif;font-size:16px;font-weight:700;color:#0D1B3E;">' + nm + '</div>';
+  h += '<div style="font-size:12px;color:#718096;">' + empCode + '</div></div>';
+  h += '<div style="background:#F0F4F8;border-radius:10px;padding:14px;margin-bottom:14px;">';
+  h += '<div style="font-size:11px;font-weight:700;color:#718096;text-transform:uppercase;margin-bottom:10px;">Login Credentials</div>';
+  h += '<div style="display:flex;justify-content:space-between;margin-bottom:7px;"><span style="font-size:12px;color:#718096;">HRMS URL</span><span style="font-size:12px;font-weight:600;color:#0D1B3E;">' + hrmsUrl + '</span></div>';
+  h += '<div style="display:flex;justify-content:space-between;margin-bottom:7px;"><span style="font-size:12px;color:#718096;">Username</span><span style="font-size:12px;font-weight:600;color:#0D1B3E;">' + email + '</span></div>';
+  h += '<div style="display:flex;justify-content:space-between;"><span style="font-size:12px;color:#718096;">Password</span><span style="font-size:12px;font-weight:600;color:#E63329;">' + defaultPass + '</span></div>';
+  h += '</div>';
+  h += '<div style="font-size:11px;color:#718096;margin-bottom:12px;text-align:center;">Share credentials with employee via WhatsApp or Email</div>';
+  h += '<div style="display:flex;gap:8px;">';
+  h += '<button class="btn btg" onclick="sendCredsWA(' + "'"+nm+"','"+email+"','"+defaultPass+"','"+mobile+"','"+hrmsUrl+"'" + ')" style="flex:1;">WhatsApp</button>';
+  h += '<button class="btn btt" onclick="sendCredsEmail(' + "'"+nm+"','"+email+"','"+defaultPass+"','"+hrmsUrl+"'" + ')" style="flex:1;">Email</button>';
+  h += '</div>';
+
+  // Show in a modal
+  var existing = document.getElementById('credsMod');
+  if (existing) existing.remove();
+
+  var modal = document.createElement('div');
+  modal.id = 'credsMod';
+  modal.className = 'ov on';
+  modal.innerHTML = '<div class="mo" style="max-width:420px;"><div class="mh"><div class="mt">Employee Added Successfully!</div><button class="mx" onclick="document.getElementById(' + "'credsMod'" + ').remove()">&#x2715;</button></div><div class="mb">' + h + '</div></div>';
+  document.body.appendChild(modal);
+}
+
+function sendCredsWA(nm, email, pass, mobile, url) {
+  var waNum = mobile ? '91' + mobile.replace(/[^0-9]/g,'') : '';
+  var msg = 'Welcome to PayPe Technologies, ' + nm + '!' +
+    ' Your HRMS login credentials are:' +
+    ' URL: ' + url +
+    ' | Username: ' + email +
+    ' | Password: ' + pass +
+    ' | Please login and change your password immediately.' +
+    ' | Also sign your onboarding documents under My Profile > My Documents.' +
+    ' | HR Team - PayPe Technologies Pvt. Ltd.';
+  var waUrl = waNum ? 'https://wa.me/' + waNum + '?text=' + encodeURIComponent(msg) : 'https://wa.me/?text=' + encodeURIComponent(msg);
+  window.open(waUrl, '_blank');
+}
+
+function sendCredsEmail(nm, email, pass, url) {
+  var sub = 'Welcome to PayPe Technologies - Your HRMS Login Credentials';
+  var body = 'Dear ' + nm + ',' +
+    ' Welcome to PayPe Technologies!' +
+    ' Your HRMS login credentials are below.' +
+    ' HRMS URL: ' + url +
+    ' Username: ' + email +
+    ' Password: ' + pass +
+    ' Please login and change your password immediately.' +
+    ' Then go to My Profile > My Documents to sign your onboarding documents.' +
+    ' Best regards, HR Department, PayPe Technologies Pvt. Ltd.' +
+    ' hr@paype.co.in | +91 99448 57191';
+  window.open('mailto:' + email + '?subject=' + encodeURIComponent(sub) + '&body=' + encodeURIComponent(body));
 }
 
 if (tok && CU) { startApp(); } else { document.getElementById('LP').style.display = 'flex'; document.getElementById('AP').style.display = 'none'; }
