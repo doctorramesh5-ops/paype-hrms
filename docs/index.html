@@ -1185,10 +1185,82 @@ async function loadAtt() {
 }
 async function doPunch() {
   var btn = document.getElementById('pbtn');
-  if (btn) { btn.disabled = true; btn.textContent = 'Processing...'; }
-  var res = await req('POST', '/api/attendance/punch', {});
-  if (res.success) { toast(res.message); loadAtt(); }
-  else { toast(res.message,'err'); if (btn) { btn.disabled = false; btn.textContent = pIn?'Punch Out':'Punch In'; } }
+  if (btn) { btn.disabled = true; btn.textContent = 'Getting location...'; }
+
+  // Office coordinates - PayPe Technologies, Coimbatore
+  var officeLat = 11.0168, officeLng = 76.9558;
+
+  function doActualPunch(lat, lng, acc, dist, locType) {
+    req('POST', '/api/attendance/punch', {
+      latitude: lat||null, longitude: lng||null,
+      accuracy: acc||null, distance: dist||null,
+      locationType: locType||'Unknown',
+      address: lat ? lat.toFixed(5)+','+lng.toFixed(5) : null
+    }).then(function(res) {
+      if (res.success) {
+        var locMsg = dist !== null ? ' | ' + locType + ' (' + dist + 'm from office)' : '';
+        toast(res.message + locMsg);
+        loadAttTab('today');
+        loadAtt();
+      } else {
+        toast(res.message||'Failed','err');
+        if (btn) { btn.disabled = false; btn.textContent = pIn?'Punch Out':'Punch In'; }
+      }
+    });
+  }
+
+  if (!navigator.geolocation) {
+    toast('GPS not supported on this device','err');
+    if (btn) { btn.disabled = false; btn.textContent = pIn?'Punch Out':'Punch In'; }
+    return;
+  }
+
+  navigator.geolocation.getCurrentPosition(
+    function(pos) {
+      var lat = pos.coords.latitude;
+      var lng = pos.coords.longitude;
+      var acc = Math.round(pos.coords.accuracy);
+      var dist = Math.round(getDistanceMeters(lat, lng, officeLat, officeLng));
+
+      var locType = '';
+      if (dist <= 50) locType = 'Office';
+      else if (dist <= 500) locType = 'Near Office';
+      else if (dist <= 5000) locType = 'Local';
+      else locType = 'Remote';
+
+      // ALL staff - show location status
+      var icon = dist <= 50 ? 'In Office' : dist <= 500 ? 'Near Office' : 'Work From Home / Field';
+      if (dist > 50) {
+        // Confirm for all staff if outside office
+        if (!confirm('Location: ' + icon + ' | Distance: ' + dist + 'm from office. Continue punch?')) {
+          if (btn) { btn.disabled = false; btn.textContent = pIn?'Punch Out':'Punch In'; }
+          return;
+        }
+      }
+      doActualPunch(lat, lng, acc, dist, locType);
+    },
+    function(err) {
+      // GPS denied or error - block punch for ALL staff
+      var errMsg = err.code === 1 ? 'GPS permission denied. Please allow location access.' :
+                   err.code === 2 ? 'GPS unavailable. Please try again.' :
+                   'GPS timeout. Please try again.';
+      toast(errMsg + ' Location tracking is required for attendance.','err');
+      if (btn) { btn.disabled = false; btn.textContent = pIn?'Punch Out':'Punch In'; }
+    },
+    { timeout: 15000, enableHighAccuracy: true, maximumAge: 0 }
+  );
+}
+
+function punchInOut() { doPunch(); }
+
+function getDistanceMeters(lat1, lng1, lat2, lng2) {
+  var R = 6371000;
+  var dLat = (lat2-lat1) * Math.PI/180;
+  var dLng = (lng2-lng1) * Math.PI/180;
+  var a = Math.sin(dLat/2)*Math.sin(dLat/2) +
+    Math.cos(lat1*Math.PI/180)*Math.cos(lat2*Math.PI/180)*
+    Math.sin(dLng/2)*Math.sin(dLng/2);
+  return R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
 }
 async function loadLv() {
   var role = CU.role;
@@ -3122,7 +3194,17 @@ async function loadReport(type) {
         }
         var sc = a.punch_out ? 'bg' : a.punch_in ? 'bt' : 'br';
         var st = a.punch_out ? 'Complete' : a.punch_in ? 'Working' : 'Absent';
-        h += '<tr><td><strong>' + nm + '</strong></td><td>' + pIn + '</td><td>' + pOut + '</td><td>' + hrs + '</td><td><span class="b ' + sc + '">' + st + '</span></td></tr>';
+        var locStr = '';
+        if (a.latitude) {
+          var dist2 = a.distance !== null ? a.distance : 9999;
+          var locLabel = dist2 <= 50 ? 'Office' : dist2 <= 500 ? 'Near Office' : 'Remote/WFH';
+          var locClr2 = dist2 <= 50 ? '#38A169' : dist2 <= 500 ? '#D69E2E' : '#805AD5';
+          var mapsUrl = 'https://maps.google.com/?q=' + a.latitude + ',' + a.longitude;
+          locStr = '<br><a href="' + mapsUrl + '" target="_blank" style="font-size:10px;font-weight:600;color:' + locClr2 + ';">' + locLabel + ' (' + dist2 + 'm) &#x1F4CD;</a>';
+        } else {
+          locStr = '<br><span style="font-size:10px;color:#E63329;">No GPS</span>';
+        }
+        h += '<tr><td><strong>' + nm + '</strong></td><td>' + pIn + '</td><td>' + pOut + '</td><td>' + hrs + '</td><td><span class="b ' + sc + '">' + st + '</span>' + locStr + '</td></tr>';
       });
     } else {
       h += '<tr><td colspan="5" style="text-align:center;color:#718096;">No attendance records today</td></tr>';
@@ -4157,7 +4239,17 @@ async function loadAttTab(tab) {
         var hrs = (a.punch_in && a.punch_out) ? ((new Date(a.punch_out)-new Date(a.punch_in))/3600000).toFixed(1)+'h' : '--';
         var sc = a.punch_out?'bg':a.punch_in?'bt':'br';
         var st = a.punch_out?'Complete':a.punch_in?'Working':'--';
-        h += '<tr><td><strong>' + nm + '</strong></td><td>' + pIn + '</td><td>' + pOut + '</td><td>' + hrs + '</td><td><span class="b ' + sc + '">' + st + '</span></td></tr>';
+        var locStr = '';
+        if (a.latitude) {
+          var dist2 = a.distance !== null ? a.distance : 9999;
+          var locLabel = dist2 <= 50 ? 'Office' : dist2 <= 500 ? 'Near Office' : 'Remote/WFH';
+          var locClr2 = dist2 <= 50 ? '#38A169' : dist2 <= 500 ? '#D69E2E' : '#805AD5';
+          var mapsUrl = 'https://maps.google.com/?q=' + a.latitude + ',' + a.longitude;
+          locStr = '<br><a href="' + mapsUrl + '" target="_blank" style="font-size:10px;font-weight:600;color:' + locClr2 + ';">' + locLabel + ' (' + dist2 + 'm) &#x1F4CD;</a>';
+        } else {
+          locStr = '<br><span style="font-size:10px;color:#E63329;">No GPS</span>';
+        }
+        h += '<tr><td><strong>' + nm + '</strong></td><td>' + pIn + '</td><td>' + pOut + '</td><td>' + hrs + '</td><td><span class="b ' + sc + '">' + st + '</span>' + locStr + '</td></tr>';
       });
       h += '</tbody></table></div></div>';
     }
@@ -4177,7 +4269,13 @@ async function loadAttTab(tab) {
         var sc = a.punch_out?'bg':a.punch_in?'bt':'by';
         h += '<tr><td>' + dt.toLocaleDateString('en-IN',{day:'2-digit',month:'short',year:'numeric'}) + '</td>';
         h += '<td>' + pIn + '</td><td>' + pOut + '</td><td>' + hrs + '</td>';
-        h += '<td><span class="b ' + sc + '">' + (a.punch_out?'Complete':a.punch_in?'Working':'Absent') + '</span></td></tr>';
+        var dist3 = a.distance_in !== undefined ? a.distance_in : a.distance;
+      var locType3 = a.location_type || (dist3 <= 50 ? 'Office' : dist3 <= 500 ? 'Near Office' : 'Remote');
+      var locClr = dist3 <= 50 ? '#38A169' : dist3 <= 500 ? '#D69E2E' : '#805AD5';
+      var locInfo = dist3 !== null && dist3 !== undefined ?
+        '<span style="color:' + locClr + ';font-size:10px;font-weight:600;">' + locType3 + ' (' + dist3 + 'm)</span>' :
+        '<span style="color:#718096;font-size:10px;">No GPS</span>';
+      h += '<td><span class="b ' + sc + '">' + (a.punch_out?'Complete':a.punch_in?'Working':'Absent') + '</span><br>' + locInfo + '</td></tr>';
       });
     } else {
       h += '<tr><td colspan="5" style="text-align:center;color:#718096;">No records found</td></tr>';
