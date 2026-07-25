@@ -412,7 +412,15 @@ app.post('/api/employees', auth, canHR, async (req, res) => {
 
 app.put('/api/employees/:id', auth, canHR, async (req, res) => {
   try {
-    const map = { firstName:'first_name', lastName:'last_name', mobile:'mobile', workLocation:'work_location', bloodGroup:'blood_group', status:'status', departmentId:'department_id', designationId:'designation_id', gender:'gender', maritalStatus:'marital_status' };
+    const map = { 
+      firstName:'first_name', lastName:'last_name', mobile:'mobile', 
+      workLocation:'work_location', bloodGroup:'blood_group', 
+      departmentId:'department_id', designation:'designation',
+      dateOfJoining:'date_of_joining', workEmail:'work_email',
+      employmentStatus:'employment_status', gender:'gender', 
+      maritalStatus:'marital_status', address:'address',
+      emergencyContact:'emergency_contact'
+    };
     const sets = [], params = [];
     for (const [k, v] of Object.entries(req.body)) {
       const col = map[k];
@@ -766,20 +774,6 @@ app.patch('/api/notifications/:id/read', auth, async (req, res) => {
   } catch (e) { res.status(500).json({ success: false, message: e.message }); }
 });
 
-// ── 404 & ERROR ───────────────────────────────────
-
-app.use((req, res) => {
-  res.status(404).json({
-    success: false,
-    message: `${req.method} ${req.path} not found`,
-    hint: 'See /api/docs for all available endpoints'
-  });
-});
-
-app.use((err, req, res, next) => {
-  console.error('Unhandled error:', err.message);
-  res.status(500).json({ success: false, message: err.message });
-});
 
 
 // ═══════════════════════════════════════════════════
@@ -1416,6 +1410,21 @@ app.delete('/api/employees/:id', auth, async (req, res) => {
     if (!r.rows.length) return res.status(404).json({ success: false, message: 'Employee not found' });
     res.json({ success: true, message: 'Employee removed successfully' });
   } catch(e) { res.status(500).json({ success: false, message: e.message }); }
+});
+
+// ── 404 & ERROR ───────────────────────────────────
+
+app.use((req, res) => {
+  res.status(404).json({
+    success: false,
+    message: `${req.method} ${req.path} not found`,
+    hint: 'See /api/docs for all available endpoints'
+  });
+});
+
+app.use((err, req, res, next) => {
+  console.error('Unhandled error:', err.message);
+  res.status(500).json({ success: false, message: err.message });
 });
 
 module.exports = app;
