@@ -1493,6 +1493,119 @@ app.post('/api/employees/:id/experience', auth, async (req, res) => {
   } catch(e) { res.status(500).json({ success: false, message: e.message }); }
 });
 
+
+// ═══════════════════════════════════════════════════
+// PHASE 6 — PERFORMANCE MANAGEMENT
+// ═══════════════════════════════════════════════════
+
+// ── PERFORMANCE GOALS ─────────────────────────────
+app.get('/api/performance/goals', auth, async (req, res) => {
+  try {
+    await db(`CREATE TABLE IF NOT EXISTS performance_goals (
+      id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+      employee_id UUID REFERENCES employees(id) ON DELETE CASCADE,
+      set_by UUID REFERENCES employees(id),
+      title VARCHAR(300) NOT NULL,
+      description TEXT,
+      category VARCHAR(100),
+      priority VARCHAR(20) DEFAULT 'Medium',
+      target NUMERIC,
+      progress INTEGER DEFAULT 0,
+      status VARCHAR(30) DEFAULT 'Pending',
+      target_date DATE,
+      completed_at TIMESTAMPTZ,
+      created_at TIMESTAMPTZ DEFAULT NOW(),
+      updated_at TIMESTAMPTZ DEFAULT NOW()
+    )`);
+    let query, params = [];
+    if (req.user.role === 'employee') {
+      query = `SELECT g.*, e.first_name, e.last_name FROM performance_goals g
+        JOIN employees e ON e.id=g.employee_id
+        WHERE g.employee_id=(SELECT id FROM employees WHERE id=(SELECT employee_id FROM users WHERE id=$1))
+        ORDER BY g.created_at DESC`;
+      params = [req.user.userId];
+    } else {
+      query = `SELECT g.*, e.first_name, e.last_name FROM performance_goals g
+        JOIN employees e ON e.id=g.employee_id ORDER BY g.created_at DESC`;
+    }
+    const r = await db(query, params);
+    res.json({ success: true, data: r.rows });
+  } catch(e) { res.status(500).json({ success: false, message: e.message }); }
+});
+
+app.post('/api/performance/goals', auth, async (req, res) => {
+  try {
+    const { employeeId, title, description, category, priority, target, targetDate } = req.body;
+    if (!employeeId || !title) return res.status(400).json({ success: false, message: 'Employee and title required' });
+    const setter = await db('SELECT id FROM employees WHERE id=(SELECT employee_id FROM users WHERE id=$1)', [req.user.userId]);
+    const setById = setter.rows[0]?.id || null;
+    const r = await db(`INSERT INTO performance_goals (employee_id,set_by,title,description,category,priority,target,target_date)
+      VALUES ($1,$2,$3,$4,$5,$6,$7,$8) RETURNING *`,
+      [employeeId, setById, title, description||null, category||null, priority||'Medium', target||null, targetDate||null]);
+    // Create notification
+    try {
+      const u = await db('SELECT id FROM users WHERE employee_id=$1', [employeeId]);
+      if (u.rows.length) {
+        await db(`INSERT INTO notifications (user_id,title,message) VALUES ($1,$2,$3)`,
+          [u.rows[0].id, 'New Goal Assigned', title]);
+      }
+    } catch(e2) {}
+    res.status(201).json({ success: true, message: 'Goal set!', data: r.rows[0] });
+  } catch(e) { res.status(500).json({ success: false, message: e.message }); }
+});
+
+app.put('/api/performance/goals/:id', auth, async (req, res) => {
+  try {
+    const { progress, status, description } = req.body;
+    const sets = [], params = [];
+    if (progress !== undefined) { params.push(progress); sets.push('progress=$' + params.length); }
+    if (status) { params.push(status); sets.push('status=$' + params.length); }
+    if (description) { params.push(description); sets.push('description=$' + params.length); }
+    if (!sets.length) return res.status(400).json({ success: false, message: 'Nothing to update' });
+    if (status === 'Completed') { sets.push('completed_at=NOW()'); }
+    params.push(req.params.id);
+    await db(`UPDATE performance_goals SET ${sets.join(',')},updated_at=NOW() WHERE id=$${params.length}`, params);
+    res.json({ success: true, message: 'Goal updated!' });
+  } catch(e) { res.status(500).json({ success: false, message: e.message }); }
+});
+
+// ── PERFORMANCE RATINGS ───────────────────────────
+app.get('/api/performance/ratings', auth, async (req, res) => {
+  try {
+    await db(`CREATE TABLE IF NOT EXISTS performance_ratings (
+      id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+      employee_id UUID REFERENCES employees(id) ON DELETE CASCADE,
+      reviewer_id UUID REFERENCES employees(id),
+      rating INTEGER CHECK(rating>=1 AND rating<=5),
+      comments TEXT,
+      period INTEGER DEFAULT EXTRACT(YEAR FROM NOW()),
+      created_at TIMESTAMPTZ DEFAULT NOW()
+    )`);
+    const r = await db(`SELECT pr.*, 
+      e.first_name||' '||e.last_name AS emp_name,
+      r.first_name||' '||r.last_name AS reviewer_name
+      FROM performance_ratings pr
+      JOIN employees e ON e.id=pr.employee_id
+      LEFT JOIN employees r ON r.id=pr.reviewer_id
+      ORDER BY pr.created_at DESC LIMIT 50`);
+    res.json({ success: true, data: r.rows });
+  } catch(e) { res.status(500).json({ success: false, message: e.message }); }
+});
+
+app.post('/api/performance/ratings', auth, async (req, res) => {
+  try {
+    const { employeeId, rating, comments, period } = req.body;
+    if (!employeeId || !rating) return res.status(400).json({ success: false, message: 'Employee and rating required' });
+    const reviewer = await db('SELECT id FROM employees WHERE id=(SELECT employee_id FROM users WHERE id=$1)', [req.user.userId]);
+    const r = await db(`INSERT INTO performance_ratings (employee_id,reviewer_id,rating,comments,period)
+      VALUES ($1,$2,$3,$4,$5) RETURNING *`,
+      [employeeId, reviewer.rows[0]?.id||null, rating, comments||null, period||new Date().getFullYear()]);
+    res.status(201).json({ success: true, message: 'Rating submitted!', data: r.rows[0] });
+  } catch(e) { res.status(500).json({ success: false, message: e.message }); }
+});
+
+console.log('Phase 6 Performance API loaded!');
+
 // ── 404 & ERROR ───────────────────────────────────
 
 app.use((req, res) => {
