@@ -204,7 +204,7 @@ tr:hover td{background:#F7FAFC;}
       <div class="tb-ti" id="tbti">Dashboard</div>
       <div class="dc" id="tbdt"></div>
       <div style="display:flex;align-items:center;gap:10px;margin-left:auto;">
-        <div id="notif-bell" style="position:relative;cursor:pointer;color:#0D1B3E;padding:4px;" onclick="toggleNotif()">
+        <div id="notif-bell" style="position:relative;cursor:pointer;color:#F6C90E;padding:4px;" onclick="toggleNotif()">
           <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9M13.73 21a2 2 0 0 1-3.46 0"/></svg>
           <span id="notif-count" style="position:absolute;top:-2px;right:-2px;background:#E63329;color:white;font-size:9px;font-weight:700;min-width:16px;height:16px;border-radius:8px;display:none;align-items:center;justify-content:center;padding:0 3px;">0</span>
         </div>
@@ -3592,7 +3592,7 @@ function loadSettings() {
   h += '<div style="margin-top:14px;padding:10px;background:#F0F4F8;border-radius:8px;font-size:12px;color:#718096;">Select a theme to change the look of your HRMS dashboard.</div>';
   h += '</div></div>';
 
-  // Company Info
+  // Company Info - shown to all
   h += '<div class="card" style="margin-bottom:14px;">';
   h += '<div class="ch"><div class="ct">Company Information</div></div>';
   h += '<div class="cb"><table style="width:100%;border-collapse:collapse;">';
@@ -3603,11 +3603,8 @@ function loadSettings() {
     ['PAN', 'AAMCP7960K'],
     ['TAN', 'CHEP24000E'],
     ['LEI', '64886C37CCC7Z3ML1573'],
-    ['Email', 'admin@paype.co.in'],
-    ['Mobile', '+91 99448 57191'],
-    ['Website', 'paype.co.in | bankme.co.in'],
-    ['HRMS', 'hr.paype.co.in'],
-    ['API', 'hrapi.paype.co.in']
+    ['HR Email', 'hr@paype.co.in'],
+    ['Website', 'paype.co.in | bankme.co.in']
   ];
   rows.forEach(function(r) {
     h += '<tr style="border-bottom:1px solid #F0F4F8;"><td style="padding:8px 0;font-size:11px;font-weight:700;color:#718096;text-transform:uppercase;width:35%;">' + r[0] + '</td>';
@@ -3615,22 +3612,25 @@ function loadSettings() {
   });
   h += '</table></div></div>';
 
-  // System Info
-  h += '<div class="card">';
-  h += '<div class="ch"><div class="ct">System Information</div></div>';
-  h += '<div class="cb"><table style="width:100%;border-collapse:collapse;">';
-  var sysRows = [
-    ['HRMS Version', 'v2.0.0 - Phase 6'],
-    ['Build Date', 'July 2026'],
-    ['Stack', 'Express.js + PostgreSQL + GitHub Pages'],
-    ['Developed by', 'Claude AI + Ramesh Muthuvel'],
-    ['Support', 'admin@paype.co.in']
-  ];
-  sysRows.forEach(function(r) {
-    h += '<tr style="border-bottom:1px solid #F0F4F8;"><td style="padding:8px 0;font-size:11px;font-weight:700;color:#718096;text-transform:uppercase;width:35%;">' + r[0] + '</td>';
-    h += '<td style="font-size:13px;font-weight:600;color:#0D1B3E;">' + r[1] + '</td></tr>';
-  });
-  h += '</table></div></div>';
+  // System Info - ADMIN ONLY
+  if (role === 'admin') {
+    h += '<div class="card">';
+    h += '<div class="ch"><div class="ct">System Information</div><span class="b br" style="font-size:10px;">Admin Only</span></div>';
+    h += '<div class="cb"><table style="width:100%;border-collapse:collapse;">';
+    var sysRows = [
+      ['HRMS Version', 'v2.0.0 - Phase 6'],
+      ['Build Date', 'July 2026'],
+      ['Stack', 'Express.js + PostgreSQL + GitHub Pages'],
+      ['Website', 'hr.paype.co.in'],
+      ['API', 'hrapi.paype.co.in'],
+      ['Developed by', 'Claude AI + Ramesh Muthuvel']
+    ];
+    sysRows.forEach(function(r) {
+      h += '<tr style="border-bottom:1px solid #F0F4F8;"><td style="padding:8px 0;font-size:11px;font-weight:700;color:#718096;text-transform:uppercase;width:35%;">' + r[0] + '</td>';
+      h += '<td style="font-size:13px;font-weight:600;color:#0D1B3E;">' + r[1] + '</td></tr>';
+    });
+    h += '</table></div></div>';
+  }
 
   document.getElementById('stc').innerHTML = h;
 }
