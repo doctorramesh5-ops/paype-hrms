@@ -3294,22 +3294,30 @@ function exportAllReport() {
 }
 
 function exportAttendanceReport() {
+  var today = new Date().toLocaleDateString('en-IN').replace(/\//g,'-');
   req('GET', '/api/attendance/today').then(function(res) {
     if (!res.success) { toast('Export failed','err'); return; }
-    var csv = 'Employee,Punch In,Punch Out,Hours,Status\n';
+    var csv = 'Date,Employee,Employee ID,Punch In,Punch Out,Hours,Status,Location,Distance (m),GPS Coords\n';
+    csv += today + ',,,,,,,,\n';
     (res.data||[]).forEach(function(a) {
       var nm = (a.first_name||'') + ' ' + (a.last_name||'');
-      var pIn = a.punch_in ? new Date(a.punch_in).toLocaleTimeString('en-IN') : '';
-      var pOut = a.punch_out ? new Date(a.punch_out).toLocaleTimeString('en-IN') : '';
+      var pIn = a.punch_in ? new Date(a.punch_in).toLocaleTimeString('en-IN',{hour:'2-digit',minute:'2-digit'}) : '';
+      var pOut = a.punch_out ? new Date(a.punch_out).toLocaleTimeString('en-IN',{hour:'2-digit',minute:'2-digit'}) : '';
       var hrs = '';
       if (a.punch_in && a.punch_out) hrs = ((new Date(a.punch_out)-new Date(a.punch_in))/3600000).toFixed(1);
-      csv += [nm, pIn, pOut, hrs, a.punch_out?'Complete':a.punch_in?'Working':'Absent'].join(',') + '\n';
+      var status = a.punch_out?'Complete':a.punch_in?'Working':'Absent';
+      var dist = a.distance !== null && a.distance !== undefined ? a.distance : '';
+      var locType = dist !== '' ? (dist<=50?'Office':dist<=500?'Near Office':'Remote/WFH') : 'No GPS';
+      var coords = a.latitude ? a.latitude.toFixed(5)+','+a.longitude.toFixed(5) : '';
+      csv += [today, '"'+nm+'"', a.emp_code||a.employee_id||'', pIn, pOut, hrs, status, locType, dist, coords].join(',') + '\n';
     });
-    var blob = new Blob([csv], {type:'text/csv'});
-    var a = document.createElement('a');
-    a.href = URL.createObjectURL(blob);
-    a.download = 'Attendance_' + new Date().toLocaleDateString('en-IN').replace(/\//g,'-') + '.csv';
-    a.click();
+    var blob = new Blob([csv], {type:'text/csv;charset=utf-8;'});
+    var url = URL.createObjectURL(blob);
+    var link = document.createElement('a');
+    link.href = url;
+    link.download = 'Attendance_' + today + '.csv';
+    link.click();
+    URL.revokeObjectURL(url);
     toast('Attendance exported!');
   });
 }
@@ -4453,6 +4461,70 @@ async function updateTicket(id) {
   var res = await req('PUT', '/api/helpdesk/tickets/' + id, {status, resolution});
   if (res.success) { toast('Ticket updated!'); loadHDTab('all'); }
   else toast(res.message,'err');
+}
+
+
+// ── ORG CHART ─────────────────────────────────────
+async function loadOrgChart() {
+  var c = document.getElementById('ogc');
+  if (c) c.innerHTML = '<div class="ld"><div class="sp"></div>Loading...</div>';
+
+  var res = await req('GET', '/api/employees');
+  if (!res.success) { c.innerHTML = '<div class="em"><h3>Error loading org chart</h3></div>'; return; }
+  var emps = res.data.employees || [];
+  if (!emps.length) { c.innerHTML = '<div class="em"><h3>No employees found</h3></div>'; return; }
+
+  // Group by department
+  var deptMap = {};
+  emps.forEach(function(e) {
+    var dept = e.department_name || 'General';
+    if (!deptMap[dept]) deptMap[dept] = [];
+    deptMap[dept].push(e);
+  });
+
+  var clrs = ['#00C2A8','#0D1B3E','#805AD5','#38A169','#D69E2E','#DD6B20','#E63329','#00B5D8'];
+  var h = '';
+
+  // Company header
+  h += '<div style="text-align:center;margin-bottom:24px;">';
+  h += '<div style="display:inline-block;background:linear-gradient(135deg,#0D1B3E,#1a3a7c);color:white;padding:14px 28px;border-radius:12px;">';
+  h += '<div style="font-family:Syne,sans-serif;font-size:18px;font-weight:800;">PayPe Technologies Pvt. Ltd.</div>';
+  h += '<div style="font-size:11px;opacity:.6;margin-top:3px;">' + emps.length + ' Employees | Coimbatore, Tamil Nadu</div>';
+  h += '</div></div>';
+
+  // Department cards
+  Object.keys(deptMap).forEach(function(dept, di) {
+    var clr = clrs[di % clrs.length];
+    var deptEmps = deptMap[dept];
+    h += '<div class="card" style="margin-bottom:14px;border-left:4px solid ' + clr + ';">';
+    h += '<div class="ch" style="background:' + clr + '10;">';
+    h += '<div style="display:flex;align-items:center;gap:10px;">';
+    h += '<div style="width:36px;height:36px;border-radius:8px;background:' + clr + ';display:flex;align-items:center;justify-content:center;color:white;font-size:16px;font-weight:700;">' + dept[0].toUpperCase() + '</div>';
+    h += '<div><div class="ct" style="color:' + clr + ';">' + dept + '</div>';
+    h += '<div style="font-size:11px;color:#718096;">' + deptEmps.length + ' member' + (deptEmps.length>1?'s':'') + '</div></div></div>';
+    h += '<span class="b" style="background:' + clr + '20;color:' + clr + ';">' + deptEmps.length + '</span>';
+    h += '</div>';
+    h += '<div class="cb">';
+    h += '<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:12px;">';
+    deptEmps.forEach(function(e) {
+      var nm = e.first_name + ' ' + e.last_name;
+      var isHead = e.designation && (e.designation.toLowerCase().includes('head') || e.designation.toLowerCase().includes('manager') || e.designation.toLowerCase().includes('lead'));
+      h += '<div style="display:flex;align-items:center;gap:10px;padding:10px;background:' + (isHead?clr+'10':'#F7FAFC') + ';border-radius:9px;border:1px solid ' + (isHead?clr+'30':'#E2E8F0') + ';">';
+      if (e.photo_url) {
+        h += '<img src="' + e.photo_url + '" style="width:38px;height:38px;border-radius:50%;object-fit:cover;border:2px solid ' + clr + ';">';
+      } else {
+        h += '<div style="width:38px;height:38px;border-radius:50%;background:' + clr + ';display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:700;color:white;flex-shrink:0;">' + e.first_name[0].toUpperCase() + '</div>';
+      }
+      h += '<div style="min-width:0;">';
+      h += '<div style="font-size:12px;font-weight:700;color:#0D1B3E;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">' + nm + '</div>';
+      h += '<div style="font-size:10px;color:#718096;">' + (e.designation||'Staff') + '</div>';
+      if (isHead) h += '<div style="font-size:9px;color:' + clr + ';font-weight:700;">DEPT HEAD</div>';
+      h += '</div></div>';
+    });
+    h += '</div></div></div>';
+  });
+
+  c.innerHTML = h;
 }
 
 if (tok && CU) { startApp(); } else { document.getElementById('LP').style.display = 'flex'; document.getElementById('AP').style.display = 'none'; }
