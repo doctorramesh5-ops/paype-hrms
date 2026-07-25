@@ -52,7 +52,7 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);}
 .lo{margin-left:auto;background:none;border:none;cursor:pointer;color:rgba(255,255,255,.4);font-size:18px;line-height:1;}
 .lo:hover{color:#E63329;}
 .mn{margin-left:240px;display:flex;flex-direction:column;min-height:100vh;}
-.tb{background:white;border-bottom:1px solid #E2E8F0;padding:0 22px;height:56px;display:flex;align-items:center;gap:12px;position:sticky;top:0;z-index:50;}
+.tb{background:white;border-bottom:1px solid #E2E8F0;padding:0 22px;height:56px;display:flex;align-items:center;gap:12px;position:sticky;top:0;z-index:50;}.tb .dc{flex:1;}
 .tb-ti{font-family:'Syne',sans-serif;font-size:16px;font-weight:700;color:#0D1B3E;flex:1;}
 .dc{background:#F7FAFC;border:1px solid #E2E8F0;border-radius:7px;padding:4px 10px;font-size:11px;color:#718096;}
 .hbg{display:none;background:none;border:none;cursor:pointer;font-size:20px;}
@@ -564,6 +564,25 @@ tr:hover td{background:#F7FAFC;}
   </div>
 </div>
 
+<div class="ov" id="lvm" onclick="if(event.target===this)closeMod('lvm')">
+  <div class="mo">
+    <div class="mh"><div class="mt">Apply for Leave</div><button class="mx" onclick="closeMod('lvm')">&#x2715;</button></div>
+    <div class="mb">
+      <div class="ff"><label>Leave Type *</label><select id="lv1"><option value="">Select type</option></select></div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:11px;">
+        <div class="ff"><label>From Date *</label><input id="lv2" type="date"></div>
+        <div class="ff"><label>To Date *</label><input id="lv3" type="date"></div>
+      </div>
+      <div class="ff"><label>Reason *</label><textarea id="lv4" rows="3" style="border:1.5px solid #E2E8F0;border-radius:8px;padding:8px 11px;font-family:inherit;font-size:13px;width:100%;resize:vertical;" placeholder="Reason for leave..."></textarea></div>
+      <div id="lv-balance" style="background:#F0F4F8;border-radius:8px;padding:10px;font-size:12px;color:#718096;margin-top:4px;display:none;"></div>
+    </div>
+    <div class="mf">
+      <button class="btn bto" onclick="closeMod('lvm')">Cancel</button>
+      <button class="btn btp" onclick="submitLeave()">Submit Request</button>
+    </div>
+  </div>
+</div>
+
 <div class="ov" id="sim" onclick="if(event.target===this)closeMod('sim')">
   <div class="mo">
     <div class="mh"><div class="mt">Schedule Interview</div><button class="mx" onclick="closeMod('sim')">&#x2715;</button></div>
@@ -698,6 +717,27 @@ function toast(msg, type) {
 }
 function openMod(id) {
   document.getElementById(id).classList.add('on');
+  if (id === 'lvm') {
+    // Load leave types
+    req('GET', '/api/leave/policies').then(function(res) {
+      var sel = document.getElementById('lv1');
+      if (sel && res.success) {
+        sel.innerHTML = '<option value="">Select type</option>';
+        res.data.forEach(function(p) {
+          var op = document.createElement('option');
+          op.value = p.id;
+          op.textContent = p.name + ' (' + (p.max_days_per_year||0) + ' days/yr)';
+          sel.appendChild(op);
+        });
+      }
+    });
+    // Set default dates
+    var today = new Date().toISOString().split('T')[0];
+    var lv2 = document.getElementById('lv2');
+    var lv3 = document.getElementById('lv3');
+    if (lv2) lv2.value = today;
+    if (lv3) lv3.value = today;
+  }
   if (id === 'aem') {
     // Populate department dropdown
     var sel = document.getElementById('ef5');
@@ -3434,6 +3474,33 @@ async function loadAttendanceEnhanced() {
 setInterval(function() {
   if (tok && CU) loadNotifications();
 }, 120000);
+
+
+async function submitLeave() {
+  var leaveTypeId = document.getElementById('lv1').value;
+  var startDate = document.getElementById('lv2').value;
+  var endDate = document.getElementById('lv3').value;
+  var reason = document.getElementById('lv4').value.trim();
+  if (!leaveTypeId || !startDate || !endDate || !reason) { toast('All fields required','err'); return; }
+  if (endDate < startDate) { toast('End date must be after start date','err'); return; }
+  var res = await req('POST', '/api/leave/apply', { leaveTypeId, startDate, endDate, reason });
+  if (res.success) {
+    toast('Leave request submitted!');
+    closeMod('lvm');
+    document.getElementById('lv4').value = '';
+    loadLv();
+    // Send WA notification to HR
+    if (CU) {
+      var msg = 'PayPe HRMS - Leave Request' +
+        ' | Employee: ' + CU.firstName + ' ' + CU.lastName +
+        ' | From: ' + startDate + ' To: ' + endDate +
+        ' | Reason: ' + reason +
+        ' | Please approve/reject at: https://hr.paype.co.in';
+      // Find HR mobile - open WA for HR team
+      window.open('https://wa.me/?text=' + encodeURIComponent(msg), '_blank');
+    }
+  } else toast(res.message||'Failed','err');
+}
 
 if (tok && CU) { startApp(); } else { document.getElementById('LP').style.display = 'flex'; document.getElementById('AP').style.display = 'none'; }
 </script>
