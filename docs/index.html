@@ -149,6 +149,7 @@ tr:hover td{background:#F7FAFC;}
 @media(max-width:900px){.sb{transform:translateX(-100%);}.sb.on{transform:translateX(0);}.mn{margin-left:0;}.hbg{display:block;}.sg,.g2,.g3,.g4,.fr{grid-template-columns:1fr 1fr;}.ll{display:none;}.lr{width:100%;}}
 @media(max-width:560px){.sg,.g2,.g3,.g4,.fr{grid-template-columns:1fr;}}
 </style>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 </head>
 <body>
 
@@ -251,6 +252,165 @@ tr:hover td{background:#F7FAFC;}
       <div id="asc"><div class="ld"><div class="sp"></div>Loading...</div></div>
     </div>
     <div class="pg" id="pg-profile"><div class="ph"><div><h1>My Profile</h1></div></div><div id="pfc"><div class="ld"><div class="sp"></div>Loading...</div></div></div>
+
+    <div class="pg" id="pg-digitalid">
+      <div class="ph">
+        <div><h1>Digital Identity</h1><p>Visiting cards, ID cards, agreements and QR codes</p></div>
+      </div>
+      <div style="display:flex;gap:6px;margin-bottom:18px;background:white;padding:5px;border-radius:10px;border:1px solid #E2E8F0;">
+        <button class="btn btp" id="did-tab1" onclick="showDIDTab('vcard',this)" style="flex:1;justify-content:center;">Visiting Card</button>
+        <button class="btn bto" id="did-tab2" onclick="showDIDTab('idcard',this)" style="flex:1;justify-content:center;">ID Card</button>
+        <button class="btn bto" id="did-tab3" onclick="showDIDTab('agreements',this)" style="flex:1;justify-content:center;">Agreements</button>
+        <button class="btn bto" id="did-tab4" onclick="showDIDTab('qrcodes',this)" style="flex:1;justify-content:center;">QR Codes</button>
+      </div>
+
+      <!-- Visiting Card Tab -->
+      <div id="did-vcard">
+        <div class="card">
+          <div class="ch"><div class="ct">Select Employee</div></div>
+          <div class="cb"><div id="did-vc-emps" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:10px;"></div></div>
+        </div>
+        <div id="did-vc-output" style="display:none;">
+          <div class="card">
+            <div class="ch">
+              <div class="ct" id="did-vc-title">Visiting Card</div>
+              <div style="display:flex;gap:7px;">
+                <button class="btn btp btsm" onclick="downloadDIDCard('vc-front','vc')">Download</button>
+                <button class="btn btg btsm" onclick="shareDIDWA('vc')">WhatsApp</button>
+                <button class="btn btt btsm" onclick="shareDIDEmail('vc')">Email</button>
+              </div>
+            </div>
+            <div class="cb">
+              <div style="display:flex;gap:20px;flex-wrap:wrap;">
+                <div>
+                  <div style="font-size:10px;font-weight:700;color:#718096;margin-bottom:7px;text-transform:uppercase;">Front</div>
+                  <div id="vc-front" style="width:340px;height:190px;border-radius:12px;background:linear-gradient(135deg,#0D1B3E,#162952);position:relative;overflow:hidden;box-shadow:0 6px 24px rgba(0,0,0,.15);">
+                    <div style="position:absolute;top:14px;left:14px;font-family:Syne,sans-serif;font-size:16px;font-weight:800;color:white;">Pay<span style="color:#00C2A8">Pe</span></div>
+                    <div id="vc-empid-badge" style="position:absolute;top:14px;right:14px;background:rgba(0,194,168,.2);color:#00C2A8;font-size:8px;font-weight:700;padding:2px 7px;border-radius:8px;"></div>
+                    <div id="vc-nm" style="position:absolute;top:48px;left:14px;color:white;font-size:15px;font-weight:700;"></div>
+                    <div id="vc-rl" style="position:absolute;top:68px;left:14px;color:rgba(255,255,255,.6);font-size:10px;"></div>
+                    <div id="vc-dp" style="position:absolute;top:82px;left:14px;color:rgba(255,255,255,.4);font-size:9px;"></div>
+                    <div style="position:absolute;bottom:14px;left:14px;">
+                      <div id="vc-em" style="color:rgba(255,255,255,.7);font-size:9px;margin-bottom:2px;"></div>
+                      <div id="vc-mb" style="color:rgba(255,255,255,.7);font-size:9px;margin-bottom:2px;"></div>
+                      <div style="color:rgba(255,255,255,.5);font-size:9px;">paype.co.in</div>
+                    </div>
+                    <div id="vc-qr1" style="position:absolute;bottom:10px;right:10px;width:55px;height:55px;background:white;border-radius:5px;padding:2px;"></div>
+                  </div>
+                </div>
+                <div>
+                  <div style="font-size:10px;font-weight:700;color:#718096;margin-bottom:7px;text-transform:uppercase;">Back</div>
+                  <div id="vc-back" style="width:340px;height:190px;border-radius:12px;background:linear-gradient(135deg,#F7FAFC,#E2E8F0);position:relative;overflow:hidden;box-shadow:0 6px 24px rgba(0,0,0,.1);">
+                    <div style="position:absolute;top:14px;left:14px;right:80px;">
+                      <div style="font-family:Syne,sans-serif;font-size:12px;font-weight:800;color:#0D1B3E;">PayPe Technologies Pvt. Ltd.</div>
+                      <div style="font-size:8px;color:#718096;margin-top:2px;">CIN: U74994TN2022PTC151114</div>
+                      <div style="font-size:8px;color:#718096;">GST: 33AAMCP7960K1ZU</div>
+                      <div style="font-size:8px;color:#718096;">PAN: AAMCP7960K | TAN: CHEP24000E</div>
+                      <div style="font-size:8px;color:#718096;">LEI: 64886C37CCC7Z3ML1573</div>
+                    </div>
+                    <div style="position:absolute;bottom:14px;left:14px;right:80px;">
+                      <div style="font-size:8px;color:#718096;">admin@paype.co.in | +91 99448 57191</div>
+                      <div style="font-size:8px;color:#0D1B3E;font-weight:600;margin-top:2px;">paype.co.in | bankme.co.in</div>
+                    </div>
+                    <div id="vc-qr2" style="position:absolute;bottom:10px;right:10px;width:60px;height:60px;background:white;border-radius:6px;padding:3px;border:1px solid #E2E8F0;"></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ID Card Tab -->
+      <div id="did-idcard" style="display:none;">
+        <div class="card">
+          <div class="ch"><div class="ct">Select Employee</div></div>
+          <div class="cb"><div id="did-id-emps" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:10px;"></div></div>
+        </div>
+        <div id="did-id-output" style="display:none;">
+          <div class="card">
+            <div class="ch">
+              <div class="ct" id="did-id-title">ID Card</div>
+              <div style="display:flex;gap:7px;">
+                <button class="btn btp btsm" onclick="downloadDIDCard('idc-card','id')">Download</button>
+                <button class="btn btg btsm" onclick="shareDIDWA('id')">WhatsApp</button>
+                <button class="btn btt btsm" onclick="shareDIDEmail('id')">Email</button>
+              </div>
+            </div>
+            <div class="cb">
+              <div id="idc-card" style="width:240px;border-radius:14px;background:white;border:1px solid #E2E8F0;box-shadow:0 6px 24px rgba(0,0,0,.1);overflow:hidden;">
+                <div style="background:linear-gradient(135deg,#0D1B3E,#162952);padding:14px;text-align:center;">
+                  <div style="font-family:Syne,sans-serif;font-size:14px;font-weight:800;color:white;">Pay<span style="color:#00C2A8">Pe</span></div>
+                  <div style="color:rgba(255,255,255,.4);font-size:8px;margin-top:1px;">TECHNOLOGIES PVT. LTD.</div>
+                </div>
+                <div id="idc-av" style="width:72px;height:72px;border-radius:50%;background:#00C2A8;display:flex;align-items:center;justify-content:center;font-size:24px;font-weight:700;color:white;margin:14px auto;border:3px solid #E2E8F0;overflow:hidden;"></div>
+                <div id="idc-nm" style="text-align:center;font-size:13px;font-weight:700;color:#0D1B3E;padding:0 10px;"></div>
+                <div id="idc-rl" style="text-align:center;font-size:10px;color:#718096;margin-top:2px;"></div>
+                <div id="idc-dp" style="text-align:center;font-size:9px;color:#00C2A8;margin-top:1px;"></div>
+                <div style="background:#0D1B3E;height:3px;margin:10px 0;"></div>
+                <div style="padding:0 14px;">
+                  <div style="display:flex;justify-content:space-between;margin-bottom:5px;"><span style="font-size:8px;color:#718096;font-weight:700;text-transform:uppercase;">Employee ID</span><span id="idc-id" style="font-size:9px;font-weight:700;color:#0D1B3E;"></span></div>
+                  <div style="display:flex;justify-content:space-between;margin-bottom:5px;"><span style="font-size:8px;color:#718096;font-weight:700;text-transform:uppercase;">Department</span><span id="idc-dept" style="font-size:9px;font-weight:700;color:#0D1B3E;"></span></div>
+                  <div style="display:flex;justify-content:space-between;margin-bottom:5px;"><span style="font-size:8px;color:#718096;font-weight:700;text-transform:uppercase;">Location</span><span id="idc-loc" style="font-size:9px;font-weight:700;color:#0D1B3E;"></span></div>
+                  <div style="display:flex;justify-content:space-between;margin-bottom:5px;"><span style="font-size:8px;color:#718096;font-weight:700;text-transform:uppercase;">Blood Group</span><span id="idc-blood" style="font-size:9px;font-weight:700;color:#E63329;"></span></div>
+                  <div style="display:flex;justify-content:space-between;margin-bottom:5px;"><span style="font-size:8px;color:#718096;font-weight:700;text-transform:uppercase;">Joined</span><span id="idc-joined" style="font-size:9px;font-weight:700;color:#0D1B3E;"></span></div>
+                </div>
+                <div id="idc-qr" style="text-align:center;padding:10px;"></div>
+                <div style="background:#0D1B3E;padding:6px;text-align:center;color:rgba(255,255,255,.4);font-size:7px;">Scan QR to verify | hr.paype.co.in</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Agreements Tab -->
+      <div id="did-agreements" style="display:none;">
+        <div class="card">
+          <div class="ch"><div class="ct">Generate Agreement</div></div>
+          <div class="cb">
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:11px;margin-bottom:14px;">
+              <div class="ff">
+                <label>Employee *</label>
+                <select id="agr-emp" onchange="loadAgreement()" style="border:1.5px solid #E2E8F0;border-radius:8px;padding:8px 11px;font-size:13px;font-family:inherit;width:100%;"><option value="">Select Employee</option></select>
+              </div>
+              <div class="ff">
+                <label>Agreement Type *</label>
+                <select id="agr-type" onchange="loadAgreement()" style="border:1.5px solid #E2E8F0;border-radius:8px;padding:8px 11px;font-size:13px;font-family:inherit;width:100%;">
+                  <option value="">Select Type</option>
+                  <option value="employment">Employment Agreement</option>
+                  <option value="nda">Non-Disclosure Agreement</option>
+                  <option value="offer">Offer Letter</option>
+                  <option value="policy">Policy Acknowledgement</option>
+                </select>
+              </div>
+            </div>
+            <div id="agr-output"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- QR Codes Tab -->
+      <div id="did-qrcodes" style="display:none;">
+        <div class="card">
+          <div class="ch"><div class="ct">Employee QR Codes</div></div>
+          <div class="cb"><div id="did-qr-grid"></div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Sign Modal -->
+    <div class="ov" id="signMod" onclick="if(event.target===this)closeMod('signMod')">
+      <div class="mo" style="max-width:500px;">
+        <div class="mh"><div class="mt">Digital Signature</div><button class="mx" onclick="closeMod('signMod')">&#x2715;</button></div>
+        <div class="mb">
+          <p style="font-size:12px;color:#718096;margin-bottom:10px;">Sign using mouse or finger:</p>
+          <canvas id="signCanvas" width="440" height="140" style="border:1.5px solid #E2E8F0;border-radius:8px;cursor:crosshair;width:100%;touch-action:none;"></canvas>
+          <button class="btn bto btsm" onclick="clearSign()" style="margin-top:8px;">Clear</button>
+        </div>
+        <div class="mf"><button class="btn bto" onclick="closeMod('signMod')">Cancel</button><button class="btn btp" onclick="saveSign()">Apply Signature</button></div>
+      </div>
+    </div>
+
   </main>
 </div>
 
@@ -374,6 +534,165 @@ tr:hover td{background:#F7FAFC;}
     <div class="pg" id="pg-settings">
       <div class="ph"><div><h1>Settings</h1><p>Account settings</p></div></div>
       <div id="stc"></div>
+    </div>
+
+
+    <div class="pg" id="pg-digitalid">
+      <div class="ph">
+        <div><h1>Digital Identity</h1><p>Visiting cards, ID cards, agreements and QR codes</p></div>
+      </div>
+      <div style="display:flex;gap:6px;margin-bottom:18px;background:white;padding:5px;border-radius:10px;border:1px solid #E2E8F0;">
+        <button class="btn btp" id="did-tab1" onclick="showDIDTab('vcard',this)" style="flex:1;justify-content:center;">Visiting Card</button>
+        <button class="btn bto" id="did-tab2" onclick="showDIDTab('idcard',this)" style="flex:1;justify-content:center;">ID Card</button>
+        <button class="btn bto" id="did-tab3" onclick="showDIDTab('agreements',this)" style="flex:1;justify-content:center;">Agreements</button>
+        <button class="btn bto" id="did-tab4" onclick="showDIDTab('qrcodes',this)" style="flex:1;justify-content:center;">QR Codes</button>
+      </div>
+
+      <!-- Visiting Card Tab -->
+      <div id="did-vcard">
+        <div class="card">
+          <div class="ch"><div class="ct">Select Employee</div></div>
+          <div class="cb"><div id="did-vc-emps" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:10px;"></div></div>
+        </div>
+        <div id="did-vc-output" style="display:none;">
+          <div class="card">
+            <div class="ch">
+              <div class="ct" id="did-vc-title">Visiting Card</div>
+              <div style="display:flex;gap:7px;">
+                <button class="btn btp btsm" onclick="downloadDIDCard('vc-front','vc')">Download</button>
+                <button class="btn btg btsm" onclick="shareDIDWA('vc')">WhatsApp</button>
+                <button class="btn btt btsm" onclick="shareDIDEmail('vc')">Email</button>
+              </div>
+            </div>
+            <div class="cb">
+              <div style="display:flex;gap:20px;flex-wrap:wrap;">
+                <div>
+                  <div style="font-size:10px;font-weight:700;color:#718096;margin-bottom:7px;text-transform:uppercase;">Front</div>
+                  <div id="vc-front" style="width:340px;height:190px;border-radius:12px;background:linear-gradient(135deg,#0D1B3E,#162952);position:relative;overflow:hidden;box-shadow:0 6px 24px rgba(0,0,0,.15);">
+                    <div style="position:absolute;top:14px;left:14px;font-family:Syne,sans-serif;font-size:16px;font-weight:800;color:white;">Pay<span style="color:#00C2A8">Pe</span></div>
+                    <div id="vc-empid-badge" style="position:absolute;top:14px;right:14px;background:rgba(0,194,168,.2);color:#00C2A8;font-size:8px;font-weight:700;padding:2px 7px;border-radius:8px;"></div>
+                    <div id="vc-nm" style="position:absolute;top:48px;left:14px;color:white;font-size:15px;font-weight:700;"></div>
+                    <div id="vc-rl" style="position:absolute;top:68px;left:14px;color:rgba(255,255,255,.6);font-size:10px;"></div>
+                    <div id="vc-dp" style="position:absolute;top:82px;left:14px;color:rgba(255,255,255,.4);font-size:9px;"></div>
+                    <div style="position:absolute;bottom:14px;left:14px;">
+                      <div id="vc-em" style="color:rgba(255,255,255,.7);font-size:9px;margin-bottom:2px;"></div>
+                      <div id="vc-mb" style="color:rgba(255,255,255,.7);font-size:9px;margin-bottom:2px;"></div>
+                      <div style="color:rgba(255,255,255,.5);font-size:9px;">paype.co.in</div>
+                    </div>
+                    <div id="vc-qr1" style="position:absolute;bottom:10px;right:10px;width:55px;height:55px;background:white;border-radius:5px;padding:2px;"></div>
+                  </div>
+                </div>
+                <div>
+                  <div style="font-size:10px;font-weight:700;color:#718096;margin-bottom:7px;text-transform:uppercase;">Back</div>
+                  <div id="vc-back" style="width:340px;height:190px;border-radius:12px;background:linear-gradient(135deg,#F7FAFC,#E2E8F0);position:relative;overflow:hidden;box-shadow:0 6px 24px rgba(0,0,0,.1);">
+                    <div style="position:absolute;top:14px;left:14px;right:80px;">
+                      <div style="font-family:Syne,sans-serif;font-size:12px;font-weight:800;color:#0D1B3E;">PayPe Technologies Pvt. Ltd.</div>
+                      <div style="font-size:8px;color:#718096;margin-top:2px;">CIN: U74994TN2022PTC151114</div>
+                      <div style="font-size:8px;color:#718096;">GST: 33AAMCP7960K1ZU</div>
+                      <div style="font-size:8px;color:#718096;">PAN: AAMCP7960K | TAN: CHEP24000E</div>
+                      <div style="font-size:8px;color:#718096;">LEI: 64886C37CCC7Z3ML1573</div>
+                    </div>
+                    <div style="position:absolute;bottom:14px;left:14px;right:80px;">
+                      <div style="font-size:8px;color:#718096;">admin@paype.co.in | +91 99448 57191</div>
+                      <div style="font-size:8px;color:#0D1B3E;font-weight:600;margin-top:2px;">paype.co.in | bankme.co.in</div>
+                    </div>
+                    <div id="vc-qr2" style="position:absolute;bottom:10px;right:10px;width:60px;height:60px;background:white;border-radius:6px;padding:3px;border:1px solid #E2E8F0;"></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ID Card Tab -->
+      <div id="did-idcard" style="display:none;">
+        <div class="card">
+          <div class="ch"><div class="ct">Select Employee</div></div>
+          <div class="cb"><div id="did-id-emps" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:10px;"></div></div>
+        </div>
+        <div id="did-id-output" style="display:none;">
+          <div class="card">
+            <div class="ch">
+              <div class="ct" id="did-id-title">ID Card</div>
+              <div style="display:flex;gap:7px;">
+                <button class="btn btp btsm" onclick="downloadDIDCard('idc-card','id')">Download</button>
+                <button class="btn btg btsm" onclick="shareDIDWA('id')">WhatsApp</button>
+                <button class="btn btt btsm" onclick="shareDIDEmail('id')">Email</button>
+              </div>
+            </div>
+            <div class="cb">
+              <div id="idc-card" style="width:240px;border-radius:14px;background:white;border:1px solid #E2E8F0;box-shadow:0 6px 24px rgba(0,0,0,.1);overflow:hidden;">
+                <div style="background:linear-gradient(135deg,#0D1B3E,#162952);padding:14px;text-align:center;">
+                  <div style="font-family:Syne,sans-serif;font-size:14px;font-weight:800;color:white;">Pay<span style="color:#00C2A8">Pe</span></div>
+                  <div style="color:rgba(255,255,255,.4);font-size:8px;margin-top:1px;">TECHNOLOGIES PVT. LTD.</div>
+                </div>
+                <div id="idc-av" style="width:72px;height:72px;border-radius:50%;background:#00C2A8;display:flex;align-items:center;justify-content:center;font-size:24px;font-weight:700;color:white;margin:14px auto;border:3px solid #E2E8F0;overflow:hidden;"></div>
+                <div id="idc-nm" style="text-align:center;font-size:13px;font-weight:700;color:#0D1B3E;padding:0 10px;"></div>
+                <div id="idc-rl" style="text-align:center;font-size:10px;color:#718096;margin-top:2px;"></div>
+                <div id="idc-dp" style="text-align:center;font-size:9px;color:#00C2A8;margin-top:1px;"></div>
+                <div style="background:#0D1B3E;height:3px;margin:10px 0;"></div>
+                <div style="padding:0 14px;">
+                  <div style="display:flex;justify-content:space-between;margin-bottom:5px;"><span style="font-size:8px;color:#718096;font-weight:700;text-transform:uppercase;">Employee ID</span><span id="idc-id" style="font-size:9px;font-weight:700;color:#0D1B3E;"></span></div>
+                  <div style="display:flex;justify-content:space-between;margin-bottom:5px;"><span style="font-size:8px;color:#718096;font-weight:700;text-transform:uppercase;">Department</span><span id="idc-dept" style="font-size:9px;font-weight:700;color:#0D1B3E;"></span></div>
+                  <div style="display:flex;justify-content:space-between;margin-bottom:5px;"><span style="font-size:8px;color:#718096;font-weight:700;text-transform:uppercase;">Location</span><span id="idc-loc" style="font-size:9px;font-weight:700;color:#0D1B3E;"></span></div>
+                  <div style="display:flex;justify-content:space-between;margin-bottom:5px;"><span style="font-size:8px;color:#718096;font-weight:700;text-transform:uppercase;">Blood Group</span><span id="idc-blood" style="font-size:9px;font-weight:700;color:#E63329;"></span></div>
+                  <div style="display:flex;justify-content:space-between;margin-bottom:5px;"><span style="font-size:8px;color:#718096;font-weight:700;text-transform:uppercase;">Joined</span><span id="idc-joined" style="font-size:9px;font-weight:700;color:#0D1B3E;"></span></div>
+                </div>
+                <div id="idc-qr" style="text-align:center;padding:10px;"></div>
+                <div style="background:#0D1B3E;padding:6px;text-align:center;color:rgba(255,255,255,.4);font-size:7px;">Scan QR to verify | hr.paype.co.in</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Agreements Tab -->
+      <div id="did-agreements" style="display:none;">
+        <div class="card">
+          <div class="ch"><div class="ct">Generate Agreement</div></div>
+          <div class="cb">
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:11px;margin-bottom:14px;">
+              <div class="ff">
+                <label>Employee *</label>
+                <select id="agr-emp" onchange="loadAgreement()" style="border:1.5px solid #E2E8F0;border-radius:8px;padding:8px 11px;font-size:13px;font-family:inherit;width:100%;"><option value="">Select Employee</option></select>
+              </div>
+              <div class="ff">
+                <label>Agreement Type *</label>
+                <select id="agr-type" onchange="loadAgreement()" style="border:1.5px solid #E2E8F0;border-radius:8px;padding:8px 11px;font-size:13px;font-family:inherit;width:100%;">
+                  <option value="">Select Type</option>
+                  <option value="employment">Employment Agreement</option>
+                  <option value="nda">Non-Disclosure Agreement</option>
+                  <option value="offer">Offer Letter</option>
+                  <option value="policy">Policy Acknowledgement</option>
+                </select>
+              </div>
+            </div>
+            <div id="agr-output"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- QR Codes Tab -->
+      <div id="did-qrcodes" style="display:none;">
+        <div class="card">
+          <div class="ch"><div class="ct">Employee QR Codes</div></div>
+          <div class="cb"><div id="did-qr-grid"></div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Sign Modal -->
+    <div class="ov" id="signMod" onclick="if(event.target===this)closeMod('signMod')">
+      <div class="mo" style="max-width:500px;">
+        <div class="mh"><div class="mt">Digital Signature</div><button class="mx" onclick="closeMod('signMod')">&#x2715;</button></div>
+        <div class="mb">
+          <p style="font-size:12px;color:#718096;margin-bottom:10px;">Sign using mouse or finger:</p>
+          <canvas id="signCanvas" width="440" height="140" style="border:1.5px solid #E2E8F0;border-radius:8px;cursor:crosshair;width:100%;touch-action:none;"></canvas>
+          <button class="btn bto btsm" onclick="clearSign()" style="margin-top:8px;">Clear</button>
+        </div>
+        <div class="mf"><button class="btn bto" onclick="closeMod('signMod')">Cancel</button><button class="btn btp" onclick="saveSign()">Apply Signature</button></div>
+      </div>
     </div>
 
   </main>
@@ -584,6 +903,7 @@ function buildNav() {
     { id:'assets', label:'IT Assets', svg:'cpu', roles:['admin','hr'] },
     { id:'profile', label:'My Profile', svg:'user', roles:['admin','hr','employee'] },
     { id:'interviews', label:'Interviews', svg:'cal', roles:['admin','hr'] },
+    { id:'digitalid', label:'Digital ID', svg:'user', roles:['admin','hr'] },
     { id:'orgchart', label:'Org Chart', svg:'users', roles:['admin','hr'] },
     { id:'offers', label:'Offer Letters', svg:'brief', roles:['admin','hr'] },
     { id:'settings', label:'Settings', svg:'user', roles:['admin','hr','employee'] }
@@ -610,16 +930,17 @@ function showAllOff(title) {
   for (var i = 0; i < navs.length; i++) navs[i].classList.remove('on');
   document.getElementById('sb').classList.remove('on');
   document.getElementById('tbti').textContent = title;
-  var pgId = title==='Org Chart'?'pg-orgchart':title==='Offer Letters'?'pg-offers':title==='Interviews'?'pg-interviews':'pg-settings';
+  var pgId = title==='Digital ID'?'pg-digitalid':title==='Org Chart'?'pg-orgchart':title==='Offer Letters'?'pg-offers':title==='Interviews'?'pg-interviews':'pg-settings';
   var pgEl = document.getElementById(pgId);
   if (pgEl) pgEl.classList.add('on');
-  var niId = title==='Org Chart'?'ni-orgchart':title==='Offer Letters'?'ni-offers':title==='Interviews'?'ni-interviews':'ni-settings';
+  var niId = title==='Digital ID'?'ni-digitalid':title==='Org Chart'?'ni-orgchart':title==='Offer Letters'?'ni-offers':title==='Interviews'?'ni-interviews':'ni-settings';
   var niEl = document.getElementById(niId);
   if (niEl) niEl.classList.add('on');
 }
 
 function goPage(name) {
   if (name === 'interviews') { showAllOff('Interviews'); loadInterviews(); return; }
+  if (name === 'digitalid') { showAllOff('Digital ID'); loadDigitalID(); return; }
   if (name === 'orgchart') { showAllOff('Org Chart'); loadOrgChart(); return; }
   if (name === 'offers') { showAllOff('Offer Letters'); loadOffers(); return; }
   if (name === 'settings') { showAllOff('Settings'); loadSettings(); return; }
@@ -1248,6 +1569,359 @@ async function loadProf() {
   }
   document.getElementById('pfc').innerHTML = h;
 }
+
+// ── DIGITAL IDENTITY ──────────────────────────────
+var didSelEmp = null;
+var didSignTarget = null;
+var didCtx = null;
+var didDrawing = false;
+var didLastX = 0, didLastY = 0;
+
+function showDIDTab(tab, el) {
+  var tabs = ['vcard','idcard','agreements','qrcodes'];
+  tabs.forEach(function(t) {
+    var el2 = document.getElementById('did-'+t);
+    if (el2) el2.style.display = t===tab ? 'block' : 'none';
+  });
+  document.querySelectorAll('#pg-digitalid .btn').forEach(function(b) {
+    if (b.id && b.id.startsWith('did-tab')) { b.className = b.className.replace('btp','bto'); }
+  });
+  el.className = el.className.replace('bto','btp');
+  if (tab === 'qrcodes') renderDIDQRGrid();
+}
+
+function loadDigitalID() {
+  if (!allEmps.length) {
+    req('GET', '/api/employees').then(function(res) {
+      if (res.success) { allEmps = res.data.employees||[]; renderDIDEmpGrids(); loadAgrSelect(); }
+    });
+  } else {
+    renderDIDEmpGrids();
+    loadAgrSelect();
+  }
+}
+
+function renderDIDEmpGrids() {
+  var clrs = ['#00C2A8','#0D1B3E','#805AD5','#38A169','#D69E2E'];
+  var h = '';
+  allEmps.forEach(function(e, i) {
+    var nm = e.first_name + ' ' + e.last_name;
+    h += '<div onclick="selectDIDEmp(' + i + ',this,\'vc\')" style="background:white;border:1.5px solid #E2E8F0;border-radius:9px;padding:12px;cursor:pointer;text-align:center;" onmouseover="this.style.borderColor=\'#00C2A8\'" onmouseout="this.style.borderColor=\'#E2E8F0\'">';
+    h += '<div style="width:38px;height:38px;border-radius:50%;background:' + clrs[i%clrs.length] + ';display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:700;color:white;margin:0 auto 7px;">' + e.first_name[0].toUpperCase() + '</div>';
+    h += '<div style="font-size:12px;font-weight:600;color:#0D1B3E;">' + nm + '</div>';
+    h += '<div style="font-size:10px;color:#718096;">' + (e.designation||e.employee_id) + '</div></div>';
+  });
+  var h2 = h.replace(/selectDIDEmp\((\d+),this,'vc'\)/g, function(m, idx2) { return "selectDIDEmp(" + idx2 + ",this,'id')"; });
+  var el1 = document.getElementById('did-vc-emps');
+  var el2 = document.getElementById('did-id-emps');
+  if (el1) el1.innerHTML = h;
+  if (el2) el2.innerHTML = h2;
+}
+
+function loadAgrSelect() {
+  var s = document.getElementById('agr-emp');
+  if (!s) return;
+  s.innerHTML = '<option value="">Select Employee</option>';
+  allEmps.forEach(function(e, i) {
+    var op = document.createElement('option');
+    op.value = i;
+    op.textContent = e.first_name + ' ' + e.last_name + ' (' + e.employee_id + ')';
+    s.appendChild(op);
+  });
+}
+
+function selectDIDEmp(idx, el, type) {
+  var gridId = type === 'vc' ? 'did-vc-emps' : 'did-id-emps';
+  document.querySelectorAll('#' + gridId + ' div[onclick]').forEach(function(c) {
+    c.style.borderColor = '#E2E8F0';
+  });
+  el.style.borderColor = '#00C2A8';
+  didSelEmp = allEmps[idx];
+  if (type === 'vc') generateDIDVC(didSelEmp);
+  else generateDIDIDCard(didSelEmp);
+}
+
+function generateDIDVC(e) {
+  var nm = e.first_name + ' ' + e.last_name;
+  var el;
+  el = document.getElementById('vc-nm'); if(el) el.textContent = nm;
+  el = document.getElementById('vc-rl'); if(el) el.textContent = e.designation || 'Team Member';
+  el = document.getElementById('vc-dp'); if(el) el.textContent = e.department_name || 'PayPe Technologies';
+  el = document.getElementById('vc-empid-badge'); if(el) el.textContent = e.employee_id;
+  el = document.getElementById('vc-em'); if(el) el.textContent = e.work_email || 'admin@paype.co.in';
+  el = document.getElementById('vc-mb'); if(el) el.textContent = e.mobile ? '+91 ' + e.mobile : '+91 99448 57191';
+  el = document.getElementById('did-vc-title'); if(el) el.textContent = 'Visiting Card - ' + nm;
+  el = document.getElementById('did-vc-output'); if(el) el.style.display = 'block';
+  var qrUrl = 'https://hr.paype.co.in/api/employees/' + e.id;
+  var q1 = document.getElementById('vc-qr1'); if(q1) q1.innerHTML = '';
+  var q2 = document.getElementById('vc-qr2'); if(q2) q2.innerHTML = '';
+  if (window.QRCode) {
+    if (q1) new QRCode(q1, {text:qrUrl,width:51,height:51,colorDark:'#0D1B3E',colorLight:'#ffffff'});
+    if (q2) new QRCode(q2, {text:qrUrl,width:54,height:54,colorDark:'#0D1B3E',colorLight:'#ffffff'});
+  }
+}
+
+function generateDIDIDCard(e) {
+  var nm = e.first_name + ' ' + e.last_name;
+  var av = document.getElementById('idc-av');
+  if (av) {
+    if (e.photo_url) { av.innerHTML = '<img src="' + e.photo_url + '" style="width:100%;height:100%;object-fit:cover;">'; }
+    else { av.textContent = e.first_name[0].toUpperCase(); }
+  }
+  var els = {
+    'idc-nm': nm, 'idc-rl': e.designation||'Team Member', 'idc-dp': e.department_name||'',
+    'idc-id': e.employee_id, 'idc-dept': e.department_name||'--',
+    'idc-loc': e.work_location||'Coimbatore', 'idc-blood': e.blood_group||'--',
+    'idc-joined': e.date_of_joining ? new Date(e.date_of_joining).toLocaleDateString('en-IN',{month:'short',year:'numeric'}) : '--'
+  };
+  Object.keys(els).forEach(function(id) { var el2=document.getElementById(id); if(el2) el2.textContent=els[id]; });
+  var el2 = document.getElementById('did-id-title'); if(el2) el2.textContent = 'ID Card - ' + nm;
+  var el3 = document.getElementById('did-id-output'); if(el3) el3.style.display = 'block';
+  var qrEl = document.getElementById('idc-qr'); if(qrEl) qrEl.innerHTML = '';
+  if (window.QRCode && qrEl) new QRCode(qrEl, {text:'https://hr.paype.co.in/api/employees/'+e.id,width:60,height:60,colorDark:'#0D1B3E',colorLight:'#ffffff'});
+}
+
+function renderDIDQRGrid() {
+  var h = '<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(170px,1fr));gap:14px;">';
+  allEmps.forEach(function(e) {
+    var nm = e.first_name + ' ' + e.last_name;
+    var qid = 'qr-did-' + e.employee_id.replace(/[^a-z0-9]/gi,'');
+    h += '<div style="background:white;border:1px solid #E2E8F0;border-radius:10px;padding:13px;text-align:center;">';
+    h += '<div id="' + qid + '" style="display:inline-block;margin-bottom:7px;"></div>';
+    h += '<div style="font-size:12px;font-weight:600;color:#0D1B3E;">' + nm + '</div>';
+    h += '<div style="font-size:10px;color:#718096;margin-bottom:8px;">' + e.employee_id + '</div>';
+    h += '<div style="display:flex;gap:5px;justify-content:center;">';
+    h += '<button class="btn btsm btp" onclick="downloadDIDQR(\'' + qid + '\',\'' + nm + '\')">Save</button>';
+    h += '<button class="btn btsm btg" onclick="shareDIDQRWA(\'' + e.employee_id + '\',\'' + nm + '\')">WA</button>';
+    h += '</div></div>';
+  });
+  h += '</div>';
+  var grid = document.getElementById('did-qr-grid');
+  if (grid) grid.innerHTML = h;
+  setTimeout(function() {
+    allEmps.forEach(function(e) {
+      var qid = 'qr-did-' + e.employee_id.replace(/[^a-z0-9]/gi,'');
+      var el2 = document.getElementById(qid);
+      if (el2 && window.QRCode) new QRCode(el2,{text:'https://hr.paype.co.in/api/employees/'+e.id,width:90,height:90,colorDark:'#0D1B3E',colorLight:'#ffffff'});
+    });
+  }, 300);
+}
+
+function loadAgreement() {
+  var idx = document.getElementById('agr-emp').value;
+  var type = document.getElementById('agr-type').value;
+  if (!idx || !type) { document.getElementById('agr-output').innerHTML = ''; return; }
+  var e = allEmps[parseInt(idx)];
+  var nm = e.first_name + ' ' + e.last_name;
+  var today = new Date().toLocaleDateString('en-IN',{day:'2-digit',month:'long',year:'numeric'});
+  var h = '';
+  if (type === 'employment') h = buildEmpAgreement(e, nm, today);
+  else if (type === 'nda') h = buildNDA2(e, nm, today);
+  else if (type === 'offer') h = buildOffer2(e, nm, today);
+  else if (type === 'policy') h = buildPolicy2(e, nm, today);
+  document.getElementById('agr-output').innerHTML = h;
+}
+
+var SS = 'font-family:Arial,sans-serif;font-size:13px;line-height:1.8;';
+var SH = 'background:linear-gradient(135deg,#0D1B3E,#162952);padding:14px 18px;border-radius:6px;margin-bottom:14px;';
+
+function buildEmpAgreement(e, nm, today) {
+  var joined = e.date_of_joining ? new Date(e.date_of_joining).toLocaleDateString('en-IN',{day:'2-digit',month:'long',year:'numeric'}) : today;
+  return '<div style="background:white;border:1px solid #E2E8F0;border-radius:8px;padding:20px;max-height:440px;overflow-y:auto;' + SS + '">' +
+    '<div style="' + SH + '"><div style="font-family:Syne,sans-serif;font-size:15px;font-weight:800;color:white;">PayPe Technologies Pvt. Ltd.</div><div style="font-size:9px;color:rgba(255,255,255,.5);">CIN: U74994TN2022PTC151114 | GST: 33AAMCP7960K1ZU | PAN: AAMCP7960K | TAN: CHEP24000E</div></div>' +
+    '<h2 style="font-family:Syne,sans-serif;font-size:16px;color:#0D1B3E;text-align:center;margin-bottom:12px;">EMPLOYMENT AGREEMENT</h2>' +
+    '<p>This Agreement is entered into on <strong>' + today + '</strong> between <strong>PayPe Technologies Pvt. Ltd.</strong> (Employer) and <strong>' + nm + '</strong> (Employee ID: ' + e.employee_id + ').</p>' +
+    '<p><strong>Position:</strong> ' + (e.designation||'Team Member') + ' | <strong>Department:</strong> ' + (e.department_name||'--') + ' | <strong>Joining:</strong> ' + joined + '</p>' +
+    '<p><strong>1. Working Hours:</strong> 9:00 AM to 6:00 PM, Monday to Saturday.</p>' +
+    '<p><strong>2. Compensation:</strong> As per offer letter, paid monthly.</p>' +
+    '<p><strong>3. Confidentiality:</strong> Employee agrees to maintain confidentiality of all company data.</p>' +
+    '<p><strong>4. Termination:</strong> Either party may terminate with 30 days written notice.</p>' +
+    '<p><strong>5. Governing Law:</strong> Courts of Coimbatore, Tamil Nadu.</p>' +
+    buildSignBox(nm, e.employee_id) + buildAgrBtns() + '</div>';
+}
+
+function buildNDA2(e, nm, today) {
+  return '<div style="background:white;border:1px solid #E2E8F0;border-radius:8px;padding:20px;max-height:440px;overflow-y:auto;' + SS + '">' +
+    '<div style="' + SH + '"><div style="font-family:Syne,sans-serif;font-size:15px;font-weight:800;color:white;">PayPe Technologies Pvt. Ltd.</div><div style="font-size:9px;color:rgba(255,255,255,.5);">CIN: U74994TN2022PTC151114 | LEI: 64886C37CCC7Z3ML1573</div></div>' +
+    '<h2 style="font-family:Syne,sans-serif;font-size:16px;color:#0D1B3E;text-align:center;margin-bottom:12px;">NON-DISCLOSURE AGREEMENT</h2>' +
+    '<p>This NDA is entered into on <strong>' + today + '</strong> between <strong>PayPe Technologies Pvt. Ltd.</strong> and <strong>' + nm + '</strong> (ID: ' + e.employee_id + ').</p>' +
+    '<p><strong>1. Confidential Information:</strong> All business plans, financials, customer data, source code, API keys, trade secrets and proprietary information.</p>' +
+    '<p><strong>2. Obligations:</strong> Recipient shall not disclose, reproduce or use confidential information for personal gain.</p>' +
+    '<p><strong>3. Duration:</strong> During employment and 2 years after termination.</p>' +
+    '<p><strong>4. Consequences:</strong> Breach results in immediate termination and legal action.</p>' +
+    buildSignBox(nm, e.employee_id) + buildAgrBtns() + '</div>';
+}
+
+function buildOffer2(e, nm, today) {
+  var joined = e.date_of_joining ? new Date(e.date_of_joining).toLocaleDateString('en-IN',{day:'2-digit',month:'long',year:'numeric'}) : '--';
+  return '<div style="background:white;border:1px solid #E2E8F0;border-radius:8px;padding:20px;max-height:440px;overflow-y:auto;' + SS + '">' +
+    '<div style="' + SH + '"><div style="font-family:Syne,sans-serif;font-size:15px;font-weight:800;color:white;">PayPe Technologies Pvt. Ltd.</div><div style="font-size:9px;color:rgba(255,255,255,.5);">hr@paype.co.in | +91 99448 57191 | paype.co.in</div></div>' +
+    '<p>Date: <strong>' + today + '</strong></p>' +
+    '<p style="margin-top:10px;">Dear <strong>' + e.first_name + '</strong>,</p>' +
+    '<p>We are pleased to offer you the position of <strong>' + (e.designation||'Team Member') + '</strong> in the <strong>' + (e.department_name||'--') + '</strong> department.</p>' +
+    '<p><strong>Date of Joining:</strong> ' + joined + '</p>' +
+    '<p><strong>Location:</strong> ' + (e.work_location||'Coimbatore') + '</p>' +
+    '<p>This offer is subject to satisfactory background verification and document submission.</p>' +
+    '<p>We look forward to welcoming you to the PayPe family!</p>' +
+    buildSignBox(nm, e.employee_id) + buildAgrBtns() + '</div>';
+}
+
+function buildPolicy2(e, nm, today) {
+  var policies = ['Code of Conduct','Data Privacy & Security','Leave & Attendance','IT Asset Usage','Anti-Harassment','Social Media','Expense & Reimbursement'];
+  var rows = policies.map(function(p, i) {
+    return '<tr><td style="padding:6px 10px;border:1px solid #E2E8F0;">' + (i+1) + '</td><td style="padding:6px 10px;border:1px solid #E2E8F0;">' + p + ' Policy</td><td style="padding:6px 10px;border:1px solid #E2E8F0;text-align:center;color:#38A169;font-weight:700;">Acknowledged</td></tr>';
+  }).join('');
+  return '<div style="background:white;border:1px solid #E2E8F0;border-radius:8px;padding:20px;max-height:440px;overflow-y:auto;' + SS + '">' +
+    '<div style="' + SH + '"><div style="font-family:Syne,sans-serif;font-size:15px;font-weight:800;color:white;">PayPe Technologies Pvt. Ltd.</div></div>' +
+    '<h2 style="font-family:Syne,sans-serif;font-size:16px;color:#0D1B3E;text-align:center;margin-bottom:12px;">POLICY ACKNOWLEDGEMENT</h2>' +
+    '<p>I, <strong>' + nm + '</strong> (ID: <strong>' + e.employee_id + '</strong>), acknowledge reading and agreeing to the following company policies:</p>' +
+    '<table style="width:100%;border-collapse:collapse;margin:12px 0;font-size:12px;"><tr style="background:#F7FAFC;"><th style="padding:6px 10px;border:1px solid #E2E8F0;">#</th><th style="padding:6px 10px;border:1px solid #E2E8F0;">Policy</th><th style="padding:6px 10px;border:1px solid #E2E8F0;">Status</th></tr>' + rows + '</table>' +
+    '<p>Violation may result in disciplinary action including termination.</p>' +
+    buildSignBox(nm, e.employee_id) + buildAgrBtns() + '</div>';
+}
+
+function buildSignBox(nm, empId) {
+  return '<div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:16px;">' +
+    '<div style="border:2px dashed #E2E8F0;border-radius:8px;padding:12px;text-align:center;">' +
+    '<div style="font-size:11px;font-weight:700;color:#0D1B3E;margin-bottom:7px;">Employer Signature</div>' +
+    '<div id="agr-emp-sign" style="min-height:50px;display:flex;align-items:center;justify-content:center;"><button class="btn bto btsm" onclick="openDIDSign(' + String.fromCharCode(39) + 'employer' + String.fromCharCode(39) + ')">Click to Sign</button></div>' +
+    '<div style="font-size:9px;color:#718096;margin-top:5px;">PayPe Technologies Pvt. Ltd.</div></div>' +
+    '<div style="border:2px dashed #E2E8F0;border-radius:8px;padding:12px;text-align:center;">' +
+    '<div style="font-size:11px;font-weight:700;color:#0D1B3E;margin-bottom:7px;">Employee Signature</div>' +
+    '<div id="agr-ee-sign" style="min-height:50px;display:flex;align-items:center;justify-content:center;"><button class="btn bto btsm" onclick="openDIDSign(' + String.fromCharCode(39) + 'employee' + String.fromCharCode(39) + ')">Click to Sign</button></div>' +
+    '<div style="font-size:9px;color:#718096;margin-top:5px;">' + nm + ' | ' + empId + '</div></div></div>';
+}
+
+function buildAgrBtns() {
+  return '<div style="display:flex;gap:8px;margin-top:12px;flex-wrap:wrap;">' +
+    '<button class="btn btp" onclick="downloadAgreement()">Download PDF</button>' +
+    '<button class="btn btg" onclick="shareAgreementWA()">WhatsApp</button>' +
+    '<button class="btn btt" onclick="shareAgreementEmail()">Email</button></div>';
+}
+
+function openDIDSign(target) {
+  didSignTarget = target;
+  openMod('signMod');
+  setTimeout(function() {
+    var canvas = document.getElementById('signCanvas');
+    if (!canvas) return;
+    didCtx = canvas.getContext('2d');
+    didCtx.clearRect(0, 0, canvas.width, canvas.height);
+    didCtx.strokeStyle = '#0D1B3E';
+    didCtx.lineWidth = 2;
+    didCtx.lineCap = 'round';
+    canvas.onmousedown = function(ev) { didDrawing=true; var r=canvas.getBoundingClientRect(); didLastX=ev.clientX-r.left; didLastY=ev.clientY-r.top; };
+    canvas.onmousemove = function(ev) {
+      if (!didDrawing) return;
+      var r=canvas.getBoundingClientRect(); var x=ev.clientX-r.left,y=ev.clientY-r.top;
+      didCtx.beginPath(); didCtx.moveTo(didLastX,didLastY); didCtx.lineTo(x,y); didCtx.stroke();
+      didLastX=x; didLastY=y;
+    };
+    canvas.onmouseup = canvas.onmouseleave = function() { didDrawing=false; };
+    canvas.ontouchstart = function(ev) { ev.preventDefault(); didDrawing=true; var r=canvas.getBoundingClientRect(); didLastX=ev.touches[0].clientX-r.left; didLastY=ev.touches[0].clientY-r.top; };
+    canvas.ontouchmove = function(ev) {
+      ev.preventDefault(); if (!didDrawing) return;
+      var r=canvas.getBoundingClientRect(); var x=ev.touches[0].clientX-r.left,y=ev.touches[0].clientY-r.top;
+      didCtx.beginPath(); didCtx.moveTo(didLastX,didLastY); didCtx.lineTo(x,y); didCtx.stroke();
+      didLastX=x; didLastY=y;
+    };
+    canvas.ontouchend = function() { didDrawing=false; };
+  }, 150);
+}
+
+function clearSign() {
+  if (didCtx) { var c=document.getElementById('signCanvas'); didCtx.clearRect(0,0,c.width,c.height); }
+}
+
+function saveSign() {
+  var canvas = document.getElementById('signCanvas');
+  var dataUrl = canvas.toDataURL();
+  var targetId = didSignTarget === 'employer' ? 'agr-emp-sign' : 'agr-ee-sign';
+  var el2 = document.getElementById(targetId);
+  if (el2) el2.innerHTML = '<img src="' + dataUrl + '" style="max-height:55px;max-width:170px;">';
+  toast('Signature applied!');
+  closeMod('signMod');
+}
+
+function downloadDIDCard(elId, type) {
+  var el2 = document.getElementById(elId);
+  if (!el2) { toast('Generate card first','err'); return; }
+  if (window.html2canvas) {
+    html2canvas(el2).then(function(canvas) {
+      var a = document.createElement('a');
+      a.download = 'PayPe_' + (type==='vc'?'VisitingCard':'IDCard') + '_' + (didSelEmp?didSelEmp.employee_id:'') + '.png';
+      a.href = canvas.toDataURL(); a.click(); toast('Downloaded!');
+    });
+  } else {
+    toast('Loading library...','');
+    var s = document.createElement('script');
+    s.src = 'https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js';
+    s.onload = function() { downloadDIDCard(elId, type); };
+    document.head.appendChild(s);
+  }
+}
+
+function shareDIDWA(type) {
+  if (!didSelEmp) { toast('Select employee first','err'); return; }
+  var e = didSelEmp, nm = e.first_name + ' ' + e.last_name;
+  var msg = 'PayPe Technologies - ' + (type==='vc'?'Digital Visiting Card':'Employee ID Card') + ' - ' + nm + ' (' + e.employee_id + ')' +
+    ' | Role: ' + (e.designation||'Team Member') + ' | ' + (e.work_email||'admin@paype.co.in') + ' | paype.co.in';
+  window.open('https://wa.me/?text=' + encodeURIComponent(msg), '_blank');
+}
+
+function shareDIDEmail(type) {
+  if (!didSelEmp) { toast('Select employee first','err'); return; }
+  var e = didSelEmp, nm = e.first_name + ' ' + e.last_name;
+  var sub = 'PayPe - ' + (type==='vc'?'Visiting Card':'ID Card') + ' - ' + nm;
+  var body = 'Name: ' + nm + ' | ID: ' + e.employee_id + ' | Role: ' + (e.designation||'') + ' | Email: ' + (e.work_email||'') + ' | Mobile: ' + (e.mobile||'') + ' | PayPe Technologies Pvt. Ltd. | hr@paype.co.in | +91 99448 57191';
+  window.open('mailto:?subject=' + encodeURIComponent(sub) + '&body=' + encodeURIComponent(body));
+}
+
+function downloadDIDQR(qrId, nm) {
+  var el2 = document.getElementById(qrId);
+  if (!el2) return;
+  var img = el2.querySelector('img');
+  if (!img) { toast('QR not ready','err'); return; }
+  var a = document.createElement('a');
+  a.download = 'QR_' + nm.replace(/ /g,'_') + '.png';
+  a.href = img.src; a.click(); toast('QR downloaded!');
+}
+
+function shareDIDQRWA(empId, nm) {
+  var msg = 'PayPe Technologies - Employee QR Code - ' + nm + ' (' + empId + ') | Scan to view profile | hr.paype.co.in';
+  window.open('https://wa.me/?text=' + encodeURIComponent(msg), '_blank');
+}
+
+function downloadAgreement() {
+  var el2 = document.querySelector('#agr-output > div');
+  if (!el2) { toast('Generate agreement first','err'); return; }
+  var win = window.open('', '_blank');
+  win.document.write('<html><head><title>PayPe Agreement</title><style>body{font-family:Arial,sans-serif;padding:30px;max-width:750px;margin:0 auto;}img{max-height:65px;}</style></head><body>' + el2.innerHTML + '</body></html>');
+  win.document.close();
+  setTimeout(function() { win.print(); }, 500);
+}
+
+function shareAgreementWA() {
+  var idx = document.getElementById('agr-emp').value;
+  var type = document.getElementById('agr-type').value;
+  if (!idx||!type) { toast('Select employee and type','err'); return; }
+  var e = allEmps[parseInt(idx)], nm = e.first_name + ' ' + e.last_name;
+  var types = {employment:'Employment Agreement',nda:'NDA',offer:'Offer Letter',policy:'Policy Acknowledgement'};
+  var msg = 'PayPe Technologies - ' + types[type] + ' - ' + nm + ' (' + e.employee_id + ') | Please review and sign. | HR - PayPe Technologies Pvt. Ltd. | hr@paype.co.in';
+  window.open('https://wa.me/?text=' + encodeURIComponent(msg), '_blank');
+}
+
+function shareAgreementEmail() {
+  var idx = document.getElementById('agr-emp').value;
+  var type = document.getElementById('agr-type').value;
+  if (!idx||!type) { toast('Select employee and type','err'); return; }
+  var e = allEmps[parseInt(idx)], nm = e.first_name + ' ' + e.last_name;
+  var types = {employment:'Employment Agreement',nda:'Non-Disclosure Agreement',offer:'Offer Letter',policy:'Policy Acknowledgement'};
+  var sub = 'PayPe Technologies - ' + types[type] + ' - ' + nm;
+  var body = 'Dear ' + e.first_name + ', Please find the ' + types[type] + ' for review and signature. Best regards, HR Department, PayPe Technologies Pvt. Ltd. hr@paype.co.in | +91 99448 57191';
+  window.open('mailto:' + (e.work_email||'') + '?subject=' + encodeURIComponent(sub) + '&body=' + encodeURIComponent(body));
+}
+
 if (tok && CU) { startApp(); } else { document.getElementById('LP').style.display = 'flex'; document.getElementById('AP').style.display = 'none'; }
 </script>
 
