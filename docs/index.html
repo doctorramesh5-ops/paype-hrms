@@ -453,6 +453,30 @@ tr:hover td{background:#F7FAFC;}
 
 
 
+<div class="ov" id="aem" onclick="if(event.target===this)closeMod('aem')">
+  <div class="mo">
+    <div class="mh"><div class="mt">Add New Employee</div><button class="mx" onclick="closeMod('aem')">&#x2715;</button></div>
+    <div class="mb">
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:11px;">
+        <div class="ff"><label>First Name *</label><input id="ef1" placeholder="First name"></div>
+        <div class="ff"><label>Last Name *</label><input id="ef2" placeholder="Last name"></div>
+        <div class="ff"><label>Work Email *</label><input id="ef3" type="email" placeholder="name@paype.co.in"></div>
+        <div class="ff"><label>Mobile *</label><input id="ef4" placeholder="9XXXXXXXXX"></div>
+        <div class="ff"><label>Department</label><select id="ef5"><option value="">Select</option></select></div>
+        <div class="ff"><label>Designation</label><input id="ef6" placeholder="e.g. Sales Executive"></div>
+        <div class="ff"><label>Date of Joining</label><input id="ef7" type="date"></div>
+        <div class="ff"><label>Work Location</label><input id="ef8" placeholder="Coimbatore"></div>
+        <div class="ff"><label>Role</label><select id="ef9"><option value="employee">Employee</option><option value="hr">HR</option><option value="admin">Admin</option></select></div>
+        <div class="ff"><label>Blood Group</label><select id="ef10"><option value="">Select</option><option>A+</option><option>A-</option><option>B+</option><option>B-</option><option>O+</option><option>O-</option><option>AB+</option><option>AB-</option></select></div>
+      </div>
+    </div>
+    <div class="mf">
+      <button class="btn bto" onclick="closeMod('aem')">Cancel</button>
+      <button class="btn btp" onclick="addEmp()">Add Employee</button>
+    </div>
+  </div>
+</div>
+
 <div class="ov" id="sim" onclick="if(event.target===this)closeMod('sim')">
   <div class="mo">
     <div class="mh"><div class="mt">Schedule Interview</div><button class="mx" onclick="closeMod('sim')">&#x2715;</button></div>
@@ -585,7 +609,25 @@ function toast(msg, type) {
   setTimeout(function() { t.classList.add('show'); }, 10);
   setTimeout(function() { t.classList.remove('show'); setTimeout(function() { t.remove(); }, 300); }, 3500);
 }
-function openMod(id) { document.getElementById(id).classList.add('on'); }
+function openMod(id) {
+  document.getElementById(id).classList.add('on');
+  if (id === 'aem') {
+    // Populate department dropdown
+    var sel = document.getElementById('ef5');
+    if (sel && sel.options.length <= 1) {
+      req('GET', '/api/departments').then(function(res) {
+        if (res.success) {
+          sel.innerHTML = '<option value="">Select Department</option>';
+          res.data.forEach(function(d) {
+            var op = document.createElement('option');
+            op.value = d.id; op.textContent = d.name;
+            sel.appendChild(op);
+          });
+        }
+      });
+    }
+  }
+}
 function closeMod(id) { document.getElementById(id).classList.remove('on'); }
 function setRole(role, el) {
   var tabs = document.querySelectorAll('.rtab');
@@ -836,7 +878,18 @@ function filterEmp() {
   }));
 }
 async function addEmp() {
-  var body = { firstName:document.getElementById('ef1').value.trim(), lastName:document.getElementById('ef2').value.trim(), workEmail:document.getElementById('ef3').value.trim(), mobile:document.getElementById('ef4').value.trim(), departmentId:document.getElementById('ef5').value||undefined, workLocation:document.getElementById('ef6').value.trim(), dateOfJoining:document.getElementById('ef7').value||undefined, annualCtc:document.getElementById('ef8').value?parseFloat(document.getElementById('ef8').value):undefined };
+  var body = {
+    firstName: document.getElementById('ef1').value.trim(),
+    lastName: document.getElementById('ef2').value.trim(),
+    workEmail: document.getElementById('ef3').value.trim(),
+    mobile: document.getElementById('ef4').value.trim(),
+    departmentId: document.getElementById('ef5').value||undefined,
+    designation: document.getElementById('ef6').value.trim()||undefined,
+    dateOfJoining: document.getElementById('ef7').value||undefined,
+    workLocation: document.getElementById('ef8').value.trim()||'Coimbatore',
+    role: document.getElementById('ef9') ? document.getElementById('ef9').value : 'employee',
+    bloodGroup: document.getElementById('ef10') ? document.getElementById('ef10').value||undefined : undefined
+  };
   if (!body.firstName||!body.lastName||!body.workEmail||!body.mobile) { toast('Fill all required fields','err'); return; }
   window._lastEmpBody = body;
   var res = await req('POST', '/api/employees', body);
@@ -845,7 +898,7 @@ async function addEmp() {
     closeMod('aem');
     loadEmps();
     loadDash();
-    ['ef1','ef2','ef3','ef4','ef6','ef7','ef8'].forEach(function(id){document.getElementById(id).value='';});
+    ['ef1','ef2','ef3','ef4','ef6','ef7','ef8'].forEach(function(id){var el2=document.getElementById(id);if(el2)el2.value='';});
     document.getElementById('ef5').value='';
     // Show credentials and send via WhatsApp
     if (res.data) showNewEmpCredentials(res.data, window._lastEmpBody||{});
