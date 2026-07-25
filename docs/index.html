@@ -251,7 +251,17 @@ tr:hover td{background:#F7FAFC;}
       <div class="ph"><div><h1>IT Assets</h1><p>Asset management</p></div><button class="btn btp" onclick="openMod('nam')">+ Add Asset</button></div>
       <div id="asc"><div class="ld"><div class="sp"></div>Loading...</div></div>
     </div>
-    <div class="pg" id="pg-profile"><div class="ph"><div><h1>My Profile</h1></div></div><div id="pfc"><div class="ld"><div class="sp"></div>Loading...</div></div></div>
+    <div class="pg" id="pg-profile">
+      <div class="ph"><div><h1>My Profile</h1><p>Your information and documents</p></div></div>
+      <div style="display:flex;gap:6px;margin-bottom:16px;background:white;padding:5px;border-radius:10px;border:1px solid #E2E8F0;">
+        <button class="btn btp" id="prof-tab1" onclick="showProfTab('info',this)" style="flex:1;justify-content:center;">My Info</button>
+        <button class="btn bto" id="prof-tab2" onclick="showProfTab('docs',this)" style="flex:1;justify-content:center;">My Documents</button>
+      </div>
+      <div id="prof-info"><div id="pfc"><div class="ld"><div class="sp"></div>Loading...</div></div></div>
+      <div id="prof-docs" style="display:none;">
+        <div id="my-docs-content"><div class="ld"><div class="sp"></div>Loading documents...</div></div>
+      </div>
+    </div>
 
     
     <div class="pg" id="pg-interviews">
@@ -405,6 +415,11 @@ tr:hover td{background:#F7FAFC;}
                   <option value="policy">Policy Acknowledgement</option>
                 </select>
               </div>
+            </div>
+            <div id="agr-send-btn" style="display:none;margin-bottom:12px;">
+              <button class="btn btg" onclick="sendAgreementLinksManual(allEmps[parseInt(document.getElementById('agr-emp').value)]&&allEmps[parseInt(document.getElementById('agr-emp').value)].id)" style="width:100%;">
+                Send Agreement Links (WhatsApp + Email)
+              </button>
             </div>
             <div id="agr-output"></div>
           </div>
@@ -1443,6 +1458,8 @@ function renderDIDQRGrid() {
 
 function loadAgreement() {
   var idx = document.getElementById('agr-emp').value;
+  var sendBtn = document.getElementById('agr-send-btn');
+  if (sendBtn) sendBtn.style.display = idx ? 'block' : 'none';
   var type = document.getElementById('agr-type').value;
   if (!idx || !type) { document.getElementById('agr-output').innerHTML = ''; return; }
   var e = allEmps[parseInt(idx)];
@@ -1654,6 +1671,261 @@ function shareAgreementEmail() {
   var sub = 'PayPe Technologies - ' + types[type] + ' - ' + nm;
   var body = 'Dear ' + e.first_name + ', Please find the ' + types[type] + ' for review and signature. Best regards, HR Department, PayPe Technologies Pvt. Ltd. hr@paype.co.in | +91 99448 57191';
   window.open('mailto:' + (e.work_email||'') + '?subject=' + encodeURIComponent(sub) + '&body=' + encodeURIComponent(body));
+}
+
+
+// ── AUTO SEND AGREEMENT LINKS ─────────────────────
+function sendAgreementLinks(emp) {
+  var nm = emp.first_name + ' ' + emp.last_name;
+  var link = 'https://doctorramesh5-ops.github.io/paype-hrms/agreement-portal.html?emp=' + emp.id;
+  var mobile = emp.mobile || '';
+
+  // WhatsApp
+  if (mobile) {
+    var waNum = '91' + mobile.replace(/[^0-9]/g,'');
+    var waMsg = 'Welcome to PayPe Technologies, ' + emp.first_name + '! ' +
+      'Please review and sign your onboarding documents: ' + link +
+      ' | Employee ID: ' + emp.employee_id +
+      ' | HR Team - PayPe Technologies';
+    var waUrl = 'https://wa.me/' + waNum + '?text=' + encodeURIComponent(waMsg);
+    window.open(waUrl, '_blank');
+  }
+
+  // Email
+  var email = emp.work_email || emp.personal_email || '';
+  if (email) {
+    var sub = 'Welcome to PayPe Technologies - Sign Your Documents';
+    var body = 'Dear ' + emp.first_name + ',' +
+      ' Welcome to PayPe Technologies!' +
+      ' Please review and sign your onboarding documents at: ' + link +
+      ' Your Employee ID is: ' + emp.employee_id +
+      ' Best regards, HR Department, PayPe Technologies Pvt. Ltd.' +
+      ' hr@paype.co.in | +91 99448 57191';
+    setTimeout(function() {
+      window.open('mailto:' + email + '?subject=' + encodeURIComponent(sub) + '&body=' + encodeURIComponent(body));
+    }, 1000);
+  }
+
+  toast('Agreement links sent via WhatsApp & Email!');
+}
+
+// Manual send from Digital ID tab
+function sendAgreementLinksManual(empId) {
+  var emp = allEmps.find(function(e) { return e.id === empId; });
+  if (!emp) { toast('Employee not found','err'); return; }
+  sendAgreementLinks(emp);
+}
+
+
+// ── MY DOCUMENTS (Employee Self Service) ──────────
+function showProfTab(tab, el) {
+  document.getElementById('prof-info').style.display = tab === 'info' ? 'block' : 'none';
+  document.getElementById('prof-docs').style.display = tab === 'docs' ? 'block' : 'none';
+  document.querySelectorAll('#pg-profile .btn').forEach(function(b) {
+    if (b.id && b.id.startsWith('prof-tab')) b.className = b.className.replace('btp','bto');
+  });
+  el.className = el.className.replace('bto','btp');
+  if (tab === 'docs') loadMyDocs();
+}
+
+function loadMyDocs() {
+  if (!CU || !CU.employeeId) { document.getElementById('my-docs-content').innerHTML = '<div class="em"><h3>No employee profile linked</h3></div>'; return; }
+  var today = new Date().toLocaleDateString('en-IN',{day:'2-digit',month:'long',year:'numeric'});
+  req('GET', '/api/employees/' + CU.employeeId).then(function(res) {
+    if (!res.success) { document.getElementById('my-docs-content').innerHTML = '<div class="em"><h3>Error loading profile</h3></div>'; return; }
+    var e = res.data;
+    var nm = e.first_name + ' ' + e.last_name;
+    var joined = e.date_of_joining ? new Date(e.date_of_joining).toLocaleDateString('en-IN',{day:'2-digit',month:'long',year:'numeric'}) : today;
+    var docTypes = [
+      {type:'employment', label:'Employment Agreement', icon:'&#x1F4C4;', color:'rgba(0,194,168,.1)'},
+      {type:'nda', label:'Non-Disclosure Agreement', icon:'&#x1F512;', color:'rgba(128,90,213,.1)'},
+      {type:'offer', label:'Offer Letter', icon:'&#x1F4E8;', color:'rgba(13,27,62,.08)'},
+      {type:'policy', label:'Policy Acknowledgement', icon:'&#x2705;', color:'rgba(56,161,105,.1)'}
+    ];
+    var contents = {
+      employment: buildMyEmpAgreement(e, nm, today, joined),
+      nda: buildMyNDA(e, nm, today),
+      offer: buildMyOffer(e, nm, today, joined),
+      policy: buildMyPolicy(e, nm, today)
+    };
+    var h = '<div style="margin-bottom:14px;padding:14px;background:white;border-radius:10px;border:1px solid #E2E8F0;">';
+    h += '<div style="font-size:13px;font-weight:600;color:#0D1B3E;">Your Onboarding Documents</div>';
+    h += '<div style="font-size:12px;color:#718096;margin-top:3px;">Review and sign each document. Signed documents are saved automatically.</div></div>';
+    docTypes.forEach(function(d) {
+      var signed = localStorage.getItem('sign_' + CU.employeeId + '_' + d.type);
+      h += '<div class="card" style="margin-bottom:12px;">';
+      h += '<div class="ch" style="cursor:pointer;" onclick="toggleMyDoc(' + "'" + d.type + "'" + ')">';
+      h += '<div style="display:flex;align-items:center;gap:10px;">';
+      h += '<div style="width:36px;height:36px;border-radius:9px;background:' + d.color + ';display:flex;align-items:center;justify-content:center;font-size:16px;">' + d.icon + '</div>';
+      h += '<div class="ct">' + d.label + '</div></div>';
+      h += '<span style="font-size:11px;font-weight:600;padding:3px 9px;border-radius:20px;' + (signed ? 'background:rgba(56,161,105,.1);color:#38A169;' : 'background:rgba(214,158,46,.1);color:#D69E2E;') + '">' + (signed ? 'Signed' : 'Pending') + '</span>';
+      h += '</div>';
+      h += '<div id="mydoc-' + d.type + '" style="display:none;border-top:1px solid #E2E8F0;">';
+      h += '<div style="padding:14px;font-size:12px;line-height:1.7;max-height:280px;overflow-y:auto;background:#F7FAFC;">' + contents[d.type] + '</div>';
+      h += '<div style="padding:14px;">';
+      if (signed) {
+        h += '<div style="text-align:center;padding:10px;background:rgba(56,161,105,.08);border-radius:8px;">';
+        h += '<img src="' + signed + '" style="max-height:60px;max-width:200px;"><br>';
+        h += '<div style="font-size:11px;color:#38A169;margin-top:5px;font-weight:600;">Signed</div></div>';
+        h += '<button class="btn bto btsm" onclick="clearMySign(' + "'" + d.type + "'" + ')" style="margin-top:8px;width:100%;">Re-sign</button>';
+      } else {
+        h += '<div style="font-size:11px;font-weight:700;color:#0D1B3E;margin-bottom:6px;">Sign here:</div>';
+        h += '<canvas id="mycanvas-' + d.type + '" style="width:100%;height:110px;border:2px dashed #E2E8F0;border-radius:8px;background:white;cursor:crosshair;display:block;touch-action:none;"></canvas>';
+        h += '<div style="display:flex;gap:7px;margin-top:8px;">';
+        h += '<button class="btn bto btsm" onclick="clearMyCanvas(' + "'" + d.type + "'" + ')" style="flex:1;">Clear</button>';
+        h += '<button class="btn btp btsm" onclick="saveMySign(' + "'" + d.type + "'" + ')" style="flex:2;">Save Signature</button>';
+        h += '</div>';
+      }
+      h += '</div></div></div>';
+    });
+    h += '<button class="btn btp" onclick="downloadAllMyDocs(' + "'" + nm + "'" + ')" style="width:100%;margin-top:4px;">Download All Documents PDF</button>';
+    document.getElementById('my-docs-content').innerHTML = h;
+    setTimeout(function() { docTypes.forEach(function(d) { initMyCanvas(d.type); }); }, 200);
+  });
+}
+
+function toggleMyDoc(type) {
+  var el2 = document.getElementById('mydoc-' + type);
+  if (!el2) return;
+  var isOpen = el2.style.display === 'block';
+  ['employment','nda','offer','policy'].forEach(function(t) {
+    var el3 = document.getElementById('mydoc-' + t);
+    if (el3) el3.style.display = 'none';
+  });
+  if (!isOpen) {
+    el2.style.display = 'block';
+    setTimeout(function() { initMyCanvas(type); }, 100);
+  }
+}
+
+function initMyCanvas(type) {
+  var canvas = document.getElementById('mycanvas-' + type);
+  if (!canvas) return;
+  var ctx = canvas.getContext('2d');
+  canvas.width = canvas.offsetWidth || 380;
+  canvas.height = 110;
+  ctx.strokeStyle = '#0D1B3E';
+  ctx.lineWidth = 2;
+  ctx.lineCap = 'round';
+  var drawing = false, lastX = 0, lastY = 0;
+  function pos(e) {
+    var r = canvas.getBoundingClientRect();
+    var sx = canvas.width/r.width, sy = canvas.height/r.height;
+    if (e.touches) return {x:(e.touches[0].clientX-r.left)*sx,y:(e.touches[0].clientY-r.top)*sy};
+    return {x:(e.clientX-r.left)*sx,y:(e.clientY-r.top)*sy};
+  }
+  canvas.onmousedown = function(e) { drawing=true; var p=pos(e); lastX=p.x; lastY=p.y; };
+  canvas.onmousemove = function(e) {
+    if (!drawing) return; var p=pos(e);
+    ctx.beginPath(); ctx.moveTo(lastX,lastY); ctx.lineTo(p.x,p.y); ctx.stroke();
+    lastX=p.x; lastY=p.y;
+  };
+  canvas.onmouseup = canvas.onmouseleave = function() { drawing=false; };
+  canvas.ontouchstart = function(e) { e.preventDefault(); drawing=true; var p=pos(e); lastX=p.x; lastY=p.y; };
+  canvas.ontouchmove = function(e) {
+    e.preventDefault(); if (!drawing) return; var p=pos(e);
+    ctx.beginPath(); ctx.moveTo(lastX,lastY); ctx.lineTo(p.x,p.y); ctx.stroke();
+    lastX=p.x; lastY=p.y;
+  };
+  canvas.ontouchend = function() { drawing=false; };
+}
+
+function clearMyCanvas(type) {
+  var canvas = document.getElementById('mycanvas-' + type);
+  if (canvas) { var ctx=canvas.getContext('2d'); ctx.clearRect(0,0,canvas.width,canvas.height); }
+}
+
+function saveMySign(type) {
+  var canvas = document.getElementById('mycanvas-' + type);
+  if (!canvas) return;
+  var data2 = canvas.getContext('2d').getImageData(0,0,canvas.width,canvas.height).data;
+  var empty = true;
+  for (var i=3;i<data2.length;i+=4) { if (data2[i]>0) { empty=false; break; } }
+  if (empty) { toast('Please draw your signature first!'); return; }
+  localStorage.setItem('sign_' + CU.employeeId + '_' + type, canvas.toDataURL());
+  toast('Signature saved!');
+  loadMyDocs();
+}
+
+function clearMySign(type) {
+  localStorage.removeItem('sign_' + CU.employeeId + '_' + type);
+  toast('Signature cleared');
+  loadMyDocs();
+}
+
+function downloadAllMyDocs(nm) {
+  req('GET', '/api/employees/' + CU.employeeId).then(function(res) {
+    if (!res.success) return;
+    var e = res.data;
+    var today = new Date().toLocaleDateString('en-IN',{day:'2-digit',month:'long',year:'numeric'});
+    var joined = e.date_of_joining ? new Date(e.date_of_joining).toLocaleDateString('en-IN',{day:'2-digit',month:'long',year:'numeric'}) : today;
+    var win = window.open('', '_blank');
+    var body = buildMyEmpAgreement(e,nm,today,joined) + '<hr style="margin:30px 0;">' +
+      buildMyNDA(e,nm,today) + '<hr style="margin:30px 0;">' +
+      buildMyOffer(e,nm,today,joined) + '<hr style="margin:30px 0;">' +
+      buildMyPolicy(e,nm,today);
+    win.document.write('<html><head><title>PayPe Documents - ' + nm + '</title><style>body{font-family:Arial,sans-serif;padding:30px;max-width:750px;margin:0 auto;font-size:13px;line-height:1.7;}h2{color:#0D1B3E;text-align:center;}h3{color:#0D1B3E;margin:12px 0 6px;}table{width:100%;border-collapse:collapse;}td,th{padding:7px 10px;border:1px solid #E2E8F0;}th{background:#F7FAFC;}</style></head><body>' + body + '</body></html>');
+    win.document.close();
+    setTimeout(function() { win.print(); }, 500);
+  });
+}
+
+function buildMyEmpAgreement(e, nm, today, joined) {
+  return '<h2>EMPLOYMENT AGREEMENT</h2><p>Date: <strong>' + today + '</strong></p>' +
+    '<p>Between <strong>PayPe Technologies Pvt. Ltd.</strong> (CIN: U74994TN2022PTC151114) and <strong>' + nm + '</strong> (ID: ' + e.employee_id + ').</p>' +
+    '<h3>1. Position</h3><p><strong>' + (e.designation||'Team Member') + '</strong> | ' + (e.department_name||'--') + '</p>' +
+    '<h3>2. Date of Joining</h3><p>' + joined + '</p>' +
+    '<h3>3. Compensation</h3><p>As per offer letter, paid on last working day each month.</p>' +
+    '<h3>4. Working Hours</h3><p>9:00 AM - 6:00 PM, Monday to Saturday.</p>' +
+    '<h3>5. Confidentiality</h3><p>Maintain strict confidentiality of all company information during and after employment.</p>' +
+    '<h3>6. Termination</h3><p>30 days written notice by either party.</p>' +
+    '<h3>7. Governing Law</h3><p>Courts of Coimbatore, Tamil Nadu.</p>' +
+    buildSignDisplay(e, nm);
+}
+
+function buildMyNDA(e, nm, today) {
+  return '<h2>NON-DISCLOSURE AGREEMENT</h2><p>Date: <strong>' + today + '</strong></p>' +
+    '<p>Between <strong>PayPe Technologies Pvt. Ltd.</strong> and <strong>' + nm + '</strong> (ID: ' + e.employee_id + ').</p>' +
+    '<h3>1. Confidential Information</h3><p>Business plans, financial data, customer lists, source code, API keys, trade secrets.</p>' +
+    '<h3>2. Obligations</h3><p>Do not disclose, copy or use confidential information for personal gain.</p>' +
+    '<h3>3. Duration</h3><p>During employment and 2 years after termination.</p>' +
+    '<h3>4. Consequences</h3><p>Breach results in immediate termination and legal action.</p>' +
+    buildSignDisplay(e, nm);
+}
+
+function buildMyOffer(e, nm, today, joined) {
+  return '<h2>OFFER LETTER</h2><p>Date: <strong>' + today + '</strong></p>' +
+    '<p>Dear <strong>' + e.first_name + '</strong>,</p>' +
+    '<p>We are pleased to offer you the position of <strong>' + (e.designation||'Team Member') + '</strong> in the <strong>' + (e.department_name||'--') + '</strong> department.</p>' +
+    '<p><strong>Date of Joining:</strong> ' + joined + ' | <strong>Location:</strong> ' + (e.work_location||'Coimbatore') + '</p>' +
+    '<p>Subject to satisfactory background verification and document submission.</p>' +
+    '<p>Welcome to the PayPe family!</p>' +
+    '<p><strong>HR Department</strong><br>PayPe Technologies Pvt. Ltd.<br>CIN: U74994TN2022PTC151114 | GST: 33AAMCP7960K1ZU<br>hr@paype.co.in | +91 99448 57191</p>' +
+    buildSignDisplay(e, nm);
+}
+
+function buildMyPolicy(e, nm, today) {
+  var policies = ['Code of Conduct','Data Privacy & Security','Leave & Attendance','IT Asset Usage','Anti-Harassment','Social Media','Expense & Reimbursement'];
+  var rows = policies.map(function(p,i){return '<tr><td>'+(i+1)+'</td><td>'+p+' Policy</td><td style="color:#38A169;font-weight:600;">Acknowledged</td></tr>';}).join('');
+  return '<h2>POLICY ACKNOWLEDGEMENT</h2>' +
+    '<p>I, <strong>' + nm + '</strong> (ID: <strong>' + e.employee_id + '</strong>), acknowledge the following:</p>' +
+    '<table><tr><th>#</th><th>Policy</th><th>Status</th></tr>' + rows + '</table>' +
+    '<p style="margin-top:10px;">Violation may result in disciplinary action including termination.</p>' +
+    buildSignDisplay(e, nm);
+}
+
+function buildSignDisplay(e, nm) {
+  var sign = CU && CU.employeeId ? localStorage.getItem('sign_' + CU.employeeId + '_employment') : null;
+  var signHtml = sign ? '<img src="' + sign + '" style="max-height:50px;">' : '<div style="height:40px;border-bottom:1px solid #0D1B3E;width:200px;margin:0 auto;"></div>';
+  return '<div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:16px;">' +
+    '<div style="border:1px dashed #E2E8F0;border-radius:8px;padding:12px;text-align:center;">' +
+    '<div style="font-size:10px;font-weight:700;color:#0D1B3E;margin-bottom:8px;">EMPLOYER</div>' +
+    '<div style="height:40px;border-bottom:1px solid #0D1B3E;width:150px;margin:0 auto;"></div>' +
+    '<div style="font-size:9px;color:#718096;margin-top:5px;">PayPe Technologies Pvt. Ltd.</div></div>' +
+    '<div style="border:1px dashed #E2E8F0;border-radius:8px;padding:12px;text-align:center;">' +
+    '<div style="font-size:10px;font-weight:700;color:#0D1B3E;margin-bottom:8px;">EMPLOYEE</div>' +
+    signHtml +
+    '<div style="font-size:9px;color:#718096;margin-top:5px;">' + nm + ' | ' + (e.employee_id||'') + '</div></div></div>';
 }
 
 if (tok && CU) { startApp(); } else { document.getElementById('LP').style.display = 'flex'; document.getElementById('AP').style.display = 'none'; }
