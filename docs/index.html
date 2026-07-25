@@ -1615,9 +1615,55 @@ function downloadDIDCard(elId, type) {
 function shareDIDWA(type) {
   if (!didSelEmp) { toast('Select employee first','err'); return; }
   var e = didSelEmp, nm = e.first_name + ' ' + e.last_name;
-  var msg = 'PayPe Technologies - ' + (type==='vc'?'Digital Visiting Card':'Employee ID Card') + ' - ' + nm + ' (' + e.employee_id + ')' +
-    ' | Role: ' + (e.designation||'Team Member') + ' | ' + (e.work_email||'admin@paype.co.in') + ' | paype.co.in';
-  window.open('https://wa.me/?text=' + encodeURIComponent(msg), '_blank');
+  var elId = type === 'vc' ? 'vc-front' : 'idc-card';
+  var el2 = document.getElementById(elId);
+  if (!el2) { toast('Generate card first','err'); return; }
+
+  toast('Downloading card image...');
+
+  function doShare(canvas) {
+    canvas.toBlob(function(blob) {
+      var file = new File([blob], 'PayPe_Card_' + e.employee_id + '.png', {type:'image/png'});
+      // Try Web Share API (mobile)
+      if (navigator.share && navigator.canShare && navigator.canShare({files:[file]})) {
+        navigator.share({
+          files: [file],
+          title: 'PayPe Technologies - ' + nm,
+          text: 'Digital ' + (type==='vc'?'Visiting Card':'ID Card') + ' - ' + nm + ' | ' + (e.designation||'') + ' | paype.co.in'
+        }).then(function() { toast('Shared successfully!'); })
+        .catch(function() { fallbackWA(); });
+      } else {
+        // Download image then open WhatsApp
+        var url = URL.createObjectURL(blob);
+        var a = document.createElement('a');
+        a.href = url;
+        a.download = 'PayPe_Card_' + e.employee_id + '.png';
+        a.click();
+        setTimeout(function() { fallbackWA(); }, 1000);
+      }
+    });
+  }
+
+  function fallbackWA() {
+    var msg = 'PayPe Technologies - ' + (type==='vc'?'Digital Visiting Card':'ID Card') + ' - ' + nm +
+      ' | ID: ' + e.employee_id +
+      ' | Role: ' + (e.designation||'Team Member') +
+      ' | Dept: ' + (e.department_name||'PayPe Technologies') +
+      ' | Email: ' + (e.work_email||'admin@paype.co.in') +
+      ' | Mobile: ' + (e.mobile ? '+91 '+e.mobile : '+91 99448 57191') +
+      ' | paype.co.in';
+    window.open('https://wa.me/?text=' + encodeURIComponent(msg), '_blank');
+    toast('Image downloaded! Attach it in WhatsApp');
+  }
+
+  if (window.html2canvas) {
+    html2canvas(el2, {scale:2, useCORS:true}).then(doShare);
+  } else {
+    var s = document.createElement('script');
+    s.src = 'https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js';
+    s.onload = function() { html2canvas(el2, {scale:2, useCORS:true}).then(doShare); };
+    document.head.appendChild(s);
+  }
 }
 
 function shareDIDEmail(type) {
@@ -1639,8 +1685,38 @@ function downloadDIDQR(qrId, nm) {
 }
 
 function shareDIDQRWA(empId, nm) {
-  var msg = 'PayPe Technologies - Employee QR Code - ' + nm + ' (' + empId + ') | Scan to view profile | hr.paype.co.in';
-  window.open('https://wa.me/?text=' + encodeURIComponent(msg), '_blank');
+  // Try to share QR image
+  var qid = 'qr-did-' + empId.replace(/[^a-z0-9]/gi,'');
+  var el2 = document.getElementById(qid);
+  var img = el2 ? el2.querySelector('img') : null;
+  
+  if (img && navigator.share) {
+    fetch(img.src).then(function(r){return r.blob();}).then(function(blob) {
+      var file = new File([blob], 'QR_' + nm.replace(/ /g,'_') + '.png', {type:'image/png'});
+      if (navigator.canShare && navigator.canShare({files:[file]})) {
+        navigator.share({files:[file], title:'PayPe QR - ' + nm, text:'PayPe Technologies - ' + nm + ' (' + empId + ')'});
+        return;
+      }
+      fallbackQRWA();
+    }).catch(fallbackQRWA);
+  } else {
+    // Download QR then open WhatsApp
+    if (img) {
+      var a = document.createElement('a');
+      a.href = img.src;
+      a.download = 'QR_' + nm.replace(/ /g,'_') + '.png';
+      a.click();
+      setTimeout(fallbackQRWA, 800);
+    } else {
+      fallbackQRWA();
+    }
+  }
+  
+  function fallbackQRWA() {
+    var msg = 'PayPe Technologies - Employee QR Code - ' + nm + ' (' + empId + ') | Scan to view profile | hr.paype.co.in';
+    window.open('https://wa.me/?text=' + encodeURIComponent(msg), '_blank');
+    toast('QR downloaded! Attach it in WhatsApp');
+  }
 }
 
 function downloadAgreement() {
