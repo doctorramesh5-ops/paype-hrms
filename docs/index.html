@@ -7,7 +7,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Syne:wght@700;800&display=swap" rel="stylesheet">
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
-:root{--navy:#0D1B3E;--teal:#00C2A8;--red:#E63329;--green:#38A169;--yellow:#D69E2E;--purple:#805AD5;--orange:#DD6B20;--bg:#F0F4F8;--border:#E2E8F0;--text:#1A202C;--muted:#718096;--light:#F7FAFC;}
+:root{--navy:#0D1B3E;--teal:#00C2A8;--bg:#F0F4F8;--navy:#0D1B3E;--teal:#00C2A8;--red:#E63329;--green:#38A169;--yellow:#D69E2E;--purple:#805AD5;--orange:#DD6B20;--bg:#F0F4F8;--border:#E2E8F0;--text:#1A202C;--muted:#718096;--light:#F7FAFC;}
 body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);}
 #LP{display:flex;min-height:100vh;}
 .ll{flex:1;background:linear-gradient(135deg,#0D1B3E,#1a3a7c);display:flex;flex-direction:column;justify-content:center;align-items:center;padding:48px;}
@@ -204,7 +204,7 @@ tr:hover td{background:#F7FAFC;}
       <div class="tb-ti" id="tbti">Dashboard</div>
       <div class="dc" id="tbdt"></div>
       <div style="display:flex;align-items:center;gap:10px;margin-left:auto;">
-        <div id="notif-bell" style="position:relative;cursor:pointer;color:white;padding:4px;" onclick="toggleNotif()">
+        <div id="notif-bell" style="position:relative;cursor:pointer;color:#0D1B3E;padding:4px;" onclick="toggleNotif()">
           <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9M13.73 21a2 2 0 0 1-3.46 0"/></svg>
           <span id="notif-count" style="position:absolute;top:-2px;right:-2px;background:#E63329;color:white;font-size:9px;font-weight:700;min-width:16px;height:16px;border-radius:8px;display:none;align-items:center;justify-content:center;padding:0 3px;">0</span>
         </div>
@@ -3500,6 +3500,164 @@ async function submitLeave() {
       window.open('https://wa.me/?text=' + encodeURIComponent(msg), '_blank');
     }
   } else toast(res.message||'Failed','err');
+}
+
+
+// ── SETTINGS & THEMES ─────────────────────────────
+var themes = {
+  default: {
+    name: 'PayPe Blue',
+    navy: '#0D1B3E',
+    teal: '#00C2A8',
+    bg: '#F0F4F8',
+    emoji: '&#x1F535;'
+  },
+  green: {
+    name: 'Forest Green',
+    navy: '#1A3C2E',
+    teal: '#2ECC71',
+    bg: '#F0F7F4',
+    emoji: '&#x1F7E2;'
+  },
+  purple: {
+    name: 'Royal Purple',
+    navy: '#2D1B69',
+    teal: '#9B59B6',
+    bg: '#F5F0FF',
+    emoji: '&#x1F7E3;'
+  },
+  dark: {
+    name: 'Dark Mode',
+    navy: '#1A1A2E',
+    teal: '#00C2A8',
+    bg: '#16213E',
+    emoji: '&#x26AB;'
+  },
+  red: {
+    name: 'Corporate Red',
+    navy: '#7B1818',
+    teal: '#E63329',
+    bg: '#FFF5F5',
+    emoji: '&#x1F534;'
+  },
+  orange: {
+    name: 'Sunset Orange',
+    navy: '#7B3F00',
+    teal: '#FF6B35',
+    bg: '#FFF8F0',
+    emoji: '&#x1F7E0;'
+  }
+};
+
+function loadSettings() {
+  var savedTheme = localStorage.getItem('paype_theme') || 'default';
+  var nm = CU ? CU.firstName + ' ' + CU.lastName : '--';
+  var role = CU ? CU.role : '--';
+  var email = CU ? CU.username : '--';
+
+  var h = '';
+
+  // Profile Card
+  h += '<div class="card" style="margin-bottom:14px;">';
+  h += '<div style="background:linear-gradient(135deg,#0D1B3E,#1a3a7c);padding:20px;border-radius:11px 11px 0 0;display:flex;align-items:center;gap:14px;">';
+  h += '<div class="av" style="width:56px;height:56px;font-size:22px;border:2px solid #00C2A8;">' + (CU?CU.firstName[0].toUpperCase():'?') + '</div>';
+  h += '<div><div style="font-size:16px;font-weight:700;color:white;">' + nm + '</div>';
+  h += '<div style="font-size:12px;color:rgba(255,255,255,.6);">' + email + '</div>';
+  h += '<span style="font-size:10px;font-weight:700;background:rgba(0,194,168,.2);color:#00C2A8;padding:2px 8px;border-radius:8px;margin-top:4px;display:inline-block;">' + role.toUpperCase() + '</span>';
+  h += '</div></div>';
+  h += '<div class="cb"><div style="display:flex;gap:8px;flex-wrap:wrap;">';
+  h += '<button class="btn btp" onclick="openMod(' + String.fromCharCode(39) + 'cpm' + String.fromCharCode(39) + ')">Change Password</button>';
+  h += '<a href="https://paype.co.in" target="_blank" class="btn bto">paype.co.in</a>';
+  h += '<a href="https://bankme.co.in" target="_blank" class="btn bto">bankme.co.in</a>';
+  h += '<button class="btn btr" onclick="doLogout()">Logout</button>';
+  h += '</div></div></div>';
+
+  // Theme Selection
+  h += '<div class="card" style="margin-bottom:14px;">';
+  h += '<div class="ch"><div class="ct">Theme & Appearance</div></div>';
+  h += '<div class="cb">';
+  h += '<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:12px;">';
+  Object.keys(themes).forEach(function(key) {
+    var t = themes[key];
+    var isActive = key === savedTheme;
+    h += '<div onclick="applyTheme(' + String.fromCharCode(39) + key + String.fromCharCode(39) + ')" style="border:2px solid ' + (isActive?t.teal:'#E2E8F0') + ';border-radius:10px;padding:14px;cursor:pointer;text-align:center;transition:all .15s;background:' + (isActive?t.bg:'white') + ';">';
+    h += '<div style="font-size:24px;margin-bottom:6px;">' + t.emoji + '</div>';
+    h += '<div style="width:100%;height:24px;border-radius:6px;background:' + t.navy + ';margin-bottom:4px;position:relative;overflow:hidden;">';
+    h += '<div style="position:absolute;right:0;top:0;bottom:0;width:30%;background:' + t.teal + ';"></div></div>';
+    h += '<div style="font-size:12px;font-weight:600;color:#0D1B3E;">' + t.name + '</div>';
+    if (isActive) h += '<div style="font-size:10px;color:' + t.teal + ';font-weight:700;margin-top:3px;">Active</div>';
+    h += '</div>';
+  });
+  h += '</div>';
+  h += '<div style="margin-top:14px;padding:10px;background:#F0F4F8;border-radius:8px;font-size:12px;color:#718096;">Select a theme to change the look of your HRMS dashboard.</div>';
+  h += '</div></div>';
+
+  // Company Info
+  h += '<div class="card" style="margin-bottom:14px;">';
+  h += '<div class="ch"><div class="ct">Company Information</div></div>';
+  h += '<div class="cb"><table style="width:100%;border-collapse:collapse;">';
+  var rows = [
+    ['Company', 'PayPe Technologies Pvt. Ltd.'],
+    ['CIN', 'U74994TN2022PTC151114'],
+    ['GST', '33AAMCP7960K1ZU'],
+    ['PAN', 'AAMCP7960K'],
+    ['TAN', 'CHEP24000E'],
+    ['LEI', '64886C37CCC7Z3ML1573'],
+    ['Email', 'admin@paype.co.in'],
+    ['Mobile', '+91 99448 57191'],
+    ['Website', 'paype.co.in | bankme.co.in'],
+    ['HRMS', 'hr.paype.co.in'],
+    ['API', 'hrapi.paype.co.in']
+  ];
+  rows.forEach(function(r) {
+    h += '<tr style="border-bottom:1px solid #F0F4F8;"><td style="padding:8px 0;font-size:11px;font-weight:700;color:#718096;text-transform:uppercase;width:35%;">' + r[0] + '</td>';
+    h += '<td style="font-size:13px;font-weight:600;color:#0D1B3E;">' + r[1] + '</td></tr>';
+  });
+  h += '</table></div></div>';
+
+  // System Info
+  h += '<div class="card">';
+  h += '<div class="ch"><div class="ct">System Information</div></div>';
+  h += '<div class="cb"><table style="width:100%;border-collapse:collapse;">';
+  var sysRows = [
+    ['HRMS Version', 'v2.0.0 - Phase 6'],
+    ['Build Date', 'July 2026'],
+    ['Stack', 'Express.js + PostgreSQL + GitHub Pages'],
+    ['Developed by', 'Claude AI + Ramesh Muthuvel'],
+    ['Support', 'admin@paype.co.in']
+  ];
+  sysRows.forEach(function(r) {
+    h += '<tr style="border-bottom:1px solid #F0F4F8;"><td style="padding:8px 0;font-size:11px;font-weight:700;color:#718096;text-transform:uppercase;width:35%;">' + r[0] + '</td>';
+    h += '<td style="font-size:13px;font-weight:600;color:#0D1B3E;">' + r[1] + '</td></tr>';
+  });
+  h += '</table></div></div>';
+
+  document.getElementById('stc').innerHTML = h;
+}
+
+function applyTheme(key) {
+  var t = themes[key];
+  if (!t) return;
+  // Apply CSS variables
+  var root = document.documentElement;
+  root.style.setProperty('--navy', t.navy);
+  root.style.setProperty('--teal', t.teal);
+  root.style.setProperty('--bg', t.bg);
+  // Save preference
+  localStorage.setItem('paype_theme', key);
+  // Apply background
+  document.body.style.background = t.bg;
+  // Apply to sidebar
+  var sb = document.getElementById('sb');
+  if (sb) sb.style.background = t.navy;
+  // Reload settings to show active
+  loadSettings();
+  toast('Theme changed to ' + t.name + '!');
+}
+
+function initTheme() {
+  var key = localStorage.getItem('paype_theme') || 'default';
+  if (key !== 'default') applyTheme(key);
 }
 
 if (tok && CU) { startApp(); } else { document.getElementById('LP').style.display = 'flex'; document.getElementById('AP').style.display = 'none'; }
