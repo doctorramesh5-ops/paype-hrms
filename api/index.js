@@ -766,6 +766,15 @@ app.patch('/api/notifications/:id/read', auth, async (req, res) => {
   } catch (e) { res.status(500).json({ success: false, message: e.message }); }
 });
 
+// ── 404 & ERROR ───────────────────────────────────
+
+app.use((req, res) => {
+  res.status(404).json({
+    success: false,
+    message: `${req.method} ${req.path} not found`,
+    hint: 'See /api/docs for all available endpoints'
+  });
+});
 
 app.use((err, req, res, next) => {
   console.error('Unhandled error:', err.message);
@@ -1389,13 +1398,24 @@ app.post('/api/interviews/schedule', auth, async (req, res) => {
 console.log('Phase 3B routes loaded!');
 
 
-// ── 404 & ERROR ───────────────────────────────────
-
-app.use((req, res) => {
-  res.status(404).json({
-    success: false,
-    message: `${req.method} ${req.path} not found`,
-    hint: 'See /api/docs for all available endpoints'
-  });
+// ── DELETE EMPLOYEE ───────────────────────────────
+app.delete('/api/employees/:id', auth, async (req, res) => {
+  try {
+    if (req.user.role !== 'admin' && req.user.role !== 'hr') return res.status(403).json({ success: false, message: 'Access denied' });
+    const { id } = req.params;
+    // Delete related records first
+    await db('DELETE FROM users WHERE employee_id=$1', [id]);
+    await db('DELETE FROM attendance WHERE employee_id=$1', [id]);
+    await db('DELETE FROM leave_balances WHERE employee_id=$1', [id]);
+    await db('DELETE FROM leave_requests WHERE employee_id=$1', [id]);
+    await db('DELETE FROM employee_documents WHERE employee_id=$1', [id]);
+    await db('DELETE FROM employee_skills WHERE employee_id=$1', [id]);
+    await db('DELETE FROM certifications WHERE employee_id=$1', [id]);
+    // Delete employee
+    const r = await db('DELETE FROM employees WHERE id=$1 RETURNING id', [id]);
+    if (!r.rows.length) return res.status(404).json({ success: false, message: 'Employee not found' });
+    res.json({ success: true, message: 'Employee removed successfully' });
+  } catch(e) { res.status(500).json({ success: false, message: e.message }); }
 });
+
 module.exports = app;

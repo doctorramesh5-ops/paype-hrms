@@ -477,6 +477,31 @@ tr:hover td{background:#F7FAFC;}
   </div>
 </div>
 
+<div class="ov" id="eem" onclick="if(event.target===this)closeMod('eem')">
+  <div class="mo">
+    <div class="mh"><div class="mt">Edit Employee</div><button class="mx" onclick="closeMod('eem')">&#x2715;</button></div>
+    <div class="mb">
+      <input type="hidden" id="ee-id">
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:11px;">
+        <div class="ff"><label>First Name *</label><input id="ee1" placeholder="First name"></div>
+        <div class="ff"><label>Last Name *</label><input id="ee2" placeholder="Last name"></div>
+        <div class="ff"><label>Work Email</label><input id="ee3" type="email" placeholder="name@paype.co.in"></div>
+        <div class="ff"><label>Mobile</label><input id="ee4" placeholder="9XXXXXXXXX"></div>
+        <div class="ff"><label>Department</label><select id="ee5"><option value="">Select</option></select></div>
+        <div class="ff"><label>Designation</label><input id="ee6" placeholder="e.g. Sales Executive"></div>
+        <div class="ff"><label>Date of Joining</label><input id="ee7" type="date"></div>
+        <div class="ff"><label>Work Location</label><input id="ee8" placeholder="Coimbatore"></div>
+        <div class="ff"><label>Blood Group</label><select id="ee9"><option value="">Select</option><option>A+</option><option>A-</option><option>B+</option><option>B-</option><option>O+</option><option>O-</option><option>AB+</option><option>AB-</option></select></div>
+        <div class="ff"><label>Status</label><select id="ee10"><option value="Active">Active</option><option value="Inactive">Inactive</option></select></div>
+      </div>
+    </div>
+    <div class="mf">
+      <button class="btn bto" onclick="closeMod('eem')">Cancel</button>
+      <button class="btn btp" onclick="saveEditEmp()">Save Changes</button>
+    </div>
+  </div>
+</div>
+
 <div class="ov" id="sim" onclick="if(event.target===this)closeMod('sim')">
   <div class="mo">
     <div class="mh"><div class="mt">Schedule Interview</div><button class="mx" onclick="closeMod('sim')">&#x2715;</button></div>
@@ -862,7 +887,8 @@ async function loadEmps() {
     h += '<td><div style="display:flex;gap:4px;">';
     h += '<button class="btn bto btsm" onclick="viewEmp(' + "'" + e.id + "'" + ')">View</button>';
     if (CU.role === 'admin' || CU.role === 'hr') {
-      h += '<button class="btn btr btsm" onclick="suspendEmp(' + "'" + e.id + "','" + e.employment_status + "'" + ')">Suspend</button>';
+      h += '<button class="btn btt btsm" onclick="editEmp(' + "'" + e.id + "'" + ')">Edit</button>';
+      h += '<button class="btn btr btsm" onclick="removeEmp(' + "'" + e.id + "','" + nm + "'" + ')">Remove</button>';
     }
     h += '</div></td></tr>';
   });
@@ -2166,6 +2192,69 @@ async function suspendEmp(id, currentStatus) {
   var res = await req('PUT', '/api/employees/' + id, { employmentStatus: newStatus });
   if (res.success) { toast('Employee ' + action + 'd!'); loadEmps(); }
   else toast(res.message||'Failed','err');
+}
+
+
+async function editEmp(id) {
+  var e = allEmps.find(function(emp){ return emp.id === id; });
+  if (!e) return;
+  document.getElementById('ee-id').value = id;
+  document.getElementById('ee1').value = e.first_name || '';
+  document.getElementById('ee2').value = e.last_name || '';
+  document.getElementById('ee3').value = e.work_email || '';
+  document.getElementById('ee4').value = e.mobile || '';
+  document.getElementById('ee6').value = e.designation || '';
+  document.getElementById('ee7').value = e.date_of_joining ? e.date_of_joining.split('T')[0] : '';
+  document.getElementById('ee8').value = e.work_location || '';
+  document.getElementById('ee9').value = e.blood_group || '';
+  document.getElementById('ee10').value = e.employment_status || 'Active';
+
+  // Load departments
+  var sel = document.getElementById('ee5');
+  var res = await req('GET', '/api/departments');
+  if (res.success) {
+    sel.innerHTML = '<option value="">Select Department</option>';
+    res.data.forEach(function(d) {
+      var op = document.createElement('option');
+      op.value = d.id;
+      op.textContent = d.name;
+      if (d.id === e.department_id) op.selected = true;
+      sel.appendChild(op);
+    });
+  }
+  openMod('eem');
+}
+
+async function saveEditEmp() {
+  var id = document.getElementById('ee-id').value;
+  var body = {
+    firstName: document.getElementById('ee1').value.trim(),
+    lastName: document.getElementById('ee2').value.trim(),
+    workEmail: document.getElementById('ee3').value.trim(),
+    mobile: document.getElementById('ee4').value.trim(),
+    departmentId: document.getElementById('ee5').value || undefined,
+    designation: document.getElementById('ee6').value.trim() || undefined,
+    dateOfJoining: document.getElementById('ee7').value || undefined,
+    workLocation: document.getElementById('ee8').value.trim() || undefined,
+    bloodGroup: document.getElementById('ee9').value || undefined,
+    employmentStatus: document.getElementById('ee10').value
+  };
+  if (!body.firstName || !body.lastName) { toast('Name is required','err'); return; }
+  var res = await req('PUT', '/api/employees/' + id, body);
+  if (res.success) {
+    toast('Employee updated successfully!');
+    closeMod('eem');
+    loadEmps();
+  } else toast(res.message || 'Update failed','err');
+}
+
+async function removeEmp(id, nm) {
+  if (!confirm('Are you sure you want to remove ' + nm + '? This action cannot be undone.')) return;
+  var res = await req('DELETE', '/api/employees/' + id);
+  if (res.success) {
+    toast(nm + ' removed successfully!');
+    loadEmps();
+  } else toast(res.message || 'Remove failed','err');
 }
 
 if (tok && CU) { startApp(); } else { document.getElementById('LP').style.display = 'flex'; document.getElementById('AP').style.display = 'none'; }
