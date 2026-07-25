@@ -722,22 +722,22 @@ async function loadDash() {
   if (!res.success) { document.getElementById('dbc').innerHTML = '<div class="em"><h3>Error loading</h3></div>'; return; }
   var d = res.data, role = CU.role;
   var h = '<div class="ph"><div><h1>Good day, ' + CU.firstName + '!</h1><p>PayPe Technologies Pvt. Ltd.</p></div>';
-  if (role === 'admin' || role === 'hr') h += '<button class="btn btp" onclick="openMod("aem")">+ Add Employee</button>';
+  if (role === 'admin' || role === 'hr') h += '<button class="btn btp" onclick="openMod(&apos;aem&apos;)">+ Add Employee</button>';
   h += '</div>';
   h += '<div class="sg">';
-  h += '<div class="sc c1" onclick="goPage("aem")"><div class="sv">' + d.employees.total + '</div><div class="sl">Total Employees</div></div>';
-  h += '<div class="sc c2" onclick="goPage("aem")"><div class="sv">' + d.attendance.present + '</div><div class="sl">Present Today</div></div>';
-  h += '<div class="sc c3" onclick="goPage("aem")"><div class="sv">' + d.leave.pendingApprovals + '</div><div class="sl">Leave Pending</div></div>';
+  h += '<div class="sc c1" onclick="goPage(&apos;employees&apos;)"><div class="sv">' + d.employees.total + '</div><div class="sl">Total Employees</div></div>';
+  h += '<div class="sc c2" onclick="goPage(&apos;attendance&apos;)"><div class="sv">' + d.attendance.present + '</div><div class="sl">Present Today</div></div>';
+  h += '<div class="sc c3" onclick="goPage(&apos;leave&apos;)"><div class="sv">' + d.leave.pendingApprovals + '</div><div class="sl">Leave Pending</div></div>';
   var payTxt = d.payroll ? ('Rs ' + Number(d.payroll.total_net/100000).toFixed(1) + 'L') : '--';
-  h += '<div class="sc c4" onclick="goPage("aem")"><div class="sv">' + payTxt + '</div><div class="sl">Last Payroll</div></div>';
+  h += '<div class="sc c4" onclick="goPage(&apos;payroll&apos;)"><div class="sv">' + payTxt + '</div><div class="sl">Last Payroll</div></div>';
   h += '</div>';
   if ((role === 'admin' || role === 'hr') && rs.success) {
     var rs2 = rs.data;
     h += '<div class="sg" style="grid-template-columns:repeat(4,1fr)">';
-    h += '<div class="sc c1" onclick="goPage("aem")"><div class="sv">' + rs2.jobs.active + '</div><div class="sl">Active Jobs</div></div>';
-    h += '<div class="sc c2" onclick="goPage("aem")"><div class="sv">' + rs2.totalCandidates + '</div><div class="sl">Candidates</div></div>';
-    h += '<div class="sc c5" onclick="goPage("aem")"><div class="sv">' + (rs2.applications.Screening || 0) + '</div><div class="sl">In Screening</div></div>';
-    h += '<div class="sc c6" onclick="goPage("aem")"><div class="sv">' + rs2.upcomingInterviews + '</div><div class="sl">Interviews Today</div></div>';
+    h += '<div class="sc c1" onclick="goPage(&apos;recruitment&apos;)"><div class="sv">' + rs2.jobs.active + '</div><div class="sl">Active Jobs</div></div>';
+    h += '<div class="sc c2" onclick="goPage(&apos;candidates&apos;)"><div class="sv">' + rs2.totalCandidates + '</div><div class="sl">Candidates</div></div>';
+    h += '<div class="sc c5" onclick="goPage(&apos;recruitment&apos;)"><div class="sv">' + (rs2.applications.Screening || 0) + '</div><div class="sl">In Screening</div></div>';
+    h += '<div class="sc c6" onclick="goPage(&apos;interviews&apos;)"><div class="sv">' + rs2.upcomingInterviews + '</div><div class="sl">Interviews Today</div></div>';
     h += '</div>';
   }
   h += '<div class="g2">';
@@ -801,7 +801,7 @@ async function loadEmps() {
   if (CU.role === 'employee') { goPage("\1"); return; }
   document.getElementById('esub').textContent = 'Loading...';
   var btn = document.createElement('button');
-  btn.className = 'btn btp'; btn.textContent = '+ Add Employee';
+  if (role === 'admin' || role === 'hr') h += '<button class="btn btp" onclick="openMod(' + String.fromCharCode(39) + 'aem' + String.fromCharCode(39) + ')">+ Add Employee</button>';
   btn.onclick = function() { openMod("\1"); };
   document.getElementById('eact').innerHTML = '';
   document.getElementById('eact').appendChild(btn);
@@ -1029,7 +1029,7 @@ async function loadRecruitment() {
     h += '<div class="sc c3"><div class="sv">' + d.upcomingInterviews + '</div><div class="sl">Upcoming Interviews</div></div>';
     h += '</div>';
   }
-  h += '<div class="card"><div class="ch"><div class="ct">ATS Pipeline</div><div style="display:flex;gap:6px;"><button class="btn bto btsm" onclick="goPage("aem")">Candidates</button><button class="btn btp btsm" onclick="openMod("aem")">+ Post Job</button></div></div><div class="cb">';
+  h += '<div class="card"><div class="ch"><div class="ct">ATS Pipeline</div><div style="display:flex;gap:6px;"><button class="btn bto btsm" onclick="goPage(&apos;candidates&apos;)">Candidates</button><button class="btn btp btsm" onclick="openMod(&apos;nom&apos;)">+ Post Job</button></div></div><div class="cb">';
   h += '<div class="pipe">';
   var stages = ['Screening','Interview','Offer','Hired','Rejected'];
   var stageClrs = {Screening:'#00C2A8',Interview:'#805AD5',Offer:'#D69E2E',Hired:'#38A169',Rejected:'#E63329'};
