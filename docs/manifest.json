@@ -1,0 +1,46 @@
+{
+  "name": "PayPe HRMS",
+  "short_name": "PayPe HR",
+  "description": "PayPe Technologies HR Management System",
+  "start_url": "https://hr.paype.co.in/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#0D1B3E",
+  "orientation": "any",
+  "scope": "https://hr.paype.co.in/",
+  "lang": "en-IN",
+  "categories": ["business", "productivity"],
+  "icons": [
+    { "src": "favicon.ico", "sizes": "16x16 32x32 48x48", "type": "image/x-icon" },
+    { "src": "icon-128.png", "sizes": "128x128", "type": "image/png" },
+    { "src": "icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any maskable" },
+    { "src": "icon-256.png", "sizes": "256x256", "type": "image/png" },
+    { "src": "icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any maskable" }
+  ],
+  "shortcuts": [
+    {
+      "name": "Punch Attendance",
+      "short_name": "Punch",
+      "url": "https://hr.paype.co.in/?page=attendance",
+      "icons": [{"src": "icon-192.png", "sizes": "192x192"}]
+    },
+    {
+      "name": "Apply Leave",
+      "short_name": "Leave",
+      "url": "https://hr.paype.co.in/?page=leave",
+      "icons": [{"src": "icon-192.png", "sizes": "192x192"}]
+    },
+    {
+      "name": "My Profile",
+      "short_name": "Profile",
+      "url": "https://hr.paype.co.in/?page=profile",
+      "icons": [{"src": "icon-192.png", "sizes": "192x192"}]
+    },
+    {
+      "name": "Helpdesk",
+      "short_name": "Help",
+      "url": "https://hr.paype.co.in/?page=helpdesk",
+      "icons": [{"src": "icon-192.png", "sizes": "192x192"}]
+    }
+  ]
+}
