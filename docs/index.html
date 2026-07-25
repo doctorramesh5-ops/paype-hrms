@@ -840,43 +840,37 @@ async function loadLvPols() {
   }
 }
 async function loadEmps() {
-  if (CU.role === 'employee') { goPage("\1"); return; }
-  document.getElementById('esub').textContent = 'Loading...';
-  var btn = document.createElement('button');
-  if (role === 'admin' || role === 'hr') h += '<button class="btn btp" onclick="openMod(' + String.fromCharCode(39) + 'aem' + String.fromCharCode(39) + ')">+ Add Employee</button>';
-  btn.onclick = function() { openMod("\1"); };
-  document.getElementById('eact').innerHTML = '';
-  document.getElementById('eact').appendChild(btn);
+  var etbl = document.getElementById('etbl');
+  if (etbl) etbl.innerHTML = '<div class="ld"><div class="sp"></div>Loading...</div>';
   var res = await req('GET', '/api/employees');
-  if (!res.success) { document.getElementById('etbl').innerHTML = '<div class="em"><h3>' + res.message + '</h3></div>'; return; }
-  allEmps = res.data.employees || [];
-  document.getElementById('esub').textContent = allEmps.length + ' employees';
-  renderEmps(allEmps);
-}
-function renderEmps(emps) {
-  if (!emps.length) { document.getElementById('etbl').innerHTML = '<div class="em"><h3>No employees found</h3></div>'; return; }
-  var clrs = ['#00C2A8','#0D1B3E','#805AD5','#38A169','#D69E2E','#DD6B20','#E63329'];
-  var h = '<table><thead><tr><th>Employee</th><th>ID</th><th>Department</th><th>Designation</th><th>Location</th><th>Status</th><th>Action</th></tr></thead><tbody>';
-  for (var i = 0; i < emps.length; i++) {
-    var e = emps[i], nm = (e.first_name||'') + ' ' + (e.last_name||''), clr = clrs[i%clrs.length];
-    var sbc = e.status === 'Active' ? 'bg' : e.status === 'Probation' ? 'bt' : 'by';
-    h += '<tr><td><div style="display:flex;align-items:center;gap:8px;"><div class="av" style="background:' + clr + '">' + (e.first_name||'?')[0].toUpperCase() + '</div>';
-    h += '<div><div style="font-weight:600;">' + nm + '</div><div style="font-size:11px;color:#718096;">' + (e.work_email||'') + '</div></div></div></td>';
-    h += '<td><span class="b bn">' + (e.employee_id||'') + '</span></td>';
-    h += '<td>' + (e.department_name||'--') + '</td><td>' + (e.designation||'--') + '</td><td>' + (e.work_location||'--') + '</td>';
-    h += '<td><span class="b ' + sbc + '">' + e.status + '</span></td>';
-    h += '<td><button class="btn bto btsm" onclick="editEmp(' + "'" + e.id + "','" + e.status + "'" + ')">Edit</button></td></tr>';
-  }
+  if (!res.success) { if(etbl) etbl.innerHTML = '<div class="em"><h3>' + res.message + '</h3></div>'; return; }
+  var emps = res.data.employees || [];
+  allEmps = emps;
+  if (!emps.length) { if(etbl) etbl.innerHTML = '<div class="em"><h3>No employees found</h3></div>'; return; }
+  var h = '<table><thead><tr><th>Employee</th><th>Department</th><th>Designation</th><th>Location</th><th>Status</th><th>Action</th></tr></thead><tbody>';
+  emps.forEach(function(e) {
+    var nm = e.first_name + ' ' + e.last_name;
+    var sc = e.employment_status === 'Active' ? 'bg' : e.employment_status === 'Inactive' ? 'br' : 'by';
+    h += '<tr>';
+    h += '<td><div style="display:flex;align-items:center;gap:9px;">';
+    h += '<div class="av" style="width:32px;height:32px;font-size:12px;">' + (e.first_name||'?')[0].toUpperCase() + '</div>';
+    h += '<div><div style="font-weight:600;">' + nm + '</div><div style="font-size:11px;color:#718096;">' + (e.work_email||e.employee_id) + '</div></div></div></td>';
+    h += '<td>' + (e.department_name||'--') + '</td>';
+    h += '<td>' + (e.designation||'--') + '</td>';
+    h += '<td>' + (e.work_location||'--') + '</td>';
+    h += '<td><span class="b ' + sc + '">' + (e.employment_status||'Active') + '</span></td>';
+    h += '<td><div style="display:flex;gap:4px;">';
+    h += '<button class="btn bto btsm" onclick="viewEmp(' + "'" + e.id + "'" + ')">View</button>';
+    if (CU.role === 'admin' || CU.role === 'hr') {
+      h += '<button class="btn btr btsm" onclick="suspendEmp(' + "'" + e.id + "','" + e.employment_status + "'" + ')">Suspend</button>';
+    }
+    h += '</div></td></tr>';
+  });
   h += '</tbody></table>';
-  document.getElementById('etbl').innerHTML = h;
+  if (etbl) etbl.innerHTML = h;
 }
-function filterEmp() {
-  var s = document.getElementById('esrch').value.toLowerCase(), d = document.getElementById('edept').value;
-  renderEmps(allEmps.filter(function(e) {
-    var nm = ((e.first_name||'') + ' ' + (e.last_name||'')).toLowerCase();
-    return (!s || nm.indexOf(s) >= 0 || (e.work_email||'').toLowerCase().indexOf(s) >= 0) && (!d || e.department_id === d);
-  }));
-}
+
+
 async function addEmp() {
   var body = {
     firstName: document.getElementById('ef1').value.trim(),
@@ -2132,6 +2126,46 @@ function sendCredsEmail(nm, email, pass, url) {
     ' Best regards, HR Department, PayPe Technologies Pvt. Ltd.' +
     ' hr@paype.co.in | +91 99448 57191';
   window.open('mailto:' + email + '?subject=' + encodeURIComponent(sub) + '&body=' + encodeURIComponent(body));
+}
+
+
+function viewEmp(id) {
+  var e = allEmps.find(function(emp){ return emp.id === id; });
+  if (!e) return;
+  var nm = e.first_name + ' ' + e.last_name;
+  var h = '<div style="font-size:13px;line-height:1.8;">';
+  h += '<div style="display:flex;align-items:center;gap:12px;margin-bottom:16px;">';
+  h += '<div class="av" style="width:52px;height:52px;font-size:20px;">' + (e.first_name||'?')[0].toUpperCase() + '</div>';
+  h += '<div><div style="font-size:16px;font-weight:700;color:#0D1B3E;">' + nm + '</div>';
+  h += '<div style="font-size:12px;color:#718096;">' + e.employee_id + '</div></div></div>';
+  h += '<table style="width:100%;border-collapse:collapse;">';
+  var rows = [
+    ['Email', e.work_email||'--'], ['Mobile', e.mobile||'--'],
+    ['Department', e.department_name||'--'], ['Designation', e.designation||'--'],
+    ['Location', e.work_location||'--'], ['Status', e.employment_status||'Active'],
+    ['Blood Group', e.blood_group||'--'], ['Joined', e.date_of_joining ? new Date(e.date_of_joining).toLocaleDateString('en-IN') : '--']
+  ];
+  rows.forEach(function(r) {
+    h += '<tr><td style="padding:7px 0;color:#718096;font-size:12px;width:40%;">' + r[0] + '</td><td style="font-weight:600;font-size:13px;">' + r[1] + '</td></tr>';
+  });
+  h += '</table></div>';
+  var existing = document.getElementById('viewEmpMod');
+  if (existing) existing.remove();
+  var mod = document.createElement('div');
+  mod.id = 'viewEmpMod';
+  mod.className = 'ov on';
+  mod.onclick = function(ev) { if(ev.target===mod) mod.remove(); };
+  mod.innerHTML = '<div class="mo" style="max-width:420px;"><div class="mh"><div class="mt">Employee Profile</div><button class="mx" onclick="document.getElementById(' + String.fromCharCode(39) + 'viewEmpMod' + String.fromCharCode(39) + ').remove()">&#x2715;</button></div><div class="mb">' + h + '</div></div>';
+  document.body.appendChild(mod);
+}
+
+async function suspendEmp(id, currentStatus) {
+  var action = currentStatus === 'Active' ? 'Suspend' : 'Activate';
+  if (!confirm(action + ' this employee?')) return;
+  var newStatus = currentStatus === 'Active' ? 'Inactive' : 'Active';
+  var res = await req('PUT', '/api/employees/' + id, { employmentStatus: newStatus });
+  if (res.success) { toast('Employee ' + action + 'd!'); loadEmps(); }
+  else toast(res.message||'Failed','err');
 }
 
 if (tok && CU) { startApp(); } else { document.getElementById('LP').style.display = 'flex'; document.getElementById('AP').style.display = 'none'; }
