@@ -629,32 +629,28 @@ var svgs = {
 function buildNav() {
   var role = CU.role;
   var items = [
-    { id:'dashboard', label:'Dashboard', svg:'grid', roles:['admin','hr','employee'] },
+    { id:'dashboard', label:'Dashboard', svg:'grid', roles:['admin','hr','employee'], sec:'Core HR' },
     { id:'employees', label:'Employees', svg:'users', roles:['admin','hr'] },
     { id:'attendance', label:'Attendance', svg:'clock', roles:['admin','hr','employee'] },
     { id:'leave', label:'Leave', svg:'cal', roles:['admin','hr','employee'] },
     { id:'payroll', label:'Payroll', svg:'dollar', roles:['admin','hr','employee'] },
-    { id:'recruitment', label:'Recruitment', svg:'target', roles:['admin','hr'] },
+    { id:'recruitment', label:'Recruitment', svg:'target', roles:['admin','hr'], sec:'Recruitment' },
     { id:'jobs', label:'Job Listings', svg:'brief', roles:['admin','hr'] },
     { id:'candidates', label:'Candidates', svg:'users', roles:['admin','hr'] },
+    { id:'interviews', label:'Interviews', svg:'cal', roles:['admin','hr'] },
     { id:'onboarding', label:'Onboarding', svg:'check', roles:['admin','hr'] },
     { id:'assets', label:'IT Assets', svg:'cpu', roles:['admin','hr'] },
-    { id:'profile', label:'My Profile', svg:'user', roles:['admin','hr','employee'] },
-    { id:'interviews', label:'Interviews', svg:'cal', roles:['admin','hr'] },
-    { id:'digitalid', label:'Digital ID', svg:'user', roles:['admin','hr'] },
-    { id:'orgchart', label:'Org Chart', svg:'users', roles:['admin','hr'] },
     { id:'offers', label:'Offer Letters', svg:'brief', roles:['admin','hr'] },
+    { id:'digitalid', label:'Digital ID', svg:'user', roles:['admin','hr'], sec:'Identity' },
+    { id:'orgchart', label:'Org Chart', svg:'users', roles:['admin','hr'] },
+    { id:'profile', label:'My Profile', svg:'user', roles:['admin','hr','employee'], sec:'Account' },
     { id:'settings', label:'Settings', svg:'user', roles:['admin','hr','employee'] }
   ];
-  var h = '<div class="ns">Core HR</div>';
-  var phase2 = false;
+  var h = '';
   for (var i = 0; i < items.length; i++) {
     var n = items[i];
     if (n.roles.indexOf(role) === -1) continue;
-    if (['recruitment','jobs','candidates','onboarding','assets'].indexOf(n.id) >= 0 && !phase2) {
-      h += '<div class="ns">Recruitment</div>'; phase2 = true;
-    }
-    if (n.id === 'profile') h += '<div class="ns">Profile</div>';
+    if (n.sec) h += '<div class="ns">' + n.sec + '</div>';
     h += '<div class="ni' + (n.id === 'dashboard' ? ' on' : '') + '" id="ni-' + n.id + '" onclick="goPage(' + "'" + n.id + "'" + ')">';
     h += '<svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">' + svgs[n.svg] + '</svg>';
     h += n.label + '</div>';
