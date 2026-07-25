@@ -2095,7 +2095,7 @@ function showNewEmpCredentials(emp, body) {
   var email = emp.work_email || body.workEmail || '';
   var mobile = emp.mobile || body.mobile || '';
   var empCode = emp.employee_id || '';
-  var defaultPass = 'PayPe@' + new Date().getFullYear();
+  var defaultPass = emp.first_name.toLowerCase() + new Date().getFullYear();
   var hrmsUrl = 'https://hr.paype.co.in';
 
   // Show credentials modal
