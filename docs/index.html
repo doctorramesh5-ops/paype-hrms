@@ -1,0 +1,1255 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>PayPe HRMS</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Syne:wght@700;800&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{--navy:#0D1B3E;--teal:#00C2A8;--red:#E63329;--green:#38A169;--yellow:#D69E2E;--purple:#805AD5;--orange:#DD6B20;--bg:#F0F4F8;--border:#E2E8F0;--text:#1A202C;--muted:#718096;--light:#F7FAFC;}
+body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);}
+#LP{display:flex;min-height:100vh;}
+.ll{flex:1;background:linear-gradient(135deg,#0D1B3E,#1a3a7c);display:flex;flex-direction:column;justify-content:center;align-items:center;padding:48px;}
+.ll img{height:90px;margin-bottom:16px;border-radius:50%;}
+.ll h1{font-family:'Syne',sans-serif;color:white;font-size:26px;font-weight:800;}
+.ll p{color:rgba(255,255,255,.5);font-size:13px;margin-top:6px;}
+.feats{margin-top:36px;display:flex;flex-direction:column;gap:11px;width:100%;max-width:290px;}
+.feat{display:flex;align-items:center;gap:11px;padding:12px 14px;background:rgba(255,255,255,.06);border-radius:10px;}
+.feat span:first-child{font-size:18px;}
+.feat span:last-child{color:rgba(255,255,255,.78);font-size:13px;font-weight:500;}
+.lr{width:460px;display:flex;flex-direction:column;justify-content:center;align-items:center;padding:48px;background:white;}
+.lbox{width:100%;max-width:360px;}
+.lbox h2{font-family:'Syne',sans-serif;font-size:23px;font-weight:800;color:#0D1B3E;margin-bottom:4px;}
+.lbox p{color:#718096;font-size:13px;margin-bottom:26px;}
+.rtabs{display:flex;gap:5px;margin-bottom:22px;background:#F7FAFC;padding:4px;border-radius:10px;}
+.rtab{flex:1;padding:8px;border-radius:7px;border:none;background:transparent;cursor:pointer;font-size:12px;font-weight:600;color:#718096;font-family:'Inter',sans-serif;}
+.rtab.on{background:white;color:#0D1B3E;box-shadow:0 1px 4px rgba(0,0,0,.1);}
+.fi{display:flex;flex-direction:column;gap:4px;margin-bottom:13px;}
+.fi label{font-size:10px;font-weight:700;color:#718096;letter-spacing:.8px;text-transform:uppercase;}
+.fi input{border:1.5px solid #E2E8F0;border-radius:9px;padding:10px 13px;font-size:14px;font-family:'Inter',sans-serif;width:100%;}
+.fi input:focus{outline:none;border-color:#00C2A8;}
+#lbtn{width:100%;padding:12px;border-radius:10px;border:none;background:#0D1B3E;color:white;font-size:14px;font-weight:700;font-family:'Inter',sans-serif;cursor:pointer;margin-top:5px;}
+#lerr{background:rgba(230,51,41,.08);border:1px solid rgba(230,51,41,.2);color:#E63329;padding:9px 13px;border-radius:8px;font-size:13px;margin-bottom:11px;display:none;}
+.lft{text-align:center;margin-top:18px;font-size:11px;color:#718096;}
+#AP{display:none;min-height:100vh;}
+.sb{width:240px;background:#0D1B3E;display:flex;flex-direction:column;position:fixed;top:0;left:0;height:100vh;z-index:100;transition:transform .3s;}
+.sb-logo{padding:13px;display:flex;align-items:center;gap:9px;border-bottom:1px solid rgba(255,255,255,.08);}
+.sb-logo img{height:40px;border-radius:50%;}
+.sn{font-family:'Syne',sans-serif;color:white;font-size:12px;font-weight:700;}
+.ss{color:#00C2A8;font-size:9px;letter-spacing:1.5px;text-transform:uppercase;}
+.sb-nav{flex:1;overflow-y:auto;padding:7px 0;}
+.ns{padding:9px 13px 3px;font-size:9px;font-weight:700;color:rgba(255,255,255,.3);letter-spacing:1.5px;text-transform:uppercase;}
+.ni{display:flex;align-items:center;gap:9px;padding:9px 13px;cursor:pointer;border-left:3px solid transparent;font-size:13px;font-weight:500;color:rgba(255,255,255,.6);}
+.ni:hover{background:rgba(255,255,255,.06);color:white;}
+.ni.on{background:rgba(0,194,168,.12);border-left-color:#00C2A8;color:white;}
+.ni svg{width:15px;height:15px;flex-shrink:0;}
+.sb-ft{padding:11px 13px;border-top:1px solid rgba(255,255,255,.08);}
+.uc{display:flex;align-items:center;gap:8px;padding:8px 10px;border-radius:10px;background:rgba(255,255,255,.06);}
+.uav{width:30px;height:30px;border-radius:50%;background:#00C2A8;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:white;flex-shrink:0;}
+.unm{color:white;font-size:11px;font-weight:600;}
+.url2{color:#00C2A8;font-size:10px;}
+.lo{margin-left:auto;background:none;border:none;cursor:pointer;color:rgba(255,255,255,.4);font-size:18px;line-height:1;}
+.lo:hover{color:#E63329;}
+.mn{margin-left:240px;display:flex;flex-direction:column;min-height:100vh;}
+.tb{background:white;border-bottom:1px solid #E2E8F0;padding:0 22px;height:56px;display:flex;align-items:center;gap:12px;position:sticky;top:0;z-index:50;}
+.tb-ti{font-family:'Syne',sans-serif;font-size:16px;font-weight:700;color:#0D1B3E;flex:1;}
+.dc{background:#F7FAFC;border:1px solid #E2E8F0;border-radius:7px;padding:4px 10px;font-size:11px;color:#718096;}
+.hbg{display:none;background:none;border:none;cursor:pointer;font-size:20px;}
+.pg{flex:1;padding:22px;display:none;}
+.pg.on{display:block;}
+.ph{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:17px;flex-wrap:wrap;gap:10px;}
+.ph h1{font-family:'Syne',sans-serif;font-size:20px;font-weight:700;color:#0D1B3E;}
+.ph p{font-size:13px;color:#718096;margin-top:3px;}
+.card{background:white;border-radius:12px;border:1px solid #E2E8F0;overflow:hidden;margin-bottom:15px;}
+.ch{padding:13px 16px;border-bottom:1px solid #E2E8F0;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;}
+.ct{font-size:13px;font-weight:700;color:#0D1B3E;}
+.cb{padding:16px;}
+.sg{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:15px;}
+.sc{background:white;border-radius:12px;border:1px solid #E2E8F0;padding:14px 16px;position:relative;overflow:hidden;cursor:pointer;transition:transform .15s;}
+.sc:hover{transform:translateY(-2px);}
+.sc::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;}
+.sc.c1::before{background:#00C2A8;}.sc.c2::before{background:#38A169;}.sc.c3::before{background:#D69E2E;}.sc.c4::before{background:#805AD5;}.sc.c5::before{background:#E63329;}.sc.c6::before{background:#DD6B20;}
+.sv{font-family:'Syne',sans-serif;font-size:24px;font-weight:800;color:#0D1B3E;}
+.sl{font-size:11px;color:#718096;margin-top:3px;}
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:14px;}
+.g3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;}
+.g4{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;}
+.tw{overflow-x:auto;}
+table{width:100%;border-collapse:collapse;font-size:13px;}
+th{background:#F7FAFC;padding:8px 12px;text-align:left;font-size:10px;font-weight:700;color:#718096;text-transform:uppercase;letter-spacing:.5px;border-bottom:1px solid #E2E8F0;}
+td{padding:10px 12px;border-bottom:1px solid #E2E8F0;vertical-align:middle;}
+tr:last-child td{border-bottom:none;}
+tr:hover td{background:#F7FAFC;}
+.b{display:inline-flex;padding:2px 8px;border-radius:20px;font-size:11px;font-weight:600;}
+.bg{background:rgba(56,161,105,.1);color:#38A169;}.br{background:rgba(230,51,41,.1);color:#E63329;}.by{background:rgba(214,158,46,.1);color:#D69E2E;}.bt{background:rgba(0,194,168,.1);color:#00C2A8;}.bp{background:rgba(128,90,213,.1);color:#805AD5;}.bn{background:rgba(13,27,62,.08);color:#0D1B3E;}.bo{background:rgba(221,107,32,.1);color:#DD6B20;}
+.av{width:30px;height:30px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:white;flex-shrink:0;}
+.btn{padding:7px 14px;border-radius:8px;border:none;cursor:pointer;font-size:12px;font-weight:600;font-family:'Inter',sans-serif;display:inline-flex;align-items:center;gap:5px;transition:all .15s;}
+.btp{background:#0D1B3E;color:white;}.btt{background:#00C2A8;color:white;}.bto{background:white;color:#0D1B3E;border:1.5px solid #E2E8F0;}.btr{background:#E63329;color:white;}.btsm{padding:4px 9px;font-size:11px;}
+.ov{position:fixed;inset:0;background:rgba(13,27,62,.5);z-index:200;display:none;align-items:center;justify-content:center;backdrop-filter:blur(3px);}
+.ov.on{display:flex;}
+.mo{background:white;border-radius:13px;width:90%;max-width:520px;max-height:88vh;overflow-y:auto;}
+.mh{padding:13px 17px;border-bottom:1px solid #E2E8F0;display:flex;align-items:center;justify-content:space-between;}
+.mt{font-size:14px;font-weight:700;color:#0D1B3E;}
+.mx{width:25px;height:25px;border-radius:6px;background:#F7FAFC;border:none;cursor:pointer;font-size:13px;}
+.mb{padding:17px;}
+.mf{padding:12px 17px;border-top:1px solid #E2E8F0;display:flex;justify-content:flex-end;gap:7px;}
+.fr{display:grid;grid-template-columns:1fr 1fr;gap:11px;margin-bottom:11px;}
+.ff{display:flex;flex-direction:column;gap:4px;margin-bottom:10px;}
+.ff label{font-size:10px;font-weight:700;color:#718096;letter-spacing:.8px;text-transform:uppercase;}
+.ff input,.ff select,.ff textarea{border:1.5px solid #E2E8F0;border-radius:8px;padding:8px 11px;font-size:13px;font-family:'Inter',sans-serif;width:100%;}
+.ff input:focus,.ff select:focus,.ff textarea:focus{outline:none;border-color:#00C2A8;}
+.tw2{position:fixed;top:14px;right:14px;display:flex;flex-direction:column;gap:6px;z-index:999;}
+.tst{background:white;border:1px solid #E2E8F0;border-radius:10px;padding:10px 14px;box-shadow:0 6px 20px rgba(0,0,0,.1);display:flex;align-items:center;gap:8px;font-size:13px;font-weight:500;min-width:220px;transform:translateX(300px);transition:transform .3s;border-left:4px solid #00C2A8;}
+.tst.show{transform:translateX(0);}
+.tst.err{border-left-color:#E63329;}.tst.wrn{border-left-color:#D69E2E;}
+.clk{background:linear-gradient(135deg,#0D1B3E,#1a3a7c);border-radius:12px;padding:20px;text-align:center;color:white;}
+.clk-t{font-family:'Syne',sans-serif;font-size:36px;font-weight:800;letter-spacing:-1px;}
+.clk-d{font-size:11px;opacity:.5;margin-top:3px;}
+.pst{display:inline-block;font-size:11px;font-weight:600;padding:3px 10px;border-radius:20px;margin:8px 0;}
+.pbtn{padding:9px 24px;border-radius:9px;border:none;cursor:pointer;font-size:13px;font-weight:700;font-family:'Inter',sans-serif;margin-top:3px;}
+.pi2{background:#00C2A8;color:white;}.po2{background:#E63329;color:white;}
+.ld{display:flex;align-items:center;justify-content:center;padding:36px;color:#718096;font-size:13px;gap:8px;}
+.sp{width:17px;height:17px;border:2px solid #E2E8F0;border-top-color:#00C2A8;border-radius:50%;animation:spin .7s linear infinite;}
+@keyframes spin{to{transform:rotate(360deg)}}
+.em{text-align:center;padding:36px 18px;color:#718096;}
+.em-i{font-size:32px;margin-bottom:9px;}
+.em h3{font-size:14px;font-weight:600;color:#0D1B3E;margin-bottom:4px;}
+.psh{background:linear-gradient(135deg,#0D1B3E,#1a3a7c);padding:15px 19px;color:white;}
+.pst2{width:100%;border-collapse:collapse;}
+.pst2 td{padding:7px 12px;border-bottom:1px solid #E2E8F0;font-size:13px;}
+.pst2 .pl{color:#718096;}
+.ptr{background:#0D1B3E;color:white;}
+.prb{background:linear-gradient(135deg,#0D1B3E,#1a3a7c);border-radius:12px;padding:20px;display:flex;align-items:center;gap:16px;margin-bottom:15px;}
+.pr-av{width:64px;height:64px;border-radius:50%;background:#00C2A8;display:flex;align-items:center;justify-content:center;font-size:22px;font-weight:700;color:white;border:3px solid rgba(255,255,255,.3);}
+.pr-n{color:white;font-size:18px;font-weight:700;}
+.pr-s{color:rgba(255,255,255,.55);font-size:12px;margin-top:2px;}
+.ptg{background:rgba(0,194,168,.15);color:#00C2A8;font-size:9px;font-weight:600;padding:2px 8px;border-radius:8px;display:inline-block;margin:4px 3px 0 0;}
+.pb2{height:5px;background:#E2E8F0;border-radius:3px;overflow:hidden;margin-top:5px;}
+.pf{height:100%;border-radius:3px;}
+.kp{background:white;border-radius:10px;border:1px solid #E2E8F0;padding:13px;text-align:center;}
+.kv{font-family:'Syne',sans-serif;font-size:22px;font-weight:800;color:#0D1B3E;}
+.kl{font-size:11px;color:#718096;margin-top:2px;}
+.pipe{display:flex;gap:8px;overflow-x:auto;padding-bottom:8px;margin-bottom:15px;}
+.pipe-col{min-width:200px;background:#F7FAFC;border-radius:10px;padding:10px;}
+.pipe-h{font-size:11px;font-weight:700;color:#718096;text-transform:uppercase;letter-spacing:.5px;margin-bottom:8px;display:flex;justify-content:space-between;}
+.pipe-card{background:white;border:1px solid #E2E8F0;border-radius:8px;padding:10px;margin-bottom:6px;cursor:pointer;transition:all .15s;}
+.pipe-card:hover{border-color:#00C2A8;box-shadow:0 2px 8px rgba(0,0,0,.06);}
+.pipe-name{font-size:12px;font-weight:600;color:#0D1B3E;}
+.pipe-role{font-size:11px;color:#718096;margin-top:2px;}
+.pipe-score{font-size:11px;font-weight:700;padding:1px 6px;border-radius:10px;display:inline-block;margin-top:4px;}
+.ob-task{display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid #E2E8F0;}
+.ob-task:last-child{border-bottom:none;}
+.ob-chk{width:18px;height:18px;border-radius:5px;border:2px solid #E2E8F0;cursor:pointer;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:11px;}
+.ob-chk.done{background:#38A169;border-color:#38A169;color:white;}
+.ob-nm{font-size:13px;font-weight:500;color:#0D1B3E;}
+.ob-cat{font-size:10px;color:#718096;}
+.skill-bar{height:6px;background:#E2E8F0;border-radius:3px;overflow:hidden;margin-top:4px;}
+.skill-fill{height:100%;border-radius:3px;background:#00C2A8;}
+@media(max-width:900px){.sb{transform:translateX(-100%);}.sb.on{transform:translateX(0);}.mn{margin-left:0;}.hbg{display:block;}.sg,.g2,.g3,.g4,.fr{grid-template-columns:1fr 1fr;}.ll{display:none;}.lr{width:100%;}}
+@media(max-width:560px){.sg,.g2,.g3,.g4,.fr{grid-template-columns:1fr;}}
+</style>
+</head>
+<body>
+
+<div id="LP">
+  <div class="ll">
+    <div style="font-family:Syne,sans-serif;font-size:22px;font-weight:800;color:white;letter-spacing:-1px;">Pay<span style="color:#00C2A8">Pe</span></div>
+    <h1>PayPe HRMS</h1>
+    <p>Human Resource Management System</p>
+    <div class="feats">
+      <div class="feat"><span>&#x1F465;</span><span>Employee Management</span></div>
+      <div class="feat"><span>&#x1F3AF;</span><span>Recruitment &amp; ATS</span></div>
+      <div class="feat"><span>&#x2705;</span><span>Onboarding Tracker</span></div>
+      <div class="feat"><span>&#x1F4B0;</span><span>Payroll Processing</span></div>
+    </div>
+  </div>
+  <div class="lr">
+    <div class="lbox">
+      <h2>Welcome Back!</h2>
+      <p>Sign in to PayPe HRMS</p>
+      <div class="rtabs">
+        <button class="rtab on" onclick="setRole('admin',this)">&#x1F511; Admin</button>
+        <button class="rtab" onclick="setRole('hr',this)">&#x1F469; HR</button>
+        <button class="rtab" onclick="setRole('employee',this)">&#x1F464; Employee</button>
+      </div>
+      <div id="lerr"></div>
+      <div class="fi"><label>Email</label><input type="email" id="lem" placeholder="Enter your email"></div>
+      <div class="fi"><label>Password</label><input type="password" id="lpw" placeholder="Enter your password" onkeydown="if(event.key===String.fromCharCode(13))doLogin()"></div>
+      <button id="lbtn" onclick="doLogin()">Sign In</button>
+      <div class="lft">PayPe Technologies Pvt. Ltd. &nbsp;|&nbsp; <span style="color:#00C2A8">hr.paype.co.in</span></div>
+    </div>
+  </div>
+</div>
+
+<div id="AP">
+  <aside class="sb" id="sb">
+    <div class="sb-logo">
+      <div style="font-family:Syne,sans-serif;font-size:14px;font-weight:800;color:white;">Pay<span style="color:#00C2A8">Pe</span></div>
+      <div><div class="sn">PayPe HRMS</div><div class="ss">hr.paype.co.in</div></div>
+    </div>
+    <nav class="sb-nav" id="sbn"></nav>
+    <div class="sb-ft">
+      <div class="uc">
+        <div class="uav" id="uav">R</div>
+        <div><div class="unm" id="unm">...</div><div class="url2" id="url2">...</div></div>
+        <button class="lo" onclick="doLogout()" title="Logout">&#x2717;</button>
+      </div>
+    </div>
+  </aside>
+  <main class="mn">
+    <div class="tb">
+      <button class="hbg" onclick="document.getElementById('sb').classList.toggle('on')">&#9776;</button>
+      <div class="tb-ti" id="tbti">Dashboard</div>
+      <div class="dc" id="tbdt"></div>
+    </div>
+    <div class="pg on" id="pg-dashboard"><div id="dbc"><div class="ld"><div class="sp"></div>Loading...</div></div></div>
+    <div class="pg" id="pg-employees">
+      <div class="ph"><div><h1>Employees</h1><p id="esub"></p></div><div id="eact"></div></div>
+      <div class="card">
+        <div class="ch"><div class="ct">All Employees</div>
+          <div style="display:flex;gap:7px;">
+            <input placeholder="Search..." id="esrch" style="border:1.5px solid #E2E8F0;border-radius:7px;padding:6px 10px;font-size:12px;font-family:inherit;width:160px;" oninput="filterEmp()">
+            <select id="edept" style="border:1.5px solid #E2E8F0;border-radius:7px;padding:6px 9px;font-size:12px;font-family:inherit;" onchange="filterEmp()"><option value="">All Depts</option></select>
+          </div>
+        </div>
+        <div class="tw"><div id="etbl"><div class="ld"><div class="sp"></div>Loading...</div></div></div>
+      </div>
+    </div>
+    <div class="pg" id="pg-attendance"><div class="ph"><div><h1>Attendance</h1></div></div><div id="atc"><div class="ld"><div class="sp"></div>Loading...</div></div></div>
+    <div class="pg" id="pg-leave">
+      <div class="ph"><div><h1>Leave</h1><p>Manage leave requests</p></div><button class="btn btp" onclick="openMod('lvm')" id="albtn" style="display:none">+ Apply Leave</button></div>
+      <div id="lvc"><div class="ld"><div class="sp"></div>Loading...</div></div>
+    </div>
+    <div class="pg" id="pg-payroll">
+      <div class="ph"><div><h1>Payroll</h1><p>Salary and payslips</p></div><button class="btn btp" onclick="runPayroll()" id="rpbtn" style="display:none">Run Payroll</button></div>
+      <div id="prc"><div class="ld"><div class="sp"></div>Loading...</div></div>
+    </div>
+    <div class="pg" id="pg-recruitment">
+      <div class="ph"><div><h1>Recruitment</h1><p>ATS Pipeline</p></div>
+        <div style="display:flex;gap:8px;">
+          <button class="btn bto" onclick="goPage('jobs')">&#x1F4CB; Jobs</button>
+          <button class="btn btp" onclick="openMod('njm')">+ Post Job</button>
+        </div>
+      </div>
+      <div id="rdc"><div class="ld"><div class="sp"></div>Loading...</div></div>
+    </div>
+    <div class="pg" id="pg-jobs">
+      <div class="ph"><div><h1>Job Listings</h1><p>All open positions</p></div><button class="btn btp" onclick="openMod('njm')">+ Post Job</button></div>
+      <div id="jbc"><div class="ld"><div class="sp"></div>Loading...</div></div>
+    </div>
+    <div class="pg" id="pg-candidates">
+      <div class="ph"><div><h1>Candidates</h1><p>Talent database</p></div><button class="btn btp" onclick="openMod('ncm')">+ Add Candidate</button></div>
+      <div id="cdc"><div class="ld"><div class="sp"></div>Loading...</div></div>
+    </div>
+    <div class="pg" id="pg-onboarding">
+      <div class="ph"><div><h1>Onboarding</h1><p>Employee onboarding tracker</p></div></div>
+      <div id="obc"><div class="ld"><div class="sp"></div>Loading...</div></div>
+    </div>
+    <div class="pg" id="pg-assets">
+      <div class="ph"><div><h1>IT Assets</h1><p>Asset management</p></div><button class="btn btp" onclick="openMod('nam')">+ Add Asset</button></div>
+      <div id="asc"><div class="ld"><div class="sp"></div>Loading...</div></div>
+    </div>
+    <div class="pg" id="pg-profile"><div class="ph"><div><h1>My Profile</h1></div></div><div id="pfc"><div class="ld"><div class="sp"></div>Loading...</div></div></div>
+  </main>
+</div>
+
+<!-- MODALS -->
+<div class="ov" id="aem" onclick="if(event.target===this)closeMod('aem')">
+  <div class="mo">
+    <div class="mh"><div class="mt">Add New Employee</div><button class="mx" onclick="closeMod('aem')">&#x2715;</button></div>
+    <div class="mb">
+      <div class="fr">
+        <div class="ff"><label>First Name *</label><input id="ef1" placeholder="First name"></div>
+        <div class="ff"><label>Last Name *</label><input id="ef2" placeholder="Last name"></div>
+        <div class="ff"><label>Work Email *</label><input id="ef3" type="email" placeholder="email@paype.co.in"></div>
+        <div class="ff"><label>Mobile *</label><input id="ef4" placeholder="9XXXXXXXXX"></div>
+        <div class="ff"><label>Department</label><select id="ef5"><option value="">Select</option></select></div>
+        <div class="ff"><label>Location</label><input id="ef6" placeholder="Coimbatore"></div>
+        <div class="ff"><label>Date of Joining</label><input id="ef7" type="date"></div>
+        <div class="ff"><label>Annual CTC (Rs)</label><input id="ef8" type="number" placeholder="180000"></div>
+      </div>
+    </div>
+    <div class="mf"><button class="btn bto" onclick="closeMod('aem')">Cancel</button><button class="btn btp" onclick="addEmp()">Add Employee</button></div>
+  </div>
+</div>
+
+<div class="ov" id="lvm" onclick="if(event.target===this)closeMod('lvm')">
+  <div class="mo">
+    <div class="mh"><div class="mt">Apply for Leave</div><button class="mx" onclick="closeMod('lvm')">&#x2715;</button></div>
+    <div class="mb">
+      <div class="ff"><label>Leave Type</label><select id="lf1"><option value="">Select Type</option></select></div>
+      <div class="fr">
+        <div class="ff"><label>From Date</label><input id="lf2" type="date"></div>
+        <div class="ff"><label>To Date</label><input id="lf3" type="date"></div>
+      </div>
+      <div class="ff"><label>Reason</label><textarea id="lf4" rows="3" style="border:1.5px solid #E2E8F0;border-radius:8px;padding:8px 11px;font-family:inherit;font-size:13px;resize:vertical;width:100%;" placeholder="Brief reason..."></textarea></div>
+    </div>
+    <div class="mf"><button class="btn bto" onclick="closeMod('lvm')">Cancel</button><button class="btn btp" onclick="applyLeave()">Submit</button></div>
+  </div>
+</div>
+
+<div class="ov" id="njm" onclick="if(event.target===this)closeMod('njm')">
+  <div class="mo">
+    <div class="mh"><div class="mt">Post New Job</div><button class="mx" onclick="closeMod('njm')">&#x2715;</button></div>
+    <div class="mb">
+      <div class="fr">
+        <div class="ff"><label>Job Title *</label><input id="jf1" placeholder="e.g. Sales Executive"></div>
+        <div class="ff"><label>Department</label><select id="jf2"><option value="">Select</option></select></div>
+        <div class="ff"><label>Location</label><input id="jf3" placeholder="Coimbatore"></div>
+        <div class="ff"><label>Job Type</label><select id="jf4"><option>Full-Time</option><option>Part-Time</option><option>Contract</option><option>Internship</option></select></div>
+        <div class="ff"><label>Min Experience (yrs)</label><input id="jf5" type="number" placeholder="0" value="0"></div>
+        <div class="ff"><label>Max Experience (yrs)</label><input id="jf6" type="number" placeholder="3" value="3"></div>
+        <div class="ff"><label>Min Salary (Rs/yr)</label><input id="jf7" type="number" placeholder="180000"></div>
+        <div class="ff"><label>Max Salary (Rs/yr)</label><input id="jf8" type="number" placeholder="300000"></div>
+        <div class="ff"><label>No. of Openings</label><input id="jf9" type="number" placeholder="1" value="1"></div>
+        <div class="ff"><label>Closing Date</label><input id="jf10" type="date"></div>
+      </div>
+      <div class="ff"><label>Description</label><textarea id="jf11" rows="3" style="border:1.5px solid #E2E8F0;border-radius:8px;padding:8px 11px;font-family:inherit;font-size:13px;resize:vertical;width:100%;" placeholder="Job description..."></textarea></div>
+      <div class="ff"><label>Requirements</label><textarea id="jf12" rows="2" style="border:1.5px solid #E2E8F0;border-radius:8px;padding:8px 11px;font-family:inherit;font-size:13px;resize:vertical;width:100%;" placeholder="Key requirements..."></textarea></div>
+    </div>
+    <div class="mf"><button class="btn bto" onclick="closeMod('njm')">Cancel</button><button class="btn btp" onclick="postJob()">Post Job</button></div>
+  </div>
+</div>
+
+<div class="ov" id="ncm" onclick="if(event.target===this)closeMod('ncm')">
+  <div class="mo">
+    <div class="mh"><div class="mt">Add Candidate</div><button class="mx" onclick="closeMod('ncm')">&#x2715;</button></div>
+    <div class="mb">
+      <div class="fr">
+        <div class="ff"><label>First Name *</label><input id="cf1" placeholder="First name"></div>
+        <div class="ff"><label>Last Name *</label><input id="cf2" placeholder="Last name"></div>
+        <div class="ff"><label>Email *</label><input id="cf3" type="email" placeholder="candidate@email.com"></div>
+        <div class="ff"><label>Mobile</label><input id="cf4" placeholder="9XXXXXXXXX"></div>
+        <div class="ff"><label>Current Company</label><input id="cf5" placeholder="Company name"></div>
+        <div class="ff"><label>Current Position</label><input id="cf6" placeholder="Job title"></div>
+        <div class="ff"><label>Experience (yrs)</label><input id="cf7" type="number" placeholder="2"></div>
+        <div class="ff"><label>Current CTC (Rs)</label><input id="cf8" type="number" placeholder="300000"></div>
+        <div class="ff"><label>Expected CTC (Rs)</label><input id="cf9" type="number" placeholder="400000"></div>
+        <div class="ff"><label>Notice Period (days)</label><input id="cf10" type="number" placeholder="30"></div>
+        <div class="ff"><label>Location</label><input id="cf11" placeholder="City"></div>
+        <div class="ff"><label>Source</label><select id="cf12"><option>Direct</option><option>LinkedIn</option><option>Naukri</option><option>Referral</option><option>Campus</option></select></div>
+      </div>
+    </div>
+    <div class="mf"><button class="btn bto" onclick="closeMod('ncm')">Cancel</button><button class="btn btp" onclick="addCandidate()">Add Candidate</button></div>
+  </div>
+</div>
+
+<div class="ov" id="nam" onclick="if(event.target===this)closeMod('nam')">
+  <div class="mo">
+    <div class="mh"><div class="mt">Add IT Asset</div><button class="mx" onclick="closeMod('nam')">&#x2715;</button></div>
+    <div class="mb">
+      <div class="fr">
+        <div class="ff"><label>Asset Code *</label><input id="af1" placeholder="LP-004"></div>
+        <div class="ff"><label>Asset Name *</label><input id="af2" placeholder="Laptop"></div>
+        <div class="ff"><label>Category</label><select id="af3"><option>Laptop</option><option>Mobile</option><option>Monitor</option><option>Peripheral</option><option>Other</option></select></div>
+        <div class="ff"><label>Brand</label><input id="af4" placeholder="Dell"></div>
+        <div class="ff"><label>Model</label><input id="af5" placeholder="Inspiron 15"></div>
+        <div class="ff"><label>Serial Number</label><input id="af6" placeholder="SN123456"></div>
+        <div class="ff"><label>Purchase Date</label><input id="af7" type="date"></div>
+        <div class="ff"><label>Warranty Till</label><input id="af8" type="date"></div>
+      </div>
+    </div>
+    <div class="mf"><button class="btn bto" onclick="closeMod('nam')">Cancel</button><button class="btn btp" onclick="addAsset()">Add Asset</button></div>
+  </div>
+</div>
+
+
+    
+    <div class="pg" id="pg-interviews">
+      <div class="ph"><div><h1>Interviews</h1><p>Schedule and track interviews</p></div>
+        <button class="btn btp" onclick="openMod('sim')">+ Schedule Interview</button>
+      </div>
+      <div id="ivc"><div class="ld"><div class="sp"></div>Loading...</div></div>
+    </div>
+
+    <div class="pg" id="pg-orgchart">
+      <div class="ph"><div><h1>Org Chart</h1><p>Organisation hierarchy</p></div></div>
+      <div id="ogc"><div class="ld"><div class="sp"></div>Loading...</div></div>
+    </div>
+    <div class="pg" id="pg-offers">
+      <div class="ph"><div><h1>Offer Letters</h1><p>Manage offer letters</p></div><button class="btn btp" onclick="openMod('nom')">+ Create Offer</button></div>
+      <div id="ofc"><div class="ld"><div class="sp"></div>Loading...</div></div>
+    </div>
+    <div class="pg" id="pg-settings">
+      <div class="ph"><div><h1>Settings</h1><p>Account settings</p></div></div>
+      <div id="stc"></div>
+    </div>
+
+  </main>
+</div>
+
+
+
+<div class="ov" id="sim" onclick="if(event.target===this)closeMod('sim')">
+  <div class="mo">
+    <div class="mh"><div class="mt">Schedule Interview</div><button class="mx" onclick="closeMod('sim')">&#x2715;</button></div>
+    <div class="mb">
+      <div class="ff"><label>Candidate / Application *</label><select id="iv1"><option value="">Select</option></select></div>
+      <div class="fr">
+        <div class="ff"><label>Round</label><select id="iv2"><option value="1">Round 1 - HR</option><option value="2">Round 2 - Technical</option><option value="3">Round 3 - Final</option></select></div>
+        <div class="ff"><label>Round Name</label><input id="iv3" placeholder="HR Round"></div>
+        <div class="ff"><label>Interview Type</label><select id="iv4"><option>Video</option><option>Phone</option><option>In-Person</option></select></div>
+        <div class="ff"><label>Interviewer</label><select id="iv5"><option value="">Select Interviewer</option></select></div>
+        <div class="ff"><label>Date &amp; Time *</label><input id="iv6" type="datetime-local"></div>
+        <div class="ff"><label>Duration (mins)</label><input id="iv7" type="number" value="60" placeholder="60"></div>
+        <div class="ff"><label>Meet Link</label><input id="iv8" placeholder="https://meet.google.com/..."></div>
+      </div>
+    </div>
+    <div class="mf"><button class="btn bto" onclick="closeMod('sim')">Cancel</button><button class="btn btp" onclick="scheduleInterview()">Schedule</button></div>
+  </div>
+</div>
+
+<div class="ov" id="fbm" onclick="if(event.target===this)closeMod('fbm')">
+  <div class="mo">
+    <div class="mh"><div class="mt">Submit Interview Feedback</div><button class="mx" onclick="closeMod('fbm')">&#x2715;</button></div>
+    <div class="mb">
+      <input type="hidden" id="fb_id">
+      <div class="ff"><label>Outcome</label>
+        <select id="fb1">
+          <option value="Selected">Selected - Move Forward</option>
+          <option value="Rejected">Rejected - Not Suitable</option>
+          <option value="Hold">On Hold</option>
+          <option value="Next Round">Schedule Next Round</option>
+        </select>
+      </div>
+      <div class="ff"><label>Rating (1-5)</label>
+        <select id="fb2">
+          <option value="5">5 - Excellent</option>
+          <option value="4">4 - Good</option>
+          <option value="3">3 - Average</option>
+          <option value="2">2 - Below Average</option>
+          <option value="1">1 - Poor</option>
+        </select>
+      </div>
+      <div class="ff"><label>Detailed Feedback *</label>
+        <textarea id="fb3" rows="4" style="border:1.5px solid #E2E8F0;border-radius:8px;padding:8px 11px;font-family:inherit;font-size:13px;resize:vertical;width:100%;" placeholder="Candidate strengths, weaknesses, observations..."></textarea>
+      </div>
+    </div>
+    <div class="mf"><button class="btn bto" onclick="closeMod('fbm')">Cancel</button><button class="btn btp" onclick="submitFeedback()">Submit Feedback</button></div>
+  </div>
+</div>
+
+<div class="ov" id="nom" onclick="if(event.target===this)closeMod('nom')">
+  <div class="mo">
+    <div class="mh"><div class="mt">Create Offer Letter</div><button class="mx" onclick="closeMod('nom')">&#x2715;</button></div>
+    <div class="mb">
+      <div class="ff"><label>Candidate *</label><select id="of1"><option value="">Select Candidate</option></select></div>
+      <div class="fr">
+        <div class="ff"><label>Designation *</label><input id="of2" placeholder="e.g. Sales Executive"></div>
+        <div class="ff"><label>Department</label><select id="of3"><option value="">Select</option></select></div>
+        <div class="ff"><label>Annual CTC (Rs) *</label><input id="of4" type="number" placeholder="300000"></div>
+        <div class="ff"><label>Date of Joining</label><input id="of5" type="date"></div>
+        <div class="ff"><label>Offer Expiry Date</label><input id="of6" type="date"></div>
+      </div>
+    </div>
+    <div class="mf"><button class="btn bto" onclick="closeMod('nom')">Cancel</button><button class="btn btp" onclick="createOffer()">Create Offer</button></div>
+  </div>
+</div>
+
+<div class="ov" id="ofv" onclick="if(event.target===this)closeMod('ofv')">
+  <div class="mo" style="max-width:650px;">
+    <div class="mh"><div class="mt">Offer Letter</div>
+      <div style="display:flex;gap:7px;">
+        <button class="btn btt btsm" onclick="printOffer()">&#x1F4E5; Download PDF</button>
+        <button class="mx" onclick="closeMod('ofv')">&#x2715;</button>
+      </div>
+    </div>
+    <div class="mb" id="offerContent"></div>
+  </div>
+</div>
+
+<div class="ov" id="cpm" onclick="if(event.target===this)closeMod('cpm')">
+  <div class="mo" style="max-width:400px;">
+    <div class="mh"><div class="mt">Change Password</div><button class="mx" onclick="closeMod('cpm')">&#x2715;</button></div>
+    <div class="mb">
+      <div class="ff"><label>Current Password</label><input id="cp1" type="password" placeholder="Current password"></div>
+      <div class="ff"><label>New Password</label><input id="cp2" type="password" placeholder="Min 8 characters"></div>
+      <div class="ff"><label>Confirm New Password</label><input id="cp3" type="password" placeholder="Repeat new password"></div>
+    </div>
+    <div class="mf"><button class="btn bto" onclick="closeMod('cpm')">Cancel</button><button class="btn btp" onclick="changePassword()">Change Password</button></div>
+  </div>
+</div>
+
+<div class="tw2" id="tw2"></div>
+
+<script>
+var APIURL = 'https://hr.paype.co.in';
+var tok = localStorage.getItem('ht') || '';
+var CU = null;
+try { CU = JSON.parse(localStorage.getItem('hu') || 'null'); } catch(e) { CU = null; }
+var allEmps = [], lvPols = [], depts = [], pIn = false, pInTime = null;
+var dys = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
+var mns = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+var MNS = ['','Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+var nd = new Date();
+var dtEl = document.getElementById('tbdt');
+if (dtEl) dtEl.textContent = dys[nd.getDay()] + ', ' + nd.getDate() + ' ' + mns[nd.getMonth()] + ' ' + nd.getFullYear();
+function tickClock() {
+  var el = document.getElementById('clt');
+  if (!el) return;
+  var n = new Date(), h = n.getHours(), m = n.getMinutes(), s = n.getSeconds(), ap = h >= 12 ? 'PM' : 'AM';
+  h = h % 12; if (h === 0) h = 12;
+  el.textContent = h + ':' + pad(m) + ':' + pad(s) + ' ' + ap;
+  if (pIn && pInTime) {
+    var diff = Math.floor((n - pInTime) / 1000);
+    var hw = document.getElementById('hwk');
+    if (hw) hw.textContent = Math.floor(diff/3600) + 'h ' + pad(Math.floor((diff%3600)/60)) + 'm ' + pad(diff%60) + 's';
+  }
+}
+function pad(n) { return n < 10 ? '0' + n : String(n); }
+setInterval(tickClock, 1000);
+async function req(method, path, body) {
+  var opts = { method: method, headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + tok } };
+  if (body) opts.body = JSON.stringify(body);
+  try { var r = await fetch(APIURL + path, opts); return await r.json(); }
+  catch(e) { return { success: false, message: 'Network error' }; }
+}
+function toast(msg, type) {
+  var wrap = document.getElementById('tw2'), t = document.createElement('div');
+  t.className = 'tst' + (type === 'err' ? ' err' : type === 'wrn' ? ' wrn' : '');
+  t.textContent = (type === 'err' ? 'X ' : 'OK ') + msg;
+  wrap.appendChild(t);
+  setTimeout(function() { t.classList.add('show'); }, 10);
+  setTimeout(function() { t.classList.remove('show'); setTimeout(function() { t.remove(); }, 300); }, 3500);
+}
+function openMod(id) { document.getElementById(id).classList.add('on'); }
+function closeMod(id) { document.getElementById(id).classList.remove('on'); }
+function setRole(role, el) {
+  var tabs = document.querySelectorAll('.rtab');
+  for (var i = 0; i < tabs.length; i++) tabs[i].classList.remove('on');
+  el.classList.add('on');
+  var emails = { admin: 'admin@paype.co.in', hr: 'muthu@paype.co.in', employee: 'suresh@paype.co.in' };
+  document.getElementById('lem').value = emails[role] || '';
+  document.getElementById('lpw').value = '';
+  document.getElementById('lerr').style.display = 'none';
+}
+async function doLogin() {
+  var email = document.getElementById('lem').value.trim(), pass = document.getElementById('lpw').value;
+  var err = document.getElementById('lerr'), btn = document.getElementById('lbtn');
+  if (!email || !pass) { err.textContent = 'Enter email and password'; err.style.cssText = 'display:block;background:rgba(230,51,41,.08);border:1px solid rgba(230,51,41,.2);color:#E63329;padding:9px 13px;border-radius:8px;font-size:13px;margin-bottom:11px;'; return; }
+  btn.disabled = true; btn.textContent = 'Signing in...'; err.style.display = 'none';
+  var res = await req('POST', '/api/auth/login', { username: email, password: pass });
+  if (res.success) {
+    tok = res.data.accessToken; CU = res.data.user;
+    localStorage.setItem('ht', tok); localStorage.setItem('hu', JSON.stringify(CU));
+    startApp();
+  } else {
+    err.textContent = res.message || 'Invalid credentials';
+    err.style.cssText = 'display:block;background:rgba(230,51,41,.08);border:1px solid rgba(230,51,41,.2);color:#E63329;padding:9px 13px;border-radius:8px;font-size:13px;margin-bottom:11px;';
+    btn.disabled = false; btn.textContent = 'Sign In';
+  }
+}
+function doLogout() {
+  localStorage.removeItem('ht'); localStorage.removeItem('hu');
+  tok = ''; CU = null;
+  document.getElementById('AP').style.display = 'none';
+  document.getElementById('LP').style.display = 'flex';
+  document.getElementById('lbtn').disabled = false;
+  document.getElementById('lbtn').textContent = 'Sign In';
+  toast('Logged out');
+}
+function startApp() {
+  document.getElementById('LP').style.display = 'none';
+  document.getElementById('AP').style.display = 'block';
+  document.getElementById('unm').textContent = CU.firstName + ' ' + CU.lastName;
+  document.getElementById('url2').textContent = CU.role;
+  document.getElementById('uav').textContent = (CU.firstName || '?')[0].toUpperCase();
+  buildNav(); loadDepts(); loadLvPols(); loadDash();
+}
+var svgs = {
+  grid: '<rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/>',
+  users: '<path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87"/><path d="M16 3.13a4 4 0 010 7.75"/>',
+  clock: '<circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/>',
+  cal: '<rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/>',
+  dollar: '<line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6"/>',
+  target: '<circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/>',
+  brief: '<rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 00-2-2h-4a2 2 0 00-2 2v2"/>',
+  check: '<polyline points="9 11 12 14 22 4"/><path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11"/>',
+  cpu: '<rect x="4" y="4" width="16" height="16" rx="2"/><rect x="9" y="9" width="6" height="6"/><line x1="9" y1="1" x2="9" y2="4"/><line x1="15" y1="1" x2="15" y2="4"/><line x1="9" y1="20" x2="9" y2="23"/><line x1="15" y1="20" x2="15" y2="23"/><line x1="20" y1="9" x2="23" y2="9"/><line x1="20" y1="14" x2="23" y2="14"/><line x1="1" y1="9" x2="4" y2="9"/><line x1="1" y1="14" x2="4" y2="14"/>',
+  user: '<path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/>'
+};
+function buildNav() {
+  var role = CU.role;
+  var items = [
+    { id:'dashboard', label:'Dashboard', svg:'grid', roles:['admin','hr','employee'] },
+    { id:'employees', label:'Employees', svg:'users', roles:['admin','hr'] },
+    { id:'attendance', label:'Attendance', svg:'clock', roles:['admin','hr','employee'] },
+    { id:'leave', label:'Leave', svg:'cal', roles:['admin','hr','employee'] },
+    { id:'payroll', label:'Payroll', svg:'dollar', roles:['admin','hr','employee'] },
+    { id:'recruitment', label:'Recruitment', svg:'target', roles:['admin','hr'] },
+    { id:'jobs', label:'Job Listings', svg:'brief', roles:['admin','hr'] },
+    { id:'candidates', label:'Candidates', svg:'users', roles:['admin','hr'] },
+    { id:'onboarding', label:'Onboarding', svg:'check', roles:['admin','hr'] },
+    { id:'assets', label:'IT Assets', svg:'cpu', roles:['admin','hr'] },
+    { id:'profile', label:'My Profile', svg:'user', roles:['admin','hr','employee'] },
+    { id:'interviews', label:'Interviews', svg:'cal', roles:['admin','hr'] },
+    { id:'orgchart', label:'Org Chart', svg:'users', roles:['admin','hr'] },
+    { id:'offers', label:'Offer Letters', svg:'brief', roles:['admin','hr'] },
+    { id:'settings', label:'Settings', svg:'user', roles:['admin','hr','employee'] }
+  ];
+  var h = '<div class="ns">Core HR</div>';
+  var phase2 = false;
+  for (var i = 0; i < items.length; i++) {
+    var n = items[i];
+    if (n.roles.indexOf(role) === -1) continue;
+    if (['recruitment','jobs','candidates','onboarding','assets'].indexOf(n.id) >= 0 && !phase2) {
+      h += '<div class="ns">Recruitment</div>'; phase2 = true;
+    }
+    if (n.id === 'profile') h += '<div class="ns">Profile</div>';
+    h += '<div class="ni' + (n.id === 'dashboard' ? ' on' : '') + '" id="ni-' + n.id + '" onclick="goPage(' + "'" + n.id + "'" + ')">';
+    h += '<svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">' + svgs[n.svg] + '</svg>';
+    h += n.label + '</div>';
+  }
+  document.getElementById('sbn').innerHTML = h;
+}
+function showAllOff(title) {
+  var pages = document.querySelectorAll('.pg');
+  for (var i = 0; i < pages.length; i++) pages[i].classList.remove('on');
+  var navs = document.querySelectorAll('.ni');
+  for (var i = 0; i < navs.length; i++) navs[i].classList.remove('on');
+  document.getElementById('sb').classList.remove('on');
+  document.getElementById('tbti').textContent = title;
+  var pgId = title==='Org Chart'?'pg-orgchart':title==='Offer Letters'?'pg-offers':title==='Interviews'?'pg-interviews':'pg-settings';
+  var pgEl = document.getElementById(pgId);
+  if (pgEl) pgEl.classList.add('on');
+  var niId = title==='Org Chart'?'ni-orgchart':title==='Offer Letters'?'ni-offers':title==='Interviews'?'ni-interviews':'ni-settings';
+  var niEl = document.getElementById(niId);
+  if (niEl) niEl.classList.add('on');
+}
+
+function goPage(name) {
+  if (name === 'interviews') { showAllOff('Interviews'); loadInterviews(); return; }
+  if (name === 'orgchart') { showAllOff('Org Chart'); loadOrgChart(); return; }
+  if (name === 'offers') { showAllOff('Offer Letters'); loadOffers(); return; }
+  if (name === 'settings') { showAllOff('Settings'); loadSettings(); return; }
+
+  var pages = document.querySelectorAll('.pg');
+  for (var i = 0; i < pages.length; i++) pages[i].classList.remove('on');
+  var navs = document.querySelectorAll('.ni');
+  for (var i = 0; i < navs.length; i++) navs[i].classList.remove('on');
+  var pg = document.getElementById('pg-' + name);
+  if (pg) pg.classList.add('on');
+  var ni = document.getElementById('ni-' + name);
+  if (ni) ni.classList.add('on');
+  document.getElementById('sb').classList.remove('on');
+  var titles = { dashboard:'Dashboard', employees:'Employees', attendance:'Attendance', leave:'Leave Management', payroll:'Payroll', recruitment:'Recruitment ATS', jobs:'Job Listings', candidates:'Candidates', onboarding:'Onboarding', assets:'IT Assets', profile:'My Profile' };
+  document.getElementById('tbti').textContent = titles[name] || name;
+  if (name === 'employees') loadEmps();
+  if (name === 'attendance') loadAtt();
+  if (name === 'leave') loadLv();
+  if (name === 'payroll') loadPr();
+  if (name === 'recruitment') loadRecruitment();
+  if (name === 'jobs') loadJobs();
+  if (name === 'candidates') loadCandidates();
+  if (name === 'onboarding') loadOnboarding();
+  if (name === 'assets') loadAssets();
+  if (name === 'profile') loadProf();
+}
+async function loadDash() {
+  var res = await req('GET', '/api/dashboard/stats');
+  var rs = await req('GET', '/api/recruitment/stats');
+  if (!res.success) { document.getElementById('dbc').innerHTML = '<div class="em"><h3>Error loading</h3></div>'; return; }
+  var d = res.data, role = CU.role;
+  var h = '<div class="ph"><div><h1>Good day, ' + CU.firstName + '!</h1><p>PayPe Technologies Pvt. Ltd.</p></div>';
+  if (role === 'admin' || role === 'hr') h += '<button class="btn btp" onclick="openMod("aem")">+ Add Employee</button>';
+  h += '</div>';
+  h += '<div class="sg">';
+  h += '<div class="sc c1" onclick="goPage("aem")"><div class="sv">' + d.employees.total + '</div><div class="sl">Total Employees</div></div>';
+  h += '<div class="sc c2" onclick="goPage("aem")"><div class="sv">' + d.attendance.present + '</div><div class="sl">Present Today</div></div>';
+  h += '<div class="sc c3" onclick="goPage("aem")"><div class="sv">' + d.leave.pendingApprovals + '</div><div class="sl">Leave Pending</div></div>';
+  var payTxt = d.payroll ? ('Rs ' + Number(d.payroll.total_net/100000).toFixed(1) + 'L') : '--';
+  h += '<div class="sc c4" onclick="goPage("aem")"><div class="sv">' + payTxt + '</div><div class="sl">Last Payroll</div></div>';
+  h += '</div>';
+  if ((role === 'admin' || role === 'hr') && rs.success) {
+    var rs2 = rs.data;
+    h += '<div class="sg" style="grid-template-columns:repeat(4,1fr)">';
+    h += '<div class="sc c1" onclick="goPage("aem")"><div class="sv">' + rs2.jobs.active + '</div><div class="sl">Active Jobs</div></div>';
+    h += '<div class="sc c2" onclick="goPage("aem")"><div class="sv">' + rs2.totalCandidates + '</div><div class="sl">Candidates</div></div>';
+    h += '<div class="sc c5" onclick="goPage("aem")"><div class="sv">' + (rs2.applications.Screening || 0) + '</div><div class="sl">In Screening</div></div>';
+    h += '<div class="sc c6" onclick="goPage("aem")"><div class="sv">' + rs2.upcomingInterviews + '</div><div class="sl">Interviews Today</div></div>';
+    h += '</div>';
+  }
+  h += '<div class="g2">';
+  h += '<div class="card"><div class="ch"><div class="ct">Department Headcount</div></div><div class="cb">';
+  if (d.departmentStats && d.departmentStats.length) {
+    var mx = 1;
+    for (var i = 0; i < d.departmentStats.length; i++) { var c = parseInt(d.departmentStats[i].c)||0; if (c > mx) mx = c; }
+    var clrs = ['#00C2A8','#0D1B3E','#805AD5','#38A169','#D69E2E','#DD6B20'];
+    for (var i = 0; i < d.departmentStats.length; i++) {
+      var dep = d.departmentStats[i], pct = Math.round((parseInt(dep.c)||0)/mx*100), clr = clrs[i%clrs.length];
+      h += '<div style="display:flex;align-items:center;gap:8px;margin-bottom:9px;">';
+      h += '<div style="width:82px;font-size:11px;color:#718096;text-align:right;">' + dep.name + '</div>';
+      h += '<div style="flex:1;height:6px;background:#E2E8F0;border-radius:3px;overflow:hidden;"><div style="width:' + pct + '%;height:100%;background:' + clr + ';border-radius:3px;"></div></div>';
+      h += '<div style="font-size:11px;font-weight:600;color:#0D1B3E;width:16px;">' + dep.c + '</div></div>';
+    }
+  }
+  h += '</div></div>';
+  h += '<div class="card"><div class="ch"><div class="ct">Quick Actions</div></div><div class="cb">';
+  h += '<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">';
+  var acts = [
+    {ic:'Time',lb:'Attendance',fn:'attendance'},{ic:'Leave',lb:'Apply Leave',fn:'leave'},
+    {ic:'Pay',lb:'My Payslip',fn:'payroll'},{ic:'Me',lb:'My Profile',fn:'profile'}
+  ];
+  if (role === 'admin' || role === 'hr') {
+    acts = [{ic:'ATS',lb:'Recruitment',fn:'recruitment'},{ic:'Jobs',lb:'Job Listings',fn:'jobs'},{ic:'People',lb:'Candidates',fn:'candidates'},{ic:'Done',lb:'Onboarding',fn:'onboarding'}];
+  }
+  for (var i = 0; i < acts.length; i++) {
+    h += '<div onclick="goPage(' + "'" + acts[i].fn + "'" + ')" style="background:#F7FAFC;border:1.5px solid #E2E8F0;border-radius:9px;padding:12px;cursor:pointer;text-align:center;" onmouseover="this.style.borderColor=' + "'#00C2A8'" + '" onmouseout="this.style.borderColor=' + "'#E2E8F0'" + '">';
+    h += '<div style="font-size:20px;margin-bottom:4px;">' + acts[i].ic + '</div>';
+    h += '<div style="font-size:12px;font-weight:600;color:#0D1B3E;">' + acts[i].lb + '</div></div>';
+  }
+  h += '</div></div></div></div>';
+  document.getElementById('dbc').innerHTML = h;
+}
+async function loadDepts() {
+  var res = await req('GET', '/api/departments');
+  if (!res.success) return;
+  depts = res.data;
+  var s1 = document.getElementById('edept'), s2 = document.getElementById('ef5'), s3 = document.getElementById('jf2');
+  for (var i = 0; i < depts.length; i++) {
+    var op = document.createElement('option');
+    op.value = depts[i].id; op.textContent = depts[i].name;
+    if (s1) s1.appendChild(op.cloneNode(true));
+    if (s2) s2.appendChild(op.cloneNode(true));
+    if (s3) s3.appendChild(op.cloneNode(true));
+  }
+}
+async function loadLvPols() {
+  var res = await req('GET', '/api/leave/policies');
+  if (!res.success) return;
+  lvPols = res.data;
+  var s = document.getElementById('lf1');
+  if (!s) return;
+  for (var i = 0; i < lvPols.length; i++) {
+    var op = document.createElement('option');
+    op.value = lvPols[i].id; op.textContent = lvPols[i].name + ' (' + lvPols[i].days_per_year + ' days)';
+    s.appendChild(op);
+  }
+}
+async function loadEmps() {
+  if (CU.role === 'employee') { goPage("\1"); return; }
+  document.getElementById('esub').textContent = 'Loading...';
+  var btn = document.createElement('button');
+  btn.className = 'btn btp'; btn.textContent = '+ Add Employee';
+  btn.onclick = function() { openMod("\1"); };
+  document.getElementById('eact').innerHTML = '';
+  document.getElementById('eact').appendChild(btn);
+  var res = await req('GET', '/api/employees');
+  if (!res.success) { document.getElementById('etbl').innerHTML = '<div class="em"><h3>' + res.message + '</h3></div>'; return; }
+  allEmps = res.data.employees || [];
+  document.getElementById('esub').textContent = allEmps.length + ' employees';
+  renderEmps(allEmps);
+}
+function renderEmps(emps) {
+  if (!emps.length) { document.getElementById('etbl').innerHTML = '<div class="em"><h3>No employees found</h3></div>'; return; }
+  var clrs = ['#00C2A8','#0D1B3E','#805AD5','#38A169','#D69E2E','#DD6B20','#E63329'];
+  var h = '<table><thead><tr><th>Employee</th><th>ID</th><th>Department</th><th>Designation</th><th>Location</th><th>Status</th><th>Action</th></tr></thead><tbody>';
+  for (var i = 0; i < emps.length; i++) {
+    var e = emps[i], nm = (e.first_name||'') + ' ' + (e.last_name||''), clr = clrs[i%clrs.length];
+    var sbc = e.status === 'Active' ? 'bg' : e.status === 'Probation' ? 'bt' : 'by';
+    h += '<tr><td><div style="display:flex;align-items:center;gap:8px;"><div class="av" style="background:' + clr + '">' + (e.first_name||'?')[0].toUpperCase() + '</div>';
+    h += '<div><div style="font-weight:600;">' + nm + '</div><div style="font-size:11px;color:#718096;">' + (e.work_email||'') + '</div></div></div></td>';
+    h += '<td><span class="b bn">' + (e.employee_id||'') + '</span></td>';
+    h += '<td>' + (e.department_name||'--') + '</td><td>' + (e.designation||'--') + '</td><td>' + (e.work_location||'--') + '</td>';
+    h += '<td><span class="b ' + sbc + '">' + e.status + '</span></td>';
+    h += '<td><button class="btn bto btsm" onclick="editEmp(' + "'" + e.id + "','" + e.status + "'" + ')">Edit</button></td></tr>';
+  }
+  h += '</tbody></table>';
+  document.getElementById('etbl').innerHTML = h;
+}
+function filterEmp() {
+  var s = document.getElementById('esrch').value.toLowerCase(), d = document.getElementById('edept').value;
+  renderEmps(allEmps.filter(function(e) {
+    var nm = ((e.first_name||'') + ' ' + (e.last_name||'')).toLowerCase();
+    return (!s || nm.indexOf(s) >= 0 || (e.work_email||'').toLowerCase().indexOf(s) >= 0) && (!d || e.department_id === d);
+  }));
+}
+async function addEmp() {
+  var body = { firstName:document.getElementById('ef1').value.trim(), lastName:document.getElementById('ef2').value.trim(), workEmail:document.getElementById('ef3').value.trim(), mobile:document.getElementById('ef4').value.trim(), departmentId:document.getElementById('ef5').value||undefined, workLocation:document.getElementById('ef6').value.trim(), dateOfJoining:document.getElementById('ef7').value||undefined, annualCtc:document.getElementById('ef8').value?parseFloat(document.getElementById('ef8').value):undefined };
+  if (!body.firstName||!body.lastName||!body.workEmail||!body.mobile) { toast('Fill all required fields','err'); return; }
+  var res = await req('POST', '/api/employees', body);
+  if (res.success) { toast(res.message||'Employee added!'); closeMod('aem'); loadEmps(); loadDash(); ['ef1','ef2','ef3','ef4','ef6','ef7','ef8'].forEach(function(id){document.getElementById(id).value=''}); document.getElementById('ef5').value=''; }
+  else toast(res.message||'Failed','err');
+}
+function editEmp(id, status) {
+  var ns = status === 'Active' ? 'Inactive' : 'Active';
+  if (confirm('Change status to ' + ns + '?')) {
+    req('PUT', '/api/employees/' + id, { status: ns }).then(function(res) {
+      if (res.success) { toast('Status updated to ' + ns); loadEmps(); } else toast(res.message,'err');
+    });
+  }
+}
+async function loadAtt() {
+  var myRes = await req('GET', '/api/attendance/my'), role = CU.role;
+  var tdRes = { success: false };
+  if (role === 'admin' || role === 'hr') tdRes = await req('GET', '/api/attendance/today');
+  var today2 = myRes.success ? myRes.data.today : null;
+  pIn = !!(today2 && today2.punch_in && !today2.punch_out);
+  pInTime = pIn ? new Date(today2.punch_in) : null;
+  var piStr = today2 && today2.punch_in ? new Date(today2.punch_in).toLocaleTimeString('en-IN',{hour:'2-digit',minute:'2-digit'}) : '--';
+  var poStr = today2 && today2.punch_out ? new Date(today2.punch_out).toLocaleTimeString('en-IN',{hour:'2-digit',minute:'2-digit'}) : '--';
+  var h = '<div class="g2" style="margin-bottom:14px;"><div class="clk">';
+  h += '<div class="clk-t" id="clt">--:--:-- --</div>';
+  h += '<div class="clk-d">' + dys[nd.getDay()] + ', ' + nd.getDate() + ' ' + mns[nd.getMonth()] + ' ' + nd.getFullYear() + '</div>';
+  h += '<div class="pst" style="background:' + (pIn?'rgba(56,161,105,.2)':'rgba(230,51,41,.15)') + ';color:' + (pIn?'#38A169':'#E63329') + ';">' + (pIn?'Punched In':'Not Punched In') + '</div><br>';
+  h += '<button class="pbtn ' + (pIn?'po2':'pi2') + '" id="pbtn" onclick="doPunch()">' + (pIn?'Punch Out':'Punch In') + '</button>';
+  h += '<div style="display:flex;gap:12px;justify-content:center;margin-top:11px;font-size:11px;opacity:.7;">';
+  h += '<div>In: <strong>' + piStr + '</strong></div><div>Out: <strong>' + poStr + '</strong></div><div>Hours: <strong id="hwk">0h 00m 00s</strong></div></div></div>';
+  if (myRes.success) {
+    var s = myRes.data.summary;
+    h += '<div class="card" style="margin:0"><div class="ch"><div class="ct">This Month</div></div><div class="cb">';
+    h += '<div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:9px;margin-bottom:13px;">';
+    h += '<div style="text-align:center;padding:12px;background:rgba(56,161,105,.05);border-radius:8px;border:1px solid rgba(56,161,105,.15);"><div style="font-size:20px;font-weight:800;color:#38A169;">' + s.present + '</div><div style="font-size:11px;color:#718096;">Present</div></div>';
+    h += '<div style="text-align:center;padding:12px;background:rgba(230,51,41,.05);border-radius:8px;border:1px solid rgba(230,51,41,.15);"><div style="font-size:20px;font-weight:800;color:#E63329;">' + s.absent + '</div><div style="font-size:11px;color:#718096;">Absent</div></div>';
+    h += '<div style="text-align:center;padding:12px;background:rgba(0,194,168,.05);border-radius:8px;border:1px solid rgba(0,194,168,.15);"><div style="font-size:20px;font-weight:800;color:#00C2A8;">' + (s.totalHours||0) + 'h</div><div style="font-size:11px;color:#718096;">Hours</div></div>';
+    h += '</div>';
+    if (myRes.data.records && myRes.data.records.length) {
+      h += '<div style="max-height:150px;overflow-y:auto;"><table><thead><tr><th>Date</th><th>In</th><th>Out</th><th>Status</th></tr></thead><tbody>';
+      myRes.data.records.slice(0,8).forEach(function(r) {
+        h += '<tr><td>' + new Date(r.date).toLocaleDateString('en-IN',{day:'2-digit',month:'short'}) + '</td>';
+        h += '<td>' + (r.punch_in?new Date(r.punch_in).toLocaleTimeString('en-IN',{hour:'2-digit',minute:'2-digit'}):'--') + '</td>';
+        h += '<td>' + (r.punch_out?new Date(r.punch_out).toLocaleTimeString('en-IN',{hour:'2-digit',minute:'2-digit'}):'--') + '</td>';
+        h += '<td><span class="b ' + (r.status==='Present'?'bg':'br') + '">' + r.status + '</span></td></tr>';
+      });
+      h += '</tbody></table></div>';
+    }
+    h += '</div></div>';
+  } else { h += '<div class="card" style="margin:0"><div class="cb"><div class="em"><h3>No records</h3></div></div></div>'; }
+  h += '</div>';
+  if ((role === 'admin' || role === 'hr') && tdRes.success) {
+    h += '<div class="card"><div class="ch"><div class="ct">Today Log</div><div style="display:flex;gap:5px;"><span class="b bg">' + tdRes.data.summary.present + ' Present</span><span class="b br">' + tdRes.data.summary.absent + ' Absent</span></div></div>';
+    h += '<div class="tw"><table><thead><tr><th>Employee</th><th>Punch In</th><th>Punch Out</th><th>Status</th></tr></thead><tbody>';
+    if (tdRes.data.records && tdRes.data.records.length) {
+      tdRes.data.records.forEach(function(r) {
+        h += '<tr><td style="font-weight:600;">' + r.first_name + ' ' + r.last_name + '</td>';
+        h += '<td>' + (r.punch_in?new Date(r.punch_in).toLocaleTimeString('en-IN',{hour:'2-digit',minute:'2-digit'}):'--') + '</td>';
+        h += '<td>' + (r.punch_out?new Date(r.punch_out).toLocaleTimeString('en-IN',{hour:'2-digit',minute:'2-digit'}):'--') + '</td>';
+        h += '<td><span class="b ' + (r.status==='Present'?'bg':'by') + '">' + r.status + '</span></td></tr>';
+      });
+    } else { h += '<tr><td colspan="4"><div class="em"><p>No records today</p></div></td></tr>'; }
+    h += '</tbody></table></div></div>';
+  }
+  document.getElementById('atc').innerHTML = h; tickClock();
+}
+async function doPunch() {
+  var btn = document.getElementById('pbtn');
+  if (btn) { btn.disabled = true; btn.textContent = 'Processing...'; }
+  var res = await req('POST', '/api/attendance/punch', {});
+  if (res.success) { toast(res.message); loadAtt(); }
+  else { toast(res.message,'err'); if (btn) { btn.disabled = false; btn.textContent = pIn?'Punch Out':'Punch In'; } }
+}
+async function loadLv() {
+  var role = CU.role;
+  document.getElementById('albtn').style.display = 'inline-flex';
+  var balRes = await req('GET', '/api/leave/balances/my'), myReqRes = await req('GET', '/api/leave/requests/my');
+  var h = '';
+  if (balRes.success && balRes.data.length) {
+    h += '<div class="g3" style="margin-bottom:13px;">';
+    var lcols = {CL:'#38A169',SL:'#E63329',EL:'#805AD5',CO:'#D69E2E'};
+    balRes.data.forEach(function(lb) {
+      var lc = lcols[lb.code]||'#00C2A8', lp = lb.allocated>0?Math.round(lb.balance/lb.allocated*100):0;
+      h += '<div class="card" style="margin:0"><div class="cb"><div style="font-size:13px;font-weight:700;color:#0D1B3E;">' + lb.name + '</div>';
+      h += '<div style="font-size:24px;font-weight:800;color:' + lc + ';margin:6px 0;">' + lb.balance + '</div>';
+      h += '<div style="font-size:11px;color:#718096;">' + lb.balance + ' of ' + lb.allocated + ' days</div>';
+      h += '<div class="pb2"><div class="pf" style="width:' + lp + '%;background:' + lc + ';"></div></div></div></div>';
+    });
+    h += '</div>';
+  }
+  if (role === 'admin' || role === 'hr') {
+    var allReq = await req('GET', '/api/leave/requests?status=Pending');
+    h += '<div class="card"><div class="ch"><div class="ct">Pending Approvals</div><span class="b br">' + (allReq.success?allReq.data.length:0) + ' pending</span></div>';
+    h += '<div class="tw"><table><thead><tr><th>Employee</th><th>Type</th><th>From</th><th>To</th><th>Days</th><th>Action</th></tr></thead><tbody>';
+    if (allReq.success && allReq.data.length) {
+      allReq.data.forEach(function(r) {
+        h += '<tr><td style="font-weight:600;">' + r.employee_name + '</td><td><span class="b bt">' + r.leave_type + '</span></td>';
+        h += '<td>' + new Date(r.from_date).toLocaleDateString('en-IN',{day:'2-digit',month:'short'}) + '</td>';
+        h += '<td>' + new Date(r.to_date).toLocaleDateString('en-IN',{day:'2-digit',month:'short'}) + '</td><td>' + r.days + '</td>';
+        h += '<td><div style="display:flex;gap:4px;"><button class="btn btt btsm" onclick="appLv(' + "'" + r.id + "','Approved'" + ')">Approve</button><button class="btn bto btsm" onclick="appLv(' + "'" + r.id + "','Rejected'" + ')">Reject</button></div></td></tr>';
+      });
+    } else { h += '<tr><td colspan="6"><div class="em"><p>No pending requests</p></div></td></tr>'; }
+    h += '</tbody></table></div></div>';
+  }
+  h += '<div class="card"><div class="ch"><div class="ct">My Leave History</div></div><div class="tw"><table><thead><tr><th>Type</th><th>From</th><th>To</th><th>Days</th><th>Status</th></tr></thead><tbody>';
+  if (myReqRes.success && myReqRes.data.length) {
+    myReqRes.data.forEach(function(r) {
+      var sc = r.status==='Approved'?'bg':r.status==='Rejected'?'br':'by';
+      h += '<tr><td>' + r.leave_type + '</td><td>' + new Date(r.from_date).toLocaleDateString('en-IN',{day:'2-digit',month:'short',year:'numeric'}) + '</td>';
+      h += '<td>' + new Date(r.to_date).toLocaleDateString('en-IN',{day:'2-digit',month:'short',year:'numeric'}) + '</td>';
+      h += '<td>' + r.days + '</td><td><span class="b ' + sc + '">' + r.status + '</span></td></tr>';
+    });
+  } else { h += '<tr><td colspan="5"><div class="em"><p>No leave requests yet</p></div></td></tr>'; }
+  h += '</tbody></table></div></div>';
+  document.getElementById('lvc').innerHTML = h;
+}
+async function applyLeave() {
+  var body = { leavePolicyId:document.getElementById('lf1').value, fromDate:document.getElementById('lf2').value, toDate:document.getElementById('lf3').value, reason:document.getElementById('lf4').value.trim() };
+  if (!body.leavePolicyId||!body.fromDate||!body.toDate||!body.reason) { toast('All fields required','err'); return; }
+  var res = await req('POST', '/api/leave/apply', body);
+  if (res.success) { toast(res.message); closeMod('lvm'); loadLv(); ['lf1','lf2','lf3','lf4'].forEach(function(id){document.getElementById(id).value='';}); }
+  else toast(res.message,'err');
+}
+async function appLv(id, action) {
+  var res = await req('POST', '/api/leave/requests/' + id + '/approve', { action: action });
+  if (res.success) { toast('Leave ' + action.toLowerCase()); loadLv(); } else toast(res.message,'err');
+}
+async function loadPr() {
+  var role = CU.role;
+  if (role === 'admin' || role === 'hr') document.getElementById('rpbtn').style.display = 'inline-flex';
+  var m = new Date().getMonth()+1, y = new Date().getFullYear();
+  var slipRes = await req('GET', '/api/payroll/payslip/my/' + m + '/' + y);
+  var runsRes = { success: false };
+  if (role !== 'employee') runsRes = await req('GET', '/api/payroll/runs');
+  var h = '';
+  if (runsRes.success && runsRes.data.length) {
+    h += '<div class="card"><div class="ch"><div class="ct">Payroll Runs</div></div><div class="tw"><table><thead><tr><th>Period</th><th>Status</th><th>Gross</th><th>Net Pay</th></tr></thead><tbody>';
+    runsRes.data.forEach(function(r) {
+      h += '<tr><td><strong>' + MNS[r.month] + ' ' + r.year + '</strong></td><td><span class="b ' + (r.status==='Processed'?'bg':'by') + '">' + r.status + '</span></td>';
+      h += '<td>Rs ' + Number(r.total_gross||0).toLocaleString('en-IN') + '</td><td style="font-weight:700;color:#38A169;">Rs ' + Number(r.total_net||0).toLocaleString('en-IN') + '</td></tr>';
+    });
+    h += '</tbody></table></div></div>';
+  }
+  h += '<div class="card"><div class="ch"><div class="ct">My Payslip - ' + MNS[m] + ' ' + y + '</div></div>';
+  if (slipRes.success) {
+    var s = slipRes.data;
+    h += '<div class="psh"><div style="font-weight:700;font-size:14px;">PayPe Technologies Pvt. Ltd.</div><div style="font-size:11px;opacity:.6;">' + s.first_name + ' ' + s.last_name + ' | ' + s.emp_code + '</div></div>';
+    h += '<table class="pst2"><tr><td colspan="2" style="background:#F7FAFC;font-weight:700;font-size:10px;text-transform:uppercase;color:#718096;padding:7px 12px;">Earnings</td></tr>';
+    h += '<tr><td class="pl">Basic</td><td>Rs ' + Number(s.basic||0).toLocaleString('en-IN') + '</td></tr>';
+    h += '<tr><td class="pl">HRA</td><td>Rs ' + Number(s.hra||0).toLocaleString('en-IN') + '</td></tr>';
+    h += '<tr><td class="pl">Special Allowance</td><td>Rs ' + Number(s.special_allowance||0).toLocaleString('en-IN') + '</td></tr>';
+    h += '<tr><td style="font-weight:700;">Gross Salary</td><td style="font-weight:700;">Rs ' + Number(s.gross_salary||0).toLocaleString('en-IN') + '</td></tr>';
+    h += '<tr><td colspan="2" style="background:#F7FAFC;font-weight:700;font-size:10px;text-transform:uppercase;color:#718096;padding:7px 12px;">Deductions</td></tr>';
+    h += '<tr><td class="pl">PF</td><td>Rs ' + Number(s.pf_employee||0).toLocaleString('en-IN') + '</td></tr>';
+    h += '<tr><td class="pl">ESIC</td><td>Rs ' + Number(s.esic_employee||0).toLocaleString('en-IN') + '</td></tr>';
+    h += '<tr><td class="pl">Prof Tax</td><td>Rs ' + Number(s.professional_tax||0).toLocaleString('en-IN') + '</td></tr>';
+    h += '<tr class="ptr"><td>Net Take Home</td><td style="font-weight:800;font-size:15px;">Rs ' + Number(s.net_salary||0).toLocaleString('en-IN') + '</td></tr></table>';
+  } else {
+    h += '<div class="cb"><div class="em"><h3>No payslip for ' + MNS[m] + ' ' + y + '</h3><p>Payroll not processed</p>';
+    if (role === 'admin' || role === 'hr') h += '<br><button class="btn btp" style="margin-top:10px;" onclick="runPayroll()">Process Now</button>';
+    h += '</div></div>';
+  }
+  h += '</div>';
+  document.getElementById('prc').innerHTML = h;
+}
+async function runPayroll() {
+  var m = new Date().getMonth()+1, y = new Date().getFullYear();
+  if (!confirm('Process payroll for ' + MNS[m] + ' ' + y + '?')) return;
+  var res = await req('POST', '/api/payroll/run', { month: m, year: y });
+  if (res.success) { toast(res.message); loadPr(); loadDash(); } else toast(res.message,'err');
+}
+async function loadRecruitment() {
+  var rs = await req('GET', '/api/recruitment/stats');
+  var apps = await req('GET', '/api/applications');
+  var h = '';
+  if (rs.success) {
+    var d = rs.data;
+    h += '<div class="sg" style="grid-template-columns:repeat(3,1fr)">';
+    h += '<div class="sc c1"><div class="sv">' + d.jobs.active + '</div><div class="sl">Active Jobs</div></div>';
+    h += '<div class="sc c2"><div class="sv">' + d.totalCandidates + '</div><div class="sl">Total Candidates</div></div>';
+    h += '<div class="sc c3"><div class="sv">' + d.upcomingInterviews + '</div><div class="sl">Upcoming Interviews</div></div>';
+    h += '</div>';
+  }
+  h += '<div class="card"><div class="ch"><div class="ct">ATS Pipeline</div><div style="display:flex;gap:6px;"><button class="btn bto btsm" onclick="goPage("aem")">Candidates</button><button class="btn btp btsm" onclick="openMod("aem")">+ Post Job</button></div></div><div class="cb">';
+  h += '<div class="pipe">';
+  var stages = ['Screening','Interview','Offer','Hired','Rejected'];
+  var stageClrs = {Screening:'#00C2A8',Interview:'#805AD5',Offer:'#D69E2E',Hired:'#38A169',Rejected:'#E63329'};
+  stages.forEach(function(stage) {
+    var stageApps = apps.success ? apps.data.filter(function(a){return a.stage===stage;}) : [];
+    h += '<div class="pipe-col"><div class="pipe-h"><span>' + stage + '</span><span class="b ' + (stage==='Hired'?'bg':stage==='Rejected'?'br':stage==='Offer'?'by':stage==='Interview'?'bp':'bt') + '">' + stageApps.length + '</span></div>';
+    if (stageApps.length) {
+      stageApps.slice(0,5).forEach(function(a) {
+        var score = a.ai_score ? Math.round(a.ai_score) : null;
+        var scoreClr = score ? (score>=70?'#38A169':score>=50?'#D69E2E':'#E63329') : '#718096';
+        h += '<div class="pipe-card"><div class="pipe-name">' + a.first_name + ' ' + a.last_name + '</div>';
+        h += '<div class="pipe-role">' + (a.job_title||'') + '</div>';
+        if (score) h += '<div class="pipe-score" style="background:rgba(0,0,0,.06);color:' + scoreClr + '">AI: ' + score + '%</div>';
+        h += '<div style="display:flex;gap:4px;margin-top:6px;">';
+        if (stage === 'Screening') h += '<button class="btn btt btsm" onclick="aiScreen(' + "'" + a.id + "'" + ')">AI Screen</button>';
+        h += '<button class="btn bto btsm" onclick="moveApp(' + "'" + a.id + "','" + (stage==='Screening'?'Interview':stage==='Interview'?'Offer':stage==='Offer'?'Hired':'Hired') + "'" + ')">' + (stage==='Hired'?'Done':'Move') + '</button>';
+        h += '</div></div>';
+      });
+    } else { h += '<div style="text-align:center;padding:20px;color:#718096;font-size:12px;">No candidates</div>'; }
+    h += '</div>';
+  });
+  h += '</div></div></div>';
+  document.getElementById('rdc').innerHTML = h;
+}
+async function loadJobs() {
+  var res = await req('GET', '/api/jobs');
+  if (!res.success) { document.getElementById('jbc').innerHTML = '<div class="em"><h3>' + res.message + '</h3></div>'; return; }
+  var jobs = res.data;
+  var h = '<div class="g2">';
+  if (!jobs.length) { h = '<div class="card"><div class="cb"><div class="em"><h3>No jobs posted yet</h3><p>Post your first job!</p></div></div></div>'; }
+  jobs.forEach(function(j) {
+    var sc = j.status==='Active'?'bg':j.status==='Closed'?'br':'by';
+    h += '<div class="card"><div class="cb">';
+    h += '<div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:8px;">';
+    h += '<div><div style="font-size:15px;font-weight:700;color:#0D1B3E;">' + j.title + '</div>';
+    h += '<div style="font-size:12px;color:#718096;margin-top:2px;">' + (j.department_name||'') + ' | ' + (j.location||'') + '</div></div>';
+    h += '<span class="b ' + sc + '">' + j.status + '</span></div>';
+    h += '<div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:10px;">';
+    h += '<span class="b bn">' + j.job_type + '</span>';
+    h += '<span class="b bt">' + j.experience_min + '-' + j.experience_max + ' yrs</span>';
+    h += '<span class="b bp">' + j.openings + ' opening' + (j.openings>1?'s':'') + '</span>';
+    if (j.salary_min) h += '<span class="b bg">Rs ' + Number(j.salary_min/1000).toFixed(0) + 'k-' + Number(j.salary_max/1000).toFixed(0) + 'k</span>';
+    h += '</div>';
+    h += '<div style="font-size:12px;color:#718096;margin-bottom:10px;">' + (j.description||'').substring(0,100) + '...</div>';
+    h += '<div style="display:flex;justify-content:space-between;align-items:center;">';
+    h += '<div style="font-size:12px;color:#718096;"><strong>' + j.applicants + '</strong> applicants</div>';
+    h += '<div style="display:flex;gap:6px;">';
+    if (j.status === 'Draft') h += '<button class="btn btt btsm" onclick="publishJob(' + "'" + j.id + "'" + ')">Publish</button>';
+    if (j.status === 'Active') h += '<button class="btn bto btsm" onclick="publishJob(' + "'" + j.id + "','Closed'" + ')">Close</button>';
+    h += '</div></div></div></div>';
+  });
+  h += '</div>';
+  document.getElementById('jbc').innerHTML = h;
+}
+async function postJob() {
+  var body = { title:document.getElementById('jf1').value.trim(), departmentId:document.getElementById('jf2').value||undefined, location:document.getElementById('jf3').value.trim(), jobType:document.getElementById('jf4').value, experienceMin:parseInt(document.getElementById('jf5').value)||0, experienceMax:parseInt(document.getElementById('jf6').value)||5, salaryMin:parseFloat(document.getElementById('jf7').value)||undefined, salaryMax:parseFloat(document.getElementById('jf8').value)||undefined, openings:parseInt(document.getElementById('jf9').value)||1, closesAt:document.getElementById('jf10').value||undefined, description:document.getElementById('jf11').value.trim(), requirements:document.getElementById('jf12').value.trim() };
+  if (!body.title) { toast('Job title required','err'); return; }
+  var res = await req('POST', '/api/jobs', body);
+  if (res.success) {
+    if (confirm('Job created! Publish it now?')) {
+      await req('PUT', '/api/jobs/' + res.data.id, { status: 'Active' });
+      toast('Job published!');
+    } else { toast('Job saved as draft'); }
+    closeMod('njm'); loadJobs();
+    ['jf1','jf3','jf7','jf8','jf11','jf12'].forEach(function(id){document.getElementById(id).value='';});
+  } else toast(res.message||'Failed','err');
+}
+async function publishJob(id, status) {
+  status = status || 'Active';
+  var res = await req('PUT', '/api/jobs/' + id, { status: status });
+  if (res.success) { toast('Job ' + (status==='Active'?'published':'closed')); loadJobs(); } else toast(res.message,'err');
+}
+async function loadCandidates() {
+  var res = await req('GET', '/api/candidates');
+  if (!res.success) { document.getElementById('cdc').innerHTML = '<div class="em"><h3>' + res.message + '</h3></div>'; return; }
+  var candidates = res.data;
+  if (!candidates.length) { document.getElementById('cdc').innerHTML = '<div class="card"><div class="cb"><div class="em"><h3>No candidates yet</h3><p>Add candidates to talent pool</p></div></div></div>'; return; }
+  var clrs = ['#00C2A8','#0D1B3E','#805AD5','#38A169','#D69E2E'];
+  var h = '<div class="card"><div class="tw"><table><thead><tr><th>Candidate</th><th>Current Role</th><th>Experience</th><th>Expected CTC</th><th>Notice</th><th>Source</th><th>Applications</th><th>Action</th></tr></thead><tbody>';
+  candidates.forEach(function(c, i) {
+    var nm = c.first_name + ' ' + c.last_name;
+    h += '<tr><td><div style="display:flex;align-items:center;gap:8px;"><div class="av" style="background:' + clrs[i%clrs.length] + '">' + c.first_name[0] + '</div>';
+    h += '<div><div style="font-weight:600;">' + nm + '</div><div style="font-size:11px;color:#718096;">' + c.email + '</div></div></div></td>';
+    h += '<td>' + (c.current_position||'--') + '<br><span style="font-size:11px;color:#718096;">' + (c.current_company||'') + '</span></td>';
+    h += '<td>' + (c.experience_yrs||0) + ' yrs</td>';
+    h += '<td>' + (c.expected_ctc?'Rs '+Number(c.expected_ctc/1000).toFixed(0)+'k/yr':'--') + '</td>';
+    h += '<td>' + (c.notice_period?c.notice_period+' days':'--') + '</td>';
+    h += '<td><span class="b bn">' + (c.source||'Direct') + '</span></td>';
+    h += '<td style="text-align:center;">' + (c.total_applications||0) + '</td>';
+    h += '<td><div style="display:flex;gap:4px;"><button class="btn btt btsm" onclick="applyToJob(' + "'" + c.id + "','" + nm + "'" + ')">Apply</button><button class="btn bto btsm" onclick="addToPool(' + "'" + c.id + "'" + ')">Pool</button></div></td></tr>';
+  });
+  h += '</tbody></table></div></div>';
+  document.getElementById('cdc').innerHTML = h;
+}
+async function addCandidate() {
+  var body = { firstName:document.getElementById('cf1').value.trim(), lastName:document.getElementById('cf2').value.trim(), email:document.getElementById('cf3').value.trim(), mobile:document.getElementById('cf4').value.trim(), currentCompany:document.getElementById('cf5').value.trim(), currentPosition:document.getElementById('cf6').value.trim(), experienceYrs:parseFloat(document.getElementById('cf7').value)||undefined, currentCtc:parseFloat(document.getElementById('cf8').value)||undefined, expectedCtc:parseFloat(document.getElementById('cf9').value)||undefined, noticePeriod:parseInt(document.getElementById('cf10').value)||undefined, location:document.getElementById('cf11').value.trim(), source:document.getElementById('cf12').value };
+  if (!body.firstName||!body.lastName||!body.email) { toast('Name and email required','err'); return; }
+  var res = await req('POST', '/api/candidates', body);
+  if (res.success) { toast('Candidate added!'); closeMod('ncm'); loadCandidates(); }
+  else toast(res.message||'Failed','err');
+}
+async function applyToJob(candidateId, nm) {
+  var res2 = await req('GET', '/api/jobs?status=Active');
+  if (!res2.success || !res2.data.length) { toast('No active jobs','wrn'); return; }
+  var opts = res2.data.map(function(j){return j.id + ':' + j.title;}).join('|');
+  var sel = prompt('Select Job for ' + nm + ': ' + res2.data.map(function(j,i){return (i+1)+'. '+j.title;}).join(' ') + '  Enter number:');
+  if (!sel) return;
+  var idx = parseInt(sel)-1;
+  if (idx < 0 || idx >= res2.data.length) { toast('Invalid selection','err'); return; }
+  var res3 = await req('POST', '/api/applications', { jobId: res2.data[idx].id, candidateId: candidateId });
+  if (res3.success) { toast('Applied to ' + res2.data[idx].title + '!'); loadCandidates(); }
+  else toast(res3.message||'Failed','err');
+}
+async function aiScreen(appId) {
+  toast('Running AI screening...','wrn');
+  var res = await req('POST', '/api/applications/' + appId + '/ai-screen', {});
+  if (res.success) { toast('AI Score: ' + res.data.score + '%'); loadRecruitment(); }
+  else toast(res.message,'err');
+}
+async function moveApp(appId, stage) {
+  var res = await req('PUT', '/api/applications/' + appId, { stage: stage, status: stage==='Hired'?'Selected':stage==='Rejected'?'Rejected':'Active' });
+  if (res.success) { toast('Moved to ' + stage); loadRecruitment(); }
+  else toast(res.message,'err');
+}
+async function addToPool(candidateId) {
+  var res = await req('POST', '/api/talent-pool', { candidateId: candidateId, notes: 'Added from candidates list' });
+  if (res.success) toast('Added to talent pool!'); else toast(res.message,'err');
+}
+async function loadOnboarding() {
+  var role = CU.role;
+  var empsRes = role !== 'employee' ? await req('GET', '/api/employees') : { success: false };
+  var tasksRes = await req('GET', '/api/onboarding/tasks');
+  var h = '';
+  if (role !== 'employee' && empsRes.success) {
+    var emps = empsRes.data.employees || [];
+    h += '<div class="card"><div class="ch"><div class="ct">Employee Onboarding Status</div></div><div class="tw"><table><thead><tr><th>Employee</th><th>Progress</th><th>Action</th></tr></thead><tbody>';
+    if (!emps.length) { h += '<tr><td colspan="3"><div class="em"><p>No employees found</p></div></td></tr>'; }
+    emps.forEach(function(e) {
+      var nm = e.first_name + ' ' + e.last_name;
+      h += '<tr><td><div style="font-weight:600;">' + nm + '</div><div style="font-size:11px;color:#718096;">' + e.employee_id + '</div></td>';
+      h += '<td><div style="display:flex;align-items:center;gap:8px;"><div style="flex:1;height:6px;background:#E2E8F0;border-radius:3px;overflow:hidden;"><div style="width:0%;height:100%;background:#00C2A8;border-radius:3px;" id="ob-bar-' + e.id + '"></div></div><span style="font-size:11px;color:#718096;" id="ob-pct-' + e.id + '">--</span></div></td>';
+      h += '<td><button class="btn bto btsm" onclick="viewOnboarding(' + "'" + e.id + "','" + nm + "'" + ')">View</button></td></tr>';
+      loadObProgress(e.id);
+    });
+    h += '</tbody></table></div></div>';
+  }
+  if (tasksRes.success) {
+    h += '<div class="card"><div class="ch"><div class="ct">Onboarding Checklist (' + tasksRes.data.length + ' tasks)</div></div><div class="cb">';
+    var cats = {};
+    tasksRes.data.forEach(function(t) { if (!cats[t.category]) cats[t.category] = []; cats[t.category].push(t); });
+    Object.keys(cats).forEach(function(cat) {
+      h += '<div style="margin-bottom:14px;"><div style="font-size:11px;font-weight:700;color:#718096;text-transform:uppercase;letter-spacing:.5px;margin-bottom:8px;">' + cat + '</div>';
+      cats[cat].forEach(function(t) {
+        h += '<div class="ob-task"><div class="ob-chk" style="background:' + (t.assigned_to==='hr'?'rgba(128,90,213,.1)':'rgba(0,194,168,.1)') + ';border-color:' + (t.assigned_to==='hr'?'#805AD5':'#00C2A8') + ';">' + (t.assigned_to==='hr'?'HR':'Emp') + '</div>';
+        h += '<div><div class="ob-nm">' + t.name + '</div><div class="ob-cat">' + (t.is_required?'Required':'Optional') + '</div></div></div>';
+      });
+      h += '</div>';
+    });
+    h += '</div></div>';
+  }
+  document.getElementById('obc').innerHTML = h;
+}
+async function loadObProgress(empId) {
+  var res = await req('GET', '/api/onboarding/' + empId);
+  if (!res.success) return;
+  var pct = res.data.summary.percentage;
+  var bar = document.getElementById('ob-bar-' + empId), pctEl = document.getElementById('ob-pct-' + empId);
+  if (bar) bar.style.width = pct + '%';
+  if (pctEl) pctEl.textContent = pct + '%';
+}
+async function viewOnboarding(empId, nm) {
+  var res = await req('GET', '/api/onboarding/' + empId);
+  if (!res.success) { toast('Error loading onboarding','err'); return; }
+  var s = res.data.summary;
+  toast(nm + ': ' + s.done + '/' + s.total + ' tasks (' + s.percentage + '%)');
+}
+async function loadAssets() {
+  var res = await req('GET', '/api/assets');
+  if (!res.success) { document.getElementById('asc').innerHTML = '<div class="em"><h3>' + res.message + '</h3></div>'; return; }
+  var assets = res.data;
+  var avail = assets.filter(function(a){return a.status==='Available';}).length;
+  var assigned = assets.filter(function(a){return a.status==='Assigned';}).length;
+  var h = '<div class="g3" style="margin-bottom:14px;">';
+  h += '<div class="kp"><div class="kv">' + assets.length + '</div><div class="kl">Total Assets</div></div>';
+  h += '<div class="kp"><div class="kv" style="color:#38A169;">' + avail + '</div><div class="kl">Available</div></div>';
+  h += '<div class="kp"><div class="kv" style="color:#805AD5;">' + assigned + '</div><div class="kl">Assigned</div></div>';
+  h += '</div>';
+  h += '<div class="card"><div class="tw"><table><thead><tr><th>Asset</th><th>Code</th><th>Category</th><th>Brand/Model</th><th>Status</th><th>Assigned To</th><th>Action</th></tr></thead><tbody>';
+  if (!assets.length) { h += '<tr><td colspan="7"><div class="em"><h3>No assets found</h3></div></td></tr>'; }
+  assets.forEach(function(a) {
+    var sc = a.status==='Available'?'bg':a.status==='Assigned'?'bp':'by';
+    h += '<tr><td style="font-weight:600;">' + a.name + '</td>';
+    h += '<td><span class="b bn">' + a.asset_code + '</span></td>';
+    h += '<td>' + (a.category||'--') + '</td>';
+    h += '<td>' + (a.brand||'') + ' ' + (a.model||'') + '</td>';
+    h += '<td><span class="b ' + sc + '">' + a.status + '</span></td>';
+    h += '<td>' + (a.first_name?a.first_name+' '+a.last_name+' ('+a.emp_code+')':'--') + '</td>';
+    h += '<td>';
+    if (a.status === 'Available') h += '<button class="btn btt btsm" onclick="assignAsset(' + "'" + a.id + "'" + ')">Assign</button>';
+    if (a.status === 'Assigned') h += '<button class="btn bto btsm" onclick="returnAsset(' + "'" + a.id + "'" + ')">Return</button>';
+    h += '</td></tr>';
+  });
+  h += '</tbody></table></div></div>';
+  document.getElementById('asc').innerHTML = h;
+}
+async function addAsset() {
+  var body = { assetCode:document.getElementById('af1').value.trim(), name:document.getElementById('af2').value.trim(), category:document.getElementById('af3').value, brand:document.getElementById('af4').value.trim(), model:document.getElementById('af5').value.trim(), serialNumber:document.getElementById('af6').value.trim(), purchaseDate:document.getElementById('af7').value||undefined, warrantyTill:document.getElementById('af8').value||undefined };
+  if (!body.assetCode||!body.name) { toast('Asset code and name required','err'); return; }
+  var res = await req('POST', '/api/assets', body);
+  if (res.success) { toast('Asset added!'); closeMod('nam'); loadAssets(); ['af1','af2','af4','af5','af6','af7','af8'].forEach(function(id){document.getElementById(id).value='';}); }
+  else toast(res.message||'Failed','err');
+}
+async function assignAsset(assetId) {
+  var empRes = await req('GET', '/api/employees');
+  if (!empRes.success || !empRes.data.employees.length) { toast('No employees found','wrn'); return; }
+  var emps = empRes.data.employees;
+  var sel = prompt('Assign to employee: ' + emps.map(function(e,i){return (i+1)+'. '+e.first_name+' '+e.last_name+' ('+e.employee_id+')';}).join(' ') + '  Enter number:');
+  if (!sel) return;
+  var idx = parseInt(sel)-1;
+  if (idx < 0 || idx >= emps.length) { toast('Invalid selection','err'); return; }
+  var res = await req('PUT', '/api/assets/' + assetId + '/assign', { employeeId: emps[idx].id });
+  if (res.success) { toast('Asset assigned to ' + emps[idx].first_name); loadAssets(); }
+  else toast(res.message,'err');
+}
+async function returnAsset(assetId) {
+  if (!confirm('Mark this asset as returned?')) return;
+  var res = await req('PUT', '/api/assets/' + assetId + '/return', {});
+  if (res.success) { toast('Asset returned'); loadAssets(); } else toast(res.message,'err');
+}
+async function loadProf() {
+  if (!CU.employeeId) { document.getElementById('pfc').innerHTML = '<div class="em"><p>Profile not found</p></div>'; return; }
+  var res = await req('GET', '/api/employees/' + CU.employeeId);
+  var sklRes = await req('GET', '/api/skills/' + CU.employeeId);
+  var certRes = await req('GET', '/api/certifications/' + CU.employeeId);
+  if (!res.success) { document.getElementById('pfc').innerHTML = '<div class="em"><h3>' + res.message + '</h3></div>'; return; }
+  var e = res.data, nm = (e.first_name||'') + ' ' + (e.last_name||'');
+  var h = '<div class="prb"><div class="pr-av">' + (e.first_name||'?')[0].toUpperCase() + '</div>';
+  h += '<div><div class="pr-n">' + nm + '</div><div class="pr-s">' + (e.designation||'--') + ' | ' + (e.department_name||'--') + '</div>';
+  h += '<div><span class="ptg">' + e.employee_id + '</span><span class="ptg">' + (e.work_location||'--') + '</span><span class="ptg">' + e.status + '</span></div></div></div>';
+  h += '<div class="g2">';
+  h += '<div class="card"><div class="ch"><div class="ct">Personal Info</div></div><div class="cb"><table style="width:100%;font-size:13px;border-collapse:collapse;">';
+  h += '<tr><td style="padding:6px 0;color:#718096;width:45%;">Full Name</td><td style="font-weight:600;">' + nm + '</td></tr>';
+  h += '<tr><td style="padding:6px 0;color:#718096;">Work Email</td><td>' + (e.work_email||'--') + '</td></tr>';
+  h += '<tr><td style="padding:6px 0;color:#718096;">Mobile</td><td>' + (e.mobile||'--') + '</td></tr>';
+  h += '<tr><td style="padding:6px 0;color:#718096;">Blood Group</td><td>' + (e.blood_group||'--') + '</td></tr>';
+  h += '</table></div></div>';
+  h += '<div class="card"><div class="ch"><div class="ct">Work Details</div></div><div class="cb"><table style="width:100%;font-size:13px;border-collapse:collapse;">';
+  h += '<tr><td style="padding:6px 0;color:#718096;width:45%;">Employee ID</td><td style="font-weight:600;">' + e.employee_id + '</td></tr>';
+  h += '<tr><td style="padding:6px 0;color:#718096;">Department</td><td>' + (e.department_name||'--') + '</td></tr>';
+  h += '<tr><td style="padding:6px 0;color:#718096;">Designation</td><td>' + (e.designation||'--') + '</td></tr>';
+  h += '<tr><td style="padding:6px 0;color:#718096;">Location</td><td>' + (e.work_location||'--') + '</td></tr>';
+  h += '<tr><td style="padding:6px 0;color:#718096;">Joined</td><td>' + (e.date_of_joining?new Date(e.date_of_joining).toLocaleDateString('en-IN',{day:'2-digit',month:'short',year:'numeric'}):'--') + '</td></tr>';
+  h += '</table></div></div></div>';
+  if (sklRes.success && sklRes.data.length) {
+    var profClrs = {Expert:'#38A169',Advanced:'#00C2A8',Intermediate:'#D69E2E',Beginner:'#E63329'};
+    var profPct = {Expert:100,Advanced:75,Intermediate:50,Beginner:25};
+    h += '<div class="card"><div class="ch"><div class="ct">Skills</div></div><div class="cb"><div class="g2">';
+    sklRes.data.forEach(function(s) {
+      var clr = profClrs[s.proficiency]||'#718096', pct = profPct[s.proficiency]||50;
+      h += '<div><div style="display:flex;justify-content:space-between;font-size:13px;"><span style="font-weight:500;">' + s.skill_name + '</span><span class="b" style="background:rgba(0,0,0,.05);color:' + clr + ';">' + s.proficiency + '</span></div>';
+      h += '<div class="skill-bar"><div class="skill-fill" style="width:' + pct + '%;background:' + clr + ';"></div></div></div>';
+    });
+    h += '</div></div></div>';
+  }
+  if (certRes.success && certRes.data.length) {
+    h += '<div class="card"><div class="ch"><div class="ct">Certifications</div></div><div class="cb"><div class="g2">';
+    certRes.data.forEach(function(c) {
+      h += '<div style="padding:12px;background:#F7FAFC;border-radius:9px;border:1px solid #E2E8F0;">';
+      h += '<div style="font-size:13px;font-weight:600;color:#0D1B3E;">' + c.name + '</div>';
+      h += '<div style="font-size:11px;color:#718096;margin-top:3px;">' + (c.issuer||'') + '</div>';
+      if (c.issue_date) h += '<div style="font-size:11px;color:#00C2A8;margin-top:3px;">Issued: ' + new Date(c.issue_date).toLocaleDateString('en-IN',{month:'short',year:'numeric'}) + '</div>';
+      h += '</div>';
+    });
+    h += '</div></div></div>';
+  }
+  if (res.data.leaveBalances && res.data.leaveBalances.length) {
+    h += '<div class="card"><div class="ch"><div class="ct">Leave Balance</div></div><div class="cb"><div class="g4">';
+    var lcols = {CL:'#38A169',SL:'#E63329',EL:'#805AD5',CO:'#D69E2E'};
+    res.data.leaveBalances.forEach(function(lb) {
+      var lc = lcols[lb.code]||'#00C2A8';
+      h += '<div style="text-align:center;padding:12px;background:#F7FAFC;border-radius:9px;border:1px solid #E2E8F0;">';
+      h += '<div style="font-size:20px;font-weight:800;color:' + lc + ';">' + lb.balance + '</div>';
+      h += '<div style="font-size:11px;font-weight:600;color:#0D1B3E;margin-top:2px;">' + lb.name + '</div>';
+      h += '<div style="font-size:10px;color:#718096;">' + lb.used + ' used</div></div>';
+    });
+    h += '</div></div></div>';
+  }
+  // Add photo upload and payslip download buttons
+  var profHeader = document.getElementById('pfc');
+  if (profHeader) {
+    var btnDiv = '<div style="display:flex;gap:8px;margin-bottom:15px;">';
+    btnDiv += '<button class="btn btp" onclick="openPhotoUpload()">Photo Update Photo</button>';
+    btnDiv += '<button class="btn bto" onclick="downloadPayslip()">PDF Download Payslip PDF</button>';
+    btnDiv += '</div>';
+    h = btnDiv + h;
+  }
+  document.getElementById('pfc').innerHTML = h;
+}
+if (tok && CU) { startApp(); } else { document.getElementById('LP').style.display = 'flex'; document.getElementById('AP').style.display = 'none'; }
+</script>
+
+</body>
+</html>
