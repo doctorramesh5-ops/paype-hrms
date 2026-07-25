@@ -723,7 +723,7 @@ function buildNav() {
     { id:'onboarding', label:'Onboarding', svg:'check', roles:['admin','hr'] },
     { id:'assets', label:'IT Assets', svg:'cpu', roles:['admin','hr'] },
     { id:'offers', label:'Offer Letters', svg:'brief', roles:['admin','hr'] },
-    { id:'digitalid', label:'Digital ID', svg:'user', roles:['admin','hr'], sec:'Identity' },
+    { id:'digitalid', label:'Digital ID', svg:'user', roles:['admin','hr','employee'], sec:'Identity' },
     { id:'orgchart', label:'Org Chart', svg:'users', roles:['admin','hr'] },
     { id:'profile', label:'My Profile', svg:'user', roles:['admin','hr','employee'], sec:'Account' },
     { id:'settings', label:'Settings', svg:'user', roles:['admin','hr','employee'] }
@@ -792,11 +792,19 @@ async function loadDash() {
   if (role === 'admin' || role === 'hr') h += '<button class="btn btp" onclick="openMod(&apos;aem&apos;)">+ Add Employee</button>';
   h += '</div>';
   h += '<div class="sg">';
-  h += '<div class="sc c1" onclick="goPage(&apos;employees&apos;)"><div class="sv">' + d.employees.total + '</div><div class="sl">Total Employees</div></div>';
-  h += '<div class="sc c2" onclick="goPage(&apos;attendance&apos;)"><div class="sv">' + d.attendance.present + '</div><div class="sl">Present Today</div></div>';
-  h += '<div class="sc c3" onclick="goPage(&apos;leave&apos;)"><div class="sv">' + d.leave.pendingApprovals + '</div><div class="sl">Leave Pending</div></div>';
-  var payTxt = d.payroll ? ('Rs ' + Number(d.payroll.total_net/100000).toFixed(1) + 'L') : '--';
-  h += '<div class="sc c4" onclick="goPage(&apos;payroll&apos;)"><div class="sv">' + payTxt + '</div><div class="sl">Last Payroll</div></div>';
+  if (role === 'admin' || role === 'hr') {
+    h += '<div class="sc c1" onclick="goPage(&apos;employees&apos;)"><div class="sv">' + d.employees.total + '</div><div class="sl">Total Employees</div></div>';
+    h += '<div class="sc c2" onclick="goPage(&apos;attendance&apos;)"><div class="sv">' + d.attendance.present + '</div><div class="sl">Present Today</div></div>';
+    h += '<div class="sc c3" onclick="goPage(&apos;leave&apos;)"><div class="sv">' + d.leave.pendingApprovals + '</div><div class="sl">Leave Pending</div></div>';
+    var payTxt = d.payroll ? ('Rs ' + Number(d.payroll.total_net/100000).toFixed(1) + 'L') : '--';
+    h += '<div class="sc c4" onclick="goPage(&apos;payroll&apos;)"><div class="sv">' + payTxt + '</div><div class="sl">Last Payroll</div></div>';
+  } else {
+    // Employee view - show personal stats
+    h += '<div class="sc c2" onclick="goPage(&apos;attendance&apos;)"><div class="sv">' + (d.myAttendance ? d.myAttendance.present : '--') + '</div><div class="sl">Days Present</div></div>';
+    h += '<div class="sc c3" onclick="goPage(&apos;leave&apos;)"><div class="sv">' + (d.myLeave ? d.myLeave.balance : '--') + '</div><div class="sl">Leave Balance</div></div>';
+    h += '<div class="sc c4" onclick="goPage(&apos;payroll&apos;)"><div class="sv">View</div><div class="sl">My Payslip</div></div>';
+    h += '<div class="sc c1" onclick="goPage(&apos;profile&apos;)"><div class="sv">Profile</div><div class="sl">My Account</div></div>';
+  }
   h += '</div>';
   if ((role === 'admin' || role === 'hr') && rs.success) {
     var rs2 = rs.data;
@@ -837,6 +845,22 @@ async function loadDash() {
     h += '<div style="font-size:12px;font-weight:600;color:#0D1B3E;">' + acts[i].lb + '</div></div>';
   }
   h += '</div></div></div></div>';
+  // Employee quick links
+  if (role === 'employee') {
+    h += '<div class="g2" style="margin-top:14px;">';
+    h += '<div class="card"><div class="ch"><div class="ct">Quick Actions</div></div><div class="cb">';
+    h += '<div style="display:flex;flex-direction:column;gap:8px;">';
+    h += '<button class="btn btp" onclick="goPage(&apos;attendance&apos;)" style="justify-content:flex-start;">Punch In / Out</button>';
+    h += '<button class="btn bto" onclick="goPage(&apos;leave&apos;)" style="justify-content:flex-start;">Apply Leave</button>';
+    h += '<button class="btn bto" onclick="goPage(&apos;payroll&apos;)" style="justify-content:flex-start;">View Payslip</button>';
+    h += '<button class="btn bto" onclick="goPage(&apos;profile&apos;)" style="justify-content:flex-start;">My Profile</button>';
+    h += '</div></div></div>';
+    h += '<div class="card"><div class="ch"><div class="ct">My Documents</div></div><div class="cb">';
+    h += '<div style="font-size:13px;color:#718096;margin-bottom:12px;">Sign your onboarding documents</div>';
+    h += '<button class="btn btp" onclick="goPage(&apos;profile&apos;);setTimeout(function(){showProfTab(&apos;docs&apos;,document.getElementById(&apos;prof-tab2&apos;));},300);" style="width:100%;">View & Sign Documents</button>';
+    h += '</div></div>';
+    h += '</div>';
+  }
   document.getElementById('dbc').innerHTML = h;
 }
 async function loadDepts() {
@@ -1394,9 +1418,10 @@ async function loadProf() {
   // Add photo upload and payslip download buttons
   var profHeader = document.getElementById('pfc');
   if (profHeader) {
-    var btnDiv = '<div style="display:flex;gap:8px;margin-bottom:15px;">';
-    btnDiv += '<button class="btn btp" onclick="openPhotoUpload()">Photo Update Photo</button>';
-    btnDiv += '<button class="btn bto" onclick="downloadPayslip()">PDF Download Payslip PDF</button>';
+    var btnDiv = '<div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:15px;">';
+    btnDiv += '<button class="btn btp" onclick="openPhotoUpload()">&#x1F4F7; Update Photo</button>';
+    btnDiv += '<button class="btn bto" onclick="downloadPayslip()">&#x1F4C4; Download Payslip</button>';
+    btnDiv += '<button class="btn bto" onclick="showProfTab(' + String.fromCharCode(39) + 'docs' + String.fromCharCode(39) + ',document.getElementById(' + String.fromCharCode(39) + 'prof-tab2' + String.fromCharCode(39) + '))">&#x270D; My Documents</button>';
     btnDiv += '</div>';
     h = btnDiv + h;
   }
@@ -1424,13 +1449,36 @@ function showDIDTab(tab, el) {
 }
 
 function loadDigitalID() {
-  if (!allEmps.length) {
-    req('GET', '/api/employees').then(function(res) {
-      if (res.success) { allEmps = res.data.employees||[]; renderDIDEmpGrids(); loadAgrSelect(); }
+  var role = CU ? CU.role : 'employee';
+  if (role === 'employee') {
+    // Employee sees only their own card - auto load
+    if (!CU.employeeId) { toast('Employee profile not linked','err'); return; }
+    req('GET', '/api/employees/' + CU.employeeId).then(function(res) {
+      if (!res.success) { toast('Error loading profile','err'); return; }
+      var e = res.data;
+      allEmps = [e];
+      // Hide employee selector - show card directly
+      var vcEmps = document.getElementById('did-vc-emps');
+      var idEmps = document.getElementById('did-id-emps');
+      if (vcEmps) vcEmps.parentElement.parentElement.style.display = 'none';
+      if (idEmps) idEmps.parentElement.parentElement.style.display = 'none';
+      // Auto generate cards
+      didSelEmp = e;
+      generateDIDVC(e);
+      generateDIDIDCard(e);
+      loadAgrSelect();
+      renderDIDQRGrid();
     });
   } else {
-    renderDIDEmpGrids();
-    loadAgrSelect();
+    // Admin/HR sees all employees
+    if (!allEmps.length) {
+      req('GET', '/api/employees').then(function(res) {
+        if (res.success) { allEmps = res.data.employees||[]; renderDIDEmpGrids(); loadAgrSelect(); }
+      });
+    } else {
+      renderDIDEmpGrids();
+      loadAgrSelect();
+    }
   }
 }
 
@@ -2257,6 +2305,96 @@ async function removeEmp(id, nm) {
     allEmps = []; // clear cache
     loadEmps();
   } else toast(res.message || 'Remove failed','err');
+}
+
+
+// ── PHOTO UPLOAD ──────────────────────────────────
+function openPhotoUpload() {
+  if (!CU || !CU.employeeId) { toast('Employee profile not linked','err'); return; }
+  var input = document.createElement('input');
+  input.type = 'file';
+  input.accept = 'image/jpeg,image/png,image/jpg';
+  input.onchange = function(e) {
+    var file = e.target.files[0];
+    if (!file) return;
+    if (file.size > 500000) { toast('Image too large! Max 500KB.','err'); return; }
+    var reader = new FileReader();
+    reader.onload = async function(ev) {
+      var base64 = ev.target.result;
+      toast('Uploading photo...');
+      var res = await req('PUT', '/api/employees/' + CU.employeeId + '/photo', { photoBase64: base64 });
+      if (res.success) {
+        toast('Profile photo updated!');
+        // Update avatar on screen
+        var avs = document.querySelectorAll('.av');
+        avs.forEach(function(av) {
+          if (av.textContent === (CU.firstName||'?')[0].toUpperCase()) {
+            av.innerHTML = '<img src="' + base64 + '" style="width:100%;height:100%;object-fit:cover;border-radius:50%;">';
+          }
+        });
+        loadProf();
+      } else toast(res.message||'Upload failed','err');
+    };
+    reader.readAsDataURL(file);
+  };
+  input.click();
+}
+
+// ── PAYSLIP DOWNLOAD ──────────────────────────────
+function downloadPayslip() {
+  if (!CU || !CU.employeeId) { toast('Employee profile not linked','err'); return; }
+  var now = new Date();
+  var m = now.getMonth() + 1;
+  var y = now.getFullYear();
+  var mnArr = ['','Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+  req('GET', '/api/payroll/payslip/my/' + m + '/' + y).then(function(res) {
+    if (!res.success) {
+      // Try previous month
+      var pm = m === 1 ? 12 : m - 1;
+      var py = m === 1 ? y - 1 : y;
+      req('GET', '/api/payroll/payslip/my/' + pm + '/' + py).then(function(res2) {
+        if (!res2.success) { toast('No payslip found. Contact HR.','err'); return; }
+        generatePayslipPDF(res2.data, mnArr[pm], py);
+      });
+      return;
+    }
+    generatePayslipPDF(res.data, mnArr[m], y);
+  });
+}
+
+function generatePayslipPDF(s, month, year) {
+  var win = window.open('', '_blank');
+  var nm = (s.first_name||'') + ' ' + (s.last_name||'');
+  win.document.write('<html><head><title>Payslip - ' + month + ' ' + year + '</title>');
+  win.document.write('<style>body{font-family:Arial,sans-serif;padding:30px;max-width:700px;margin:0 auto;font-size:13px;}');
+  win.document.write('.hdr{background:#0D1B3E;color:white;padding:16px 20px;border-radius:8px 8px 0 0;}');
+  win.document.write('table{width:100%;border-collapse:collapse;}td{padding:8px 12px;border-bottom:1px solid #E2E8F0;}');
+  win.document.write('.sec{background:#F7FAFC;font-weight:700;font-size:11px;color:#718096;text-transform:uppercase;padding:8px 12px;}');
+  win.document.write('.ttl{background:#0D1B3E;color:white;font-weight:700;padding:10px 12px;}');
+  win.document.write('.red{color:#E63329;}</style></head><body>');
+  win.document.write('<div class="hdr"><div style="font-size:16px;font-weight:700;">PayPe Technologies Pvt. Ltd.</div>');
+  win.document.write('<div style="font-size:10px;opacity:.6;margin-top:2px;">CIN: U74994TN2022PTC151114 | GST: 33AAMCP7960K1ZU</div></div>');
+  win.document.write('<div style="background:#F7FAFC;padding:12px 20px;border:1px solid #E2E8F0;display:flex;justify-content:space-between;">');
+  win.document.write('<div><strong>' + nm + '</strong><br><span style="color:#718096;font-size:11px;">' + (s.emp_code||'') + '</span></div>');
+  win.document.write('<div style="text-align:right;"><strong>Pay Period</strong><br><span style="color:#718096;font-size:11px;">' + month + ' ' + year + '</span></div></div>');
+  win.document.write('<table>');
+  win.document.write('<tr><td class="sec" colspan="2">Earnings</td></tr>');
+  win.document.write('<tr><td>Basic Salary</td><td>Rs ' + Number(s.basic||0).toLocaleString('en-IN') + '</td></tr>');
+  win.document.write('<tr><td>House Rent Allowance</td><td>Rs ' + Number(s.hra||0).toLocaleString('en-IN') + '</td></tr>');
+  win.document.write('<tr><td>Special Allowance</td><td>Rs ' + Number(s.special_allowance||0).toLocaleString('en-IN') + '</td></tr>');
+  win.document.write('<tr><td>Conveyance Allowance</td><td>Rs ' + Number(s.conveyance||0).toLocaleString('en-IN') + '</td></tr>');
+  win.document.write('<tr><td><strong>Gross Salary</strong></td><td><strong>Rs ' + Number(s.gross_salary||0).toLocaleString('en-IN') + '</strong></td></tr>');
+  win.document.write('<tr><td class="sec" colspan="2">Deductions</td></tr>');
+  win.document.write('<tr><td>PF (Employee 12%)</td><td class="red">Rs ' + Number(s.pf_employee||0).toLocaleString('en-IN') + '</td></tr>');
+  win.document.write('<tr><td>ESIC</td><td class="red">Rs ' + Number(s.esic_employee||0).toLocaleString('en-IN') + '</td></tr>');
+  win.document.write('<tr><td>Professional Tax</td><td class="red">Rs ' + Number(s.professional_tax||0).toLocaleString('en-IN') + '</td></tr>');
+  win.document.write('<tr><td class="red"><strong>Total Deductions</strong></td><td class="red"><strong>Rs ' + Number(s.total_deductions||0).toLocaleString('en-IN') + '</strong></td></tr>');
+  win.document.write('<tr><td class="ttl">Net Take Home</td><td class="ttl">Rs ' + Number(s.net_salary||0).toLocaleString('en-IN') + '</td></tr>');
+  win.document.write('</table>');
+  win.document.write('<p style="margin-top:16px;font-size:10px;color:#718096;text-align:center;">This is a computer-generated payslip. No signature required.</p>');
+  win.document.write('</body></html>');
+  win.document.close();
+  setTimeout(function() { win.print(); }, 500);
 }
 
 if (tok && CU) { startApp(); } else { document.getElementById('LP').style.display = 'flex'; document.getElementById('AP').style.display = 'none'; }
