@@ -398,20 +398,16 @@ app.get('/api/employees/stats', auth, canHR, async (req, res) => {
 app.get('/api/employees/:id', auth, async (req, res) => {
   try {
     const r = await db(
-      `SELECT e.*, d.name AS department_name, des.title AS designation
+      `SELECT e.*, d.name AS department_name
        FROM employees e
        LEFT JOIN departments d ON d.id=e.department_id
-       LEFT JOIN designations des ON des.id=e.designation_id
        WHERE e.id=$1`, [req.params.id]
     );
     if (!r.rows.length) return res.status(404).json({ success: false, message: 'Employee not found' });
-    const sal = await db(`SELECT * FROM salary_structures WHERE employee_id=$1 AND is_active=true LIMIT 1`, [req.params.id]);
-    const lv  = await db(`SELECT lb.*,lp.name,lp.code FROM leave_balances lb JOIN leave_policies lp ON lp.id=lb.leave_policy_id WHERE lb.employee_id=$1 AND lb.year=EXTRACT(YEAR FROM NOW())`, [req.params.id]);
-    res.json({ success: true, data: { ...r.rows[0], salary: sal.rows[0]||null, leaveBalances: lv.rows } });
-  } catch (e) {
-    res.status(500).json({ success: false, message: e.message });
-  }
+    res.json({ success: true, data: r.rows[0] });
+  } catch(e) { res.status(500).json({ success: false, message: e.message }); }
 });
+
 
 app.post('/api/employees', auth, canHR, async (req, res) => {
   try {
@@ -448,38 +444,47 @@ app.post('/api/employees', auth, canHR, async (req, res) => {
 });
 
 app.put('/api/employees/:id', auth, async (req, res) => {
-  // Allow employee to update their own profile, HR/Admin can update anyone
-  if (req.user.role === 'employee') {
-    const empCheck = await db('SELECT id FROM employees WHERE id=(SELECT employee_id FROM users WHERE id=$1)', [req.user.userId]);
-    if (!empCheck.rows.length || empCheck.rows[0].id !== req.params.id) {
-      return res.status(403).json({ success: false, message: 'Access denied' });
-    }
-  }
   try {
-    const map = { 
-      firstName:'first_name', lastName:'last_name', mobile:'mobile', 
-      workLocation:'work_location', bloodGroup:'blood_group', 
+    // Allow employee to update own profile only; HR/Admin can update anyone
+    if (req.user.role === 'employee') {
+      const empCheck = await db('SELECT id FROM employees WHERE id=(SELECT employee_id FROM users WHERE id=$1)', [req.user.userId]);
+      if (!empCheck.rows.length || empCheck.rows[0].id !== req.params.id) {
+        return res.status(403).json({ success: false, message: 'Access denied' });
+      }
+    }
+    const map = {
+      firstName:'first_name', lastName:'last_name', mobile:'mobile',
+      workLocation:'work_location', bloodGroup:'blood_group',
       departmentId:'department_id', designation:'designation',
       dateOfJoining:'date_of_joining', workEmail:'work_email',
-      employmentStatus:'employment_status', gender:'gender', 
+      employmentStatus:'employment_status', gender:'gender',
       maritalStatus:'marital_status', address:'address',
       emergencyContact:'emergency_contact',
       aadhaarNumber:'aadhaar_number', panNumber:'pan_number',
       bankName:'bank_name', accountNumber:'account_number',
       ifscCode:'ifsc_code', bankBranch:'bank_branch',
       dateOfBirth:'date_of_birth', personalEmail:'personal_email',
-      alternateMobile:'alternate_mobile'
+      alternateMobile:'alternate_mobile', annualCtc:'annual_ctc',
+      photoUrl:'photo_url'
     };
     const sets = [], params = [];
     for (const [k, v] of Object.entries(req.body)) {
       const col = map[k];
-      if (col && v !== undefined) { params.push(v); sets.push(`${col}=$${params.length}`); }
+      if (col && v !== undefined && v !== '') {
+        params.push(v);
+        sets.push(col + '=$' + params.length);
+      }
     }
-    if (!sets.length) return res.status(400).json({ success: false, message: 'No valid fields' });
+    if (!sets.length) return res.status(400).json({ success: false, message: 'No valid fields to update' });
     params.push(req.params.id);
-    await db(`UPDATE employees SET ${sets.join(',')}, updated_at=NOW() WHERE id=$${params.length}`, params);
-    res.json({ success: true, message: 'Employee updated' });
+    const sql = 'UPDATE employees SET ' + sets.join(', ') + ' WHERE id=$' + params.length;
+    console.log('Update SQL:', sql, params);
+    await db(sql, params);
+    // Return updated employee
+    const updated = await db('SELECT * FROM employees WHERE id=$1', [req.params.id]);
+    res.json({ success: true, message: 'Employee updated successfully!', data: updated.rows[0] });
   } catch (e) {
+    console.error('PUT employee error:', e.message);
     res.status(500).json({ success: false, message: e.message });
   }
 });
