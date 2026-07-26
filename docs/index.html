@@ -2576,26 +2576,43 @@ function viewEmp(id) {
     });
     h += '</table></div>';
 
-    // Personal Tab (filled by employee)
+    // Personal Tab - full details for HR/Admin
     h += '<div id="emp-tab-personal" style="display:none;">';
-    h += '<div style="background:rgba(0,194,168,.08);border:1px solid rgba(0,194,168,.2);border-radius:8px;padding:10px;margin-bottom:12px;font-size:12px;color:#0D1B3E;">Employee-submitted personal and bank details. Sensitive fields are partially masked.</div>';
-    h += '<table style="width:100%;border-collapse:collapse;">';
-    var personalRows = [
-      ['Date of Birth', emp.date_of_birth ? new Date(emp.date_of_birth).toLocaleDateString('en-IN') : 'Not provided'],
-      ['Gender', emp.gender||'Not provided'],
-      ['Marital Status', emp.marital_status||'Not provided'],
-      ['Personal Email', emp.personal_email||'Not provided'],
-      ['Alternate Mobile', emp.alternate_mobile||'Not provided'],
-      ['Aadhaar', emp.aadhaar_number ? emp.aadhaar_number.replace(/\d(?=\d{4})/g,'*') : 'Not provided'],
-      ['PAN Number', emp.pan_number||'Not provided'],
-      ['Bank Name', emp.bank_name||'Not provided'],
-      ['Account Number', emp.account_number ? '****' + String(emp.account_number).slice(-4) : 'Not provided'],
-      ['IFSC Code', emp.ifsc_code||'Not provided'],
-      ['Branch', emp.bank_branch||'Not provided'],
-      ['Emergency Contact', emp.emergency_contact||'Not provided']
+    // Personal Info
+    h += '<div style="font-size:11px;font-weight:700;color:#00C2A8;text-transform:uppercase;margin-bottom:8px;padding-bottom:6px;border-bottom:2px solid #00C2A820;">Personal Information</div>';
+    h += '<table style="width:100%;border-collapse:collapse;margin-bottom:16px;">';
+    var pRows = [
+      ['Date of Birth', emp.date_of_birth ? new Date(emp.date_of_birth).toLocaleDateString('en-IN',{day:'2-digit',month:'long',year:'numeric'}) : '—'],
+      ['Gender', emp.gender||'—'],
+      ['Marital Status', emp.marital_status||'—'],
+      ['Personal Email', emp.personal_email||'—'],
+      ['Alternate Mobile', emp.alternate_mobile||'—'],
+      ['Address', emp.address||'—'],
+      ['Emergency Contact', emp.emergency_contact||'—']
     ];
-    personalRows.forEach(function(r) {
-      h += '<tr style="border-bottom:1px solid #F0F4F8;"><td style="padding:7px 0;color:#718096;font-size:11px;font-weight:600;text-transform:uppercase;width:42%;">' + r[0] + '</td><td style="font-weight:600;font-size:13px;color:#0D1B3E;">' + r[1] + '</td></tr>';
+    pRows.forEach(function(r){
+      h += '<tr style="border-bottom:1px solid #F0F4F8;"><td style="padding:8px 0;font-size:11px;font-weight:700;color:#718096;text-transform:uppercase;width:45%;">' + r[0] + '</td><td style="font-size:13px;font-weight:600;color:#0D1B3E;">' + r[1] + '</td></tr>';
+    });
+    h += '</table>';
+    // Identity Documents
+    h += '<div style="font-size:11px;font-weight:700;color:#805AD5;text-transform:uppercase;margin-bottom:8px;padding-bottom:6px;border-bottom:2px solid #805AD520;">Identity Documents</div>';
+    h += '<table style="width:100%;border-collapse:collapse;margin-bottom:16px;">';
+    h += '<tr style="border-bottom:1px solid #F0F4F8;"><td style="padding:8px 0;font-size:11px;font-weight:700;color:#718096;text-transform:uppercase;width:45%;">Aadhaar Number</td>';
+    h += '<td style="font-size:14px;font-weight:800;color:#0D1B3E;letter-spacing:2px;">' + (emp.aadhaar_number||'—') + '</td></tr>';
+    h += '<tr style="border-bottom:1px solid #F0F4F8;"><td style="padding:8px 0;font-size:11px;font-weight:700;color:#718096;text-transform:uppercase;">PAN Number</td>';
+    h += '<td style="font-size:14px;font-weight:800;color:#0D1B3E;letter-spacing:2px;">' + (emp.pan_number||'—') + '</td></tr>';
+    h += '</table>';
+    // Bank Details
+    h += '<div style="font-size:11px;font-weight:700;color:#D69E2E;text-transform:uppercase;margin-bottom:8px;padding-bottom:6px;border-bottom:2px solid #D69E2E20;">Bank Details</div>';
+    h += '<table style="width:100%;border-collapse:collapse;">';
+    var bRows = [
+      ['Bank Name', emp.bank_name||'—'],
+      ['Account Number', emp.account_number||'—'],
+      ['IFSC Code', emp.ifsc_code||'—'],
+      ['Branch', emp.bank_branch||'—']
+    ];
+    bRows.forEach(function(r){
+      h += '<tr style="border-bottom:1px solid #F0F4F8;"><td style="padding:8px 0;font-size:11px;font-weight:700;color:#718096;text-transform:uppercase;width:45%;">' + r[0] + '</td><td style="font-size:14px;font-weight:800;color:#0D1B3E;letter-spacing:1px;">' + r[1] + '</td></tr>';
     });
     h += '</table></div>';
 
@@ -4290,28 +4307,108 @@ async function loadAttTab(tab) {
     var timeStr = now.toLocaleTimeString('en-IN',{hour:'2-digit',minute:'2-digit'});
 
     var h = '';
-    // Punch card - show for ALL roles
+    // Punch card - colourful for ALL roles
     var myAtt = myRes.success ? myRes.data : null;
     var punchedIn = myAtt && myAtt.punch_in && !myAtt.punch_out;
     var punchedOut = myAtt && myAtt.punch_out;
-    h += '<div class="card" style="margin-bottom:14px;">';
-    h += '<div class="ch"><div class="ct">My Attendance Today</div><div style="font-size:12px;color:#718096;">' + now.toLocaleDateString('en-IN',{weekday:'long',day:'2-digit',month:'long'}) + '</div></div>';
-    h += '<div class="cb" style="text-align:center;padding:20px;">';
-    h += '<div style="font-size:36px;font-weight:800;color:#0D1B3E;margin-bottom:6px;">' + timeStr + '</div>';
+    var dateStr = now.toLocaleDateString('en-IN',{weekday:'long',day:'2-digit',month:'long',year:'numeric'});
+
+    // Gradient based on status
+    var gradBg = punchedOut ? 'linear-gradient(135deg,#1a3c2e,#38A169)' :
+                 punchedIn  ? 'linear-gradient(135deg,#0D1B3E,#00C2A8)' :
+                              'linear-gradient(135deg,#2D1B69,#0D1B3E)';
+
+    h += '<div style="background:' + gradBg + ';border-radius:16px;padding:24px;margin-bottom:14px;color:white;position:relative;overflow:hidden;">';
+    // Decorative circles
+    h += '<div style="position:absolute;top:-30px;right:-30px;width:120px;height:120px;border-radius:50%;background:rgba(255,255,255,.07);"></div>';
+    h += '<div style="position:absolute;bottom:-40px;left:-20px;width:160px;height:160px;border-radius:50%;background:rgba(255,255,255,.05);"></div>';
+
+    // Date + status badge
+    h += '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;">';
+    h += '<div style="font-size:12px;opacity:.7;">' + dateStr + '</div>';
+    if (punchedOut) h += '<span style="background:rgba(255,255,255,.2);padding:3px 10px;border-radius:20px;font-size:11px;font-weight:700;">✅ Day Complete</span>';
+    else if (punchedIn) h += '<span style="background:rgba(255,255,255,.2);padding:3px 10px;border-radius:20px;font-size:11px;font-weight:700;">🟢 Working</span>';
+    else h += '<span style="background:rgba(255,255,255,.2);padding:3px 10px;border-radius:20px;font-size:11px;font-weight:700;">⏰ Not Punched</span>';
+    h += '</div>';
+
+    // Live time
+    h += '<div style="font-size:48px;font-weight:800;letter-spacing:2px;text-align:center;margin:8px 0;" id="live-time">' + timeStr + '</div>';
+
+    // Punch info
     if (punchedOut) {
-      h += '<div style="color:#38A169;font-size:14px;font-weight:600;margin-bottom:14px;">Day Complete</div>';
       var hrs = ((new Date(myAtt.punch_out)-new Date(myAtt.punch_in))/3600000).toFixed(1);
-      h += '<div style="font-size:13px;color:#718096;">In: ' + new Date(myAtt.punch_in).toLocaleTimeString('en-IN',{hour:'2-digit',minute:'2-digit'}) + ' | Out: ' + new Date(myAtt.punch_out).toLocaleTimeString('en-IN',{hour:'2-digit',minute:'2-digit'}) + ' | ' + hrs + ' hours</div>';
-      h += '<div style="margin-top:12px;"><button class="btn bto btsm" onclick="punchInOut()">Punch Again</button></div>';
+      var pIn2 = new Date(myAtt.punch_in).toLocaleTimeString('en-IN',{hour:'2-digit',minute:'2-digit'});
+      var pOut2 = new Date(myAtt.punch_out).toLocaleTimeString('en-IN',{hour:'2-digit',minute:'2-digit'});
+      h += '<div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin:16px 0;text-align:center;">';
+      h += '<div style="background:rgba(255,255,255,.12);border-radius:10px;padding:10px;"><div style="font-size:10px;opacity:.7;">PUNCH IN</div><div style="font-size:18px;font-weight:700;">' + pIn2 + '</div></div>';
+      h += '<div style="background:rgba(255,255,255,.12);border-radius:10px;padding:10px;"><div style="font-size:10px;opacity:.7;">PUNCH OUT</div><div style="font-size:18px;font-weight:700;">' + pOut2 + '</div></div>';
+      h += '<div style="background:rgba(255,255,255,.12);border-radius:10px;padding:10px;"><div style="font-size:10px;opacity:.7;">HOURS</div><div style="font-size:18px;font-weight:700;">' + hrs + 'h</div></div>';
+      h += '</div>';
     } else if (punchedIn) {
-      h += '<div style="color:#00C2A8;font-size:14px;font-weight:600;margin-bottom:6px;">Currently Working</div>';
-      h += '<div style="font-size:12px;color:#718096;margin-bottom:14px;">Punched in at: ' + new Date(myAtt.punch_in).toLocaleTimeString('en-IN',{hour:'2-digit',minute:'2-digit'}) + '</div>';
-      h += '<button class="btn btr" onclick="punchInOut()" style="padding:12px 32px;font-size:14px;">Punch Out</button>';
+      var pIn2 = new Date(myAtt.punch_in).toLocaleTimeString('en-IN',{hour:'2-digit',minute:'2-digit'});
+      h += '<div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:16px 0;text-align:center;">';
+      h += '<div style="background:rgba(255,255,255,.12);border-radius:10px;padding:10px;"><div style="font-size:10px;opacity:.7;">PUNCHED IN AT</div><div style="font-size:20px;font-weight:700;">' + pIn2 + '</div></div>';
+      h += '<div style="background:rgba(255,255,255,.12);border-radius:10px;padding:10px;" id="working-dur"><div style="font-size:10px;opacity:.7;">WORKING FOR</div><div style="font-size:20px;font-weight:700;" id="work-dur-val">...</div></div>';
+      h += '</div>';
     } else {
-      h += '<div style="color:#718096;font-size:14px;margin-bottom:14px;">Not punched in yet</div>';
-      h += '<button class="btn btg" onclick="punchInOut()" style="padding:12px 32px;font-size:14px;">Punch In</button>';
+      h += '<div style="text-align:center;padding:10px 0;font-size:13px;opacity:.7;">Tap Punch In to start your day</div>';
+    }
+
+    // Location info
+    if (myAtt && myAtt.distance_in !== undefined && myAtt.distance_in !== null) {
+      var dist = myAtt.distance_in;
+      var locLabel = dist<=50?'Office':dist<=500?'Near Office':'Remote/WFH';
+      var locIcon = dist<=50?'🏢':dist<=500?'📍':'🏠';
+      h += '<div style="text-align:center;font-size:11px;opacity:.7;margin-bottom:12px;">' + locIcon + ' ' + locLabel + ' (' + dist + 'm from office)</div>';
+    }
+
+    // Punch button
+    h += '<div style="text-align:center;">';
+    if (punchedOut) {
+      h += '<button onclick="punchInOut()" style="background:rgba(255,255,255,.2);color:white;border:2px solid rgba(255,255,255,.4);padding:10px 28px;border-radius:10px;font-size:13px;font-weight:700;cursor:pointer;">Punch Again</button>';
+    } else if (punchedIn) {
+      h += '<button onclick="punchInOut()" style="background:#E63329;color:white;border:none;padding:14px 40px;border-radius:12px;font-size:15px;font-weight:800;cursor:pointer;box-shadow:0 4px 15px rgba(230,51,41,.4);">🔴 PUNCH OUT</button>';
+    } else {
+      h += '<button onclick="punchInOut()" style="background:#00C2A8;color:white;border:none;padding:14px 40px;border-radius:12px;font-size:15px;font-weight:800;cursor:pointer;box-shadow:0 4px 15px rgba(0,194,168,.4);">🟢 PUNCH IN</button>';
     }
     h += '</div></div>';
+
+    // Yesterday punch record
+    var yesRes = await req('GET', '/api/attendance/yesterday');
+    if (yesRes.success && yesRes.data) {
+      var y = yesRes.data;
+      var yIn = y.punch_in ? new Date(y.punch_in).toLocaleTimeString('en-IN',{hour:'2-digit',minute:'2-digit'}) : '--';
+      var yOut = y.punch_out ? new Date(y.punch_out).toLocaleTimeString('en-IN',{hour:'2-digit',minute:'2-digit'}) : 'Not out';
+      var yHrs = y.punch_in && y.punch_out ? ((new Date(y.punch_out)-new Date(y.punch_in))/3600000).toFixed(1)+'h' : '--';
+      var ySc = y.punch_out?'#38A169':y.punch_in?'#D69E2E':'#E63329';
+      var yLabel = y.punch_out?'Complete':y.punch_in?'Incomplete':'Absent';
+      h += '<div style="background:white;border-radius:12px;padding:14px;margin-bottom:14px;border:1px solid #E2E8F0;">';
+      h += '<div style="font-size:11px;font-weight:700;color:#718096;text-transform:uppercase;margin-bottom:10px;">Yesterday</div>';
+      h += '<div style="display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:8px;text-align:center;">';
+      h += '<div><div style="font-size:10px;color:#718096;">IN</div><div style="font-size:14px;font-weight:700;color:#0D1B3E;">' + yIn + '</div></div>';
+      h += '<div><div style="font-size:10px;color:#718096;">OUT</div><div style="font-size:14px;font-weight:700;color:#0D1B3E;">' + yOut + '</div></div>';
+      h += '<div><div style="font-size:10px;color:#718096;">HOURS</div><div style="font-size:14px;font-weight:700;color:#0D1B3E;">' + yHrs + '</div></div>';
+      h += '<div><div style="font-size:10px;color:#718096;">STATUS</div><div style="font-size:13px;font-weight:700;color:' + ySc + ';">' + yLabel + '</div></div>';
+      h += '</div></div>';
+    }
+
+    // Start live clock update
+    setTimeout(function() {
+      setInterval(function() {
+        var lt = document.getElementById('live-time');
+        if (lt) lt.textContent = new Date().toLocaleTimeString('en-IN',{hour:'2-digit',minute:'2-digit'});
+        // Update working duration
+        if (punchedIn && myAtt && myAtt.punch_in) {
+          var wd = document.getElementById('work-dur-val');
+          if (wd) {
+            var diff = (new Date() - new Date(myAtt.punch_in)) / 3600000;
+            var wh = Math.floor(diff);
+            var wm = Math.floor((diff-wh)*60);
+            wd.textContent = wh + 'h ' + wm + 'm';
+          }
+        }
+      }, 1000);
+    }, 100);
 
     // Today summary (admin/hr)
     if (CU.role !== 'employee' && res.success) {

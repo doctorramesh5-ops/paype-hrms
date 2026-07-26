@@ -1735,6 +1735,23 @@ app.put('/api/helpdesk/tickets/:id', auth, async (req, res) => {
 });
 
 // Attendance my-today endpoint
+
+// ── YESTERDAY ATTENDANCE ──────────────────────────
+app.get('/api/attendance/yesterday', auth, async (req, res) => {
+  try {
+    const yesterday = new Date();
+    yesterday.setDate(yesterday.getDate() - 1);
+    const yDate = yesterday.toISOString().split('T')[0];
+    const r = await db(`SELECT a.* FROM attendance a
+      JOIN employees e ON e.id=a.employee_id
+      WHERE e.id=(SELECT employee_id FROM users WHERE id=$1)
+      AND DATE(a.punch_in)=$2 ORDER BY a.punch_in DESC LIMIT 1`,
+      [req.user.userId, yDate]);
+    if (!r.rows.length) return res.json({ success: false, message: 'No record yesterday' });
+    res.json({ success: true, data: r.rows[0] });
+  } catch(e) { res.status(500).json({ success: false, message: e.message }); }
+});
+
 app.get('/api/attendance/my-today', auth, async (req, res) => {
   try {
     const today = new Date().toISOString().split('T')[0];
