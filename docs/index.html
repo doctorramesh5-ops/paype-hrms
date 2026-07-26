@@ -1698,14 +1698,44 @@ async function loadProf() {
   // Add photo upload and payslip download buttons
   var profHeader = document.getElementById('pfc');
   if (profHeader) {
-    var btnDiv = '<div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:15px;">';
-    btnDiv += '<button class="btn btp" onclick="openPhotoUpload()">&#x1F4F7; Update Photo</button>';
-    btnDiv += '<button class="btn bto" onclick="downloadPayslip()">&#x1F4C4; Download Payslip</button>';
-    btnDiv += '<button class="btn bto" onclick="showProfTab(' + String.fromCharCode(39) + 'docs' + String.fromCharCode(39) + ',document.getElementById(' + String.fromCharCode(39) + 'prof-tab2' + String.fromCharCode(39) + '))">&#x270D; My Documents</button>';
-    btnDiv += '</div>';
-    h = btnDiv + h;
+    // Add last punch info + buttons
+    req('GET', '/api/attendance/my-today').then(function(attRes) {
+      var punchInfo = '';
+      if (attRes.success && attRes.data) {
+        var att = attRes.data;
+        var pIn = att.punch_in ? new Date(att.punch_in).toLocaleTimeString('en-IN',{hour:'2-digit',minute:'2-digit'}) : null;
+        var pOut = att.punch_out ? new Date(att.punch_out).toLocaleTimeString('en-IN',{hour:'2-digit',minute:'2-digit'}) : null;
+        var locStr = att.distance !== null && att.distance !== undefined ? ' (' + (att.distance <= 50 ? 'Office' : 'Remote') + ')' : '';
+        if (pOut) {
+          punchInfo = '<div style="background:rgba(56,161,105,.08);border:1px solid rgba(56,161,105,.2);border-radius:8px;padding:10px 14px;margin-bottom:12px;display:flex;align-items:center;justify-content:space-between;">' +
+            '<div><div style="font-size:11px;font-weight:700;color:#38A169;text-transform:uppercase;">Last Punch</div>' +
+            '<div style="font-size:13px;font-weight:600;color:#0D1B3E;margin-top:2px;">In: ' + pIn + ' | Out: ' + pOut + locStr + '</div></div>' +
+            '<span class="b bg">Complete</span></div>';
+        } else if (pIn) {
+          punchInfo = '<div style="background:rgba(0,194,168,.08);border:1px solid rgba(0,194,168,.2);border-radius:8px;padding:10px 14px;margin-bottom:12px;display:flex;align-items:center;justify-content:space-between;">' +
+            '<div><div style="font-size:11px;font-weight:700;color:#00C2A8;text-transform:uppercase;">Last Punch In</div>' +
+            '<div style="font-size:13px;font-weight:600;color:#0D1B3E;margin-top:2px;">' + pIn + locStr + '</div></div>' +
+            '<span class="b bt">Working</span></div>';
+        }
+      }
+      var btnDiv = '<div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px;">';
+      btnDiv += '<button class="btn btp" onclick="openPhotoUpload()">&#x1F4F7; Update Photo</button>';
+      btnDiv += '<button class="btn bto" onclick="downloadPayslip()">&#x1F4C4; Payslip</button>';
+      btnDiv += '<button class="btn bto" onclick="showProfTab(' + String.fromCharCode(39) + 'docs' + String.fromCharCode(39) + ',document.getElementById(' + String.fromCharCode(39) + 'prof-tab5' + String.fromCharCode(39) + '))">&#x270D; Documents</button>';
+      btnDiv += '</div>';
+      var pfc = document.getElementById('pfc');
+      if (pfc) pfc.innerHTML = punchInfo + btnDiv + h;
+    }).catch(function() {
+      var btnDiv = '<div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px;">';
+      btnDiv += '<button class="btn btp" onclick="openPhotoUpload()">&#x1F4F7; Update Photo</button>';
+      btnDiv += '<button class="btn bto" onclick="downloadPayslip()">&#x1F4C4; Payslip</button>';
+      btnDiv += '</div>';
+      var pfc = document.getElementById('pfc');
+      if (pfc) pfc.innerHTML = btnDiv + h;
+    });
+    return;
   }
-  document.getElementById('pfc').innerHTML = h;
+  document.getElementById('pfc').innerHTML = h; // admin/hr view
 }
 
 // ── DIGITAL IDENTITY ──────────────────────────────
@@ -2713,25 +2743,42 @@ async function editEmp(id) {
 
 async function saveEditEmp() {
   var id = document.getElementById('ee-id').value;
-  var body = {
-    firstName: document.getElementById('ee1').value.trim(),
-    lastName: document.getElementById('ee2').value.trim(),
-    workEmail: document.getElementById('ee3').value.trim(),
-    mobile: document.getElementById('ee4').value.trim(),
-    departmentId: document.getElementById('ee5').value || undefined,
-    designation: document.getElementById('ee6').value.trim() || undefined,
-    dateOfJoining: document.getElementById('ee7').value || undefined,
-    workLocation: document.getElementById('ee8').value.trim() || undefined,
-    bloodGroup: document.getElementById('ee9').value || undefined,
-    employmentStatus: document.getElementById('ee10').value
-  };
-  if (!body.firstName || !body.lastName) { toast('Name is required','err'); return; }
+  if (!id) { toast('Employee ID missing','err'); return; }
+  
+  var fn = document.getElementById('ee1') ? document.getElementById('ee1').value.trim() : '';
+  var ln = document.getElementById('ee2') ? document.getElementById('ee2').value.trim() : '';
+  if (!fn || !ln) { toast('Name is required','err'); return; }
+
+  var body = {};
+  if (fn) body.firstName = fn;
+  if (ln) body.lastName = ln;
+  var email = document.getElementById('ee3') ? document.getElementById('ee3').value.trim() : '';
+  var mobile = document.getElementById('ee4') ? document.getElementById('ee4').value.trim() : '';
+  var deptId = document.getElementById('ee5') ? document.getElementById('ee5').value : '';
+  var desig = document.getElementById('ee6') ? document.getElementById('ee6').value.trim() : '';
+  var doj = document.getElementById('ee7') ? document.getElementById('ee7').value : '';
+  var loc = document.getElementById('ee8') ? document.getElementById('ee8').value.trim() : '';
+  var blood = document.getElementById('ee9') ? document.getElementById('ee9').value : '';
+  var status = document.getElementById('ee10') ? document.getElementById('ee10').value : '';
+
+  if (email) body.workEmail = email;
+  if (mobile) body.mobile = mobile;
+  if (deptId) body.departmentId = deptId;
+  if (desig) body.designation = desig;
+  if (doj) body.dateOfJoining = doj;
+  if (loc) body.workLocation = loc;
+  if (blood) body.bloodGroup = blood;
+  if (status) body.employmentStatus = status;
+
+  console.log('Updating employee:', id, body);
   var res = await req('PUT', '/api/employees/' + id, body);
+  console.log('Update result:', res);
   if (res.success) {
     toast('Employee updated successfully!');
     closeMod('eem');
+    allEmps = [];
     loadEmps();
-  } else toast(res.message || 'Update failed','err');
+  } else toast(res.message || 'Update failed - check console','err');
 }
 
 async function removeEmp(id, nm) {
@@ -4240,29 +4287,28 @@ async function loadAttTab(tab) {
     var timeStr = now.toLocaleTimeString('en-IN',{hour:'2-digit',minute:'2-digit'});
 
     var h = '';
-    // Punch card
-    if (CU.role === 'employee' || myRes.success) {
-      var myAtt = myRes.success ? myRes.data : null;
-      var punchedIn = myAtt && myAtt.punch_in && !myAtt.punch_out;
-      var punchedOut = myAtt && myAtt.punch_out;
-      h += '<div class="card" style="margin-bottom:14px;">';
-      h += '<div class="ch"><div class="ct">My Attendance - Today</div><div style="font-size:12px;color:#718096;">' + now.toLocaleDateString('en-IN',{weekday:'long',day:'2-digit',month:'long'}) + '</div></div>';
-      h += '<div class="cb" style="text-align:center;padding:20px;">';
-      h += '<div style="font-size:36px;font-weight:800;color:#0D1B3E;margin-bottom:6px;">' + timeStr + '</div>';
-      if (punchedOut) {
-        h += '<div style="color:#38A169;font-size:14px;font-weight:600;margin-bottom:14px;">Day Complete</div>';
-        var hrs = ((new Date(myAtt.punch_out)-new Date(myAtt.punch_in))/3600000).toFixed(1);
-        h += '<div style="font-size:13px;color:#718096;">In: ' + new Date(myAtt.punch_in).toLocaleTimeString('en-IN',{hour:'2-digit',minute:'2-digit'}) + ' | Out: ' + new Date(myAtt.punch_out).toLocaleTimeString('en-IN',{hour:'2-digit',minute:'2-digit'}) + ' | ' + hrs + ' hours</div>';
-      } else if (punchedIn) {
-        h += '<div style="color:#00C2A8;font-size:14px;font-weight:600;margin-bottom:14px;">Currently Working</div>';
-        h += '<div style="font-size:12px;color:#718096;margin-bottom:16px;">Punched in at: ' + new Date(myAtt.punch_in).toLocaleTimeString('en-IN',{hour:'2-digit',minute:'2-digit'}) + '</div>';
-        h += '<button class="btn btr" onclick="punchInOut()" style="padding:12px 32px;font-size:14px;">Punch Out</button>';
-      } else {
-        h += '<div style="color:#718096;font-size:14px;margin-bottom:16px;">Not punched in yet</div>';
-        h += '<button class="btn btg" onclick="punchInOut()" style="padding:12px 32px;font-size:14px;">Punch In</button>';
-      }
-      h += '</div></div>';
+    // Punch card - show for ALL roles
+    var myAtt = myRes.success ? myRes.data : null;
+    var punchedIn = myAtt && myAtt.punch_in && !myAtt.punch_out;
+    var punchedOut = myAtt && myAtt.punch_out;
+    h += '<div class="card" style="margin-bottom:14px;">';
+    h += '<div class="ch"><div class="ct">My Attendance Today</div><div style="font-size:12px;color:#718096;">' + now.toLocaleDateString('en-IN',{weekday:'long',day:'2-digit',month:'long'}) + '</div></div>';
+    h += '<div class="cb" style="text-align:center;padding:20px;">';
+    h += '<div style="font-size:36px;font-weight:800;color:#0D1B3E;margin-bottom:6px;">' + timeStr + '</div>';
+    if (punchedOut) {
+      h += '<div style="color:#38A169;font-size:14px;font-weight:600;margin-bottom:14px;">Day Complete</div>';
+      var hrs = ((new Date(myAtt.punch_out)-new Date(myAtt.punch_in))/3600000).toFixed(1);
+      h += '<div style="font-size:13px;color:#718096;">In: ' + new Date(myAtt.punch_in).toLocaleTimeString('en-IN',{hour:'2-digit',minute:'2-digit'}) + ' | Out: ' + new Date(myAtt.punch_out).toLocaleTimeString('en-IN',{hour:'2-digit',minute:'2-digit'}) + ' | ' + hrs + ' hours</div>';
+      h += '<div style="margin-top:12px;"><button class="btn bto btsm" onclick="punchInOut()">Punch Again</button></div>';
+    } else if (punchedIn) {
+      h += '<div style="color:#00C2A8;font-size:14px;font-weight:600;margin-bottom:6px;">Currently Working</div>';
+      h += '<div style="font-size:12px;color:#718096;margin-bottom:14px;">Punched in at: ' + new Date(myAtt.punch_in).toLocaleTimeString('en-IN',{hour:'2-digit',minute:'2-digit'}) + '</div>';
+      h += '<button class="btn btr" onclick="punchInOut()" style="padding:12px 32px;font-size:14px;">Punch Out</button>';
+    } else {
+      h += '<div style="color:#718096;font-size:14px;margin-bottom:14px;">Not punched in yet</div>';
+      h += '<button class="btn btg" onclick="punchInOut()" style="padding:12px 32px;font-size:14px;">Punch In</button>';
     }
+    h += '</div></div>';
 
     // Today summary (admin/hr)
     if (CU.role !== 'employee' && res.success) {

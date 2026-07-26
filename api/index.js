@@ -410,7 +410,14 @@ app.post('/api/employees', auth, canHR, async (req, res) => {
   }
 });
 
-app.put('/api/employees/:id', auth, canHR, async (req, res) => {
+app.put('/api/employees/:id', auth, async (req, res) => {
+  // Allow employee to update their own profile, HR/Admin can update anyone
+  if (req.user.role === 'employee') {
+    const empCheck = await db('SELECT id FROM employees WHERE id=(SELECT employee_id FROM users WHERE id=$1)', [req.user.userId]);
+    if (!empCheck.rows.length || empCheck.rows[0].id !== req.params.id) {
+      return res.status(403).json({ success: false, message: 'Access denied' });
+    }
+  }
   try {
     const map = { 
       firstName:'first_name', lastName:'last_name', mobile:'mobile', 
@@ -464,51 +471,46 @@ app.get('/api/designations', auth, async (req, res) => {
 app.post('/api/attendance/punch', auth, async (req, res) => {
   try {
     const today = new Date().toISOString().slice(0, 10);
-    const { location } = req.body;
-    const ex = await db(`SELECT * FROM attendance WHERE employee_id=$1 AND date=$2`, [req.user.employee_id, today]);
+    const { latitude, longitude, accuracy, distance, address } = req.body;
+    const locationJson = latitude ? JSON.stringify({lat:latitude,lng:longitude,acc:accuracy,dist:distance,addr:address}) : null;
+    
+    // Get employee id from user
+    const userEmp = await db('SELECT employee_id FROM users WHERE id=$1', [req.user.userId]);
+    const empId = userEmp.rows[0]?.employee_id;
+    if (!empId) return res.status(400).json({ success: false, message: 'Employee profile not linked' });
+
+    const ex = await db(`SELECT * FROM attendance WHERE employee_id=$1 AND DATE(punch_in)=$2`, [empId, today]);
+    
     if (!ex.rows.length) {
-      await db(`INSERT INTO attendance (id,employee_id,date,punch_in,status,location_in) VALUES (gen_random_uuid(),$1,$2,NOW(),'Present',$3)`,
-        [req.user.employee_id, today, location||null]);
-      return res.json({ success: true, message: 'Punched In! Have a great day 👍', data: { action: 'punch_in', time: new Date().toISOString() } });
+      // Punch In
+      await db(`INSERT INTO attendance (employee_id, punch_in, latitude_in, longitude_in, accuracy_in, distance_in, location_in)
+        VALUES ($1, NOW(), $2, $3, $4, $5, $6)`,
+        [empId, latitude||null, longitude||null, accuracy||null, distance||null, locationJson]);
+      res.json({ success: true, message: 'Punched In successfully!' });
+    } else {
+      var rec = ex.rows[0];
+      if (rec.punch_out) return res.status(400).json({ success: false, message: 'Already punched out today' });
+      // Punch Out
+      await db(`UPDATE attendance SET punch_out=NOW(), latitude_out=$1, longitude_out=$2, accuracy_out=$3, distance_out=$4, location_out=$5, updated_at=NOW()
+        WHERE id=$6`,
+        [latitude||null, longitude||null, accuracy||null, distance||null, locationJson, rec.id]);
+      res.json({ success: true, message: 'Punched Out successfully!' });
     }
-    const rec = ex.rows[0];
-    if (rec.punch_out) return res.status(400).json({ success: false, message: 'Already punched out today' });
-    const hrs = ((Date.now() - new Date(rec.punch_in)) / 3600000).toFixed(2);
-    await db(`UPDATE attendance SET punch_out=NOW(), hours_worked=$1, location_out=$2, updated_at=NOW() WHERE employee_id=$3 AND date=$4`,
-      [hrs, location||null, req.user.employee_id, today]);
-    return res.json({ success: true, message: `Punched Out! You worked ${hrs} hours today 🎉`, data: { action: 'punch_out', hoursWorked: parseFloat(hrs) } });
-  } catch (e) {
-    res.status(500).json({ success: false, message: e.message });
-  }
+  } catch(e) { res.status(500).json({ success: false, message: e.message }); }
 });
 
-app.get('/api/attendance/today', auth, canHR, async (req, res) => {
+
+app.get('/api/attendance/today', auth, async (req, res) => {
   try {
     const today = new Date().toISOString().slice(0, 10);
-    const [recs, total] = await Promise.all([
-      db(`SELECT a.*, e.first_name, e.last_name, e.employee_id AS emp_code, d.name AS dept
-          FROM attendance a
-          JOIN employees e ON e.id=a.employee_id
-          LEFT JOIN departments d ON d.id=e.department_id
-          WHERE a.date=$1 ORDER BY a.punch_in ASC NULLS LAST`, [today]),
-      db(`SELECT COUNT(*) c FROM employees WHERE status='Active'`)
-    ]);
-    const present = recs.rows.filter(r => r.status === 'Present').length;
-    const late    = recs.rows.filter(r => {
-      if (!r.punch_in) return false;
-      const d = new Date(r.punch_in);
-      return d.getHours() > 9 || (d.getHours() === 9 && d.getMinutes() > 15);
-    }).length;
-    res.json({
-      success: true,
-      data: {
-        date: today,
-        summary: { total: parseInt(total.rows[0].c), present, late, absent: parseInt(total.rows[0].c) - present },
-        records: recs.rows
-      }
-    });
-  } catch (e) { res.status(500).json({ success: false, message: e.message }); }
+    const r = await db(`SELECT a.*, e.first_name, e.last_name, e.employee_id AS emp_code,
+      a.latitude_in AS latitude, a.longitude_in AS longitude, a.distance_in AS distance
+      FROM attendance a JOIN employees e ON e.id=a.employee_id
+      WHERE DATE(a.punch_in)=$1 ORDER BY e.first_name`, [today]);
+    res.json({ success: true, data: r.rows });
+  } catch(e) { res.status(500).json({ success: false, message: e.message }); }
 });
+
 
 app.get('/api/attendance/my', auth, async (req, res) => {
   try {
