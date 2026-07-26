@@ -101,6 +101,43 @@ app.get('/api/health', async (req, res) => {
     try {
       await db('SELECT 1');
       dbStatus = 'connected ✅';
+      // Auto-migrate missing columns
+      const migrations = [
+        // Attendance location
+        'ALTER TABLE attendance ADD COLUMN IF NOT EXISTS latitude_in NUMERIC(10,7)',
+        'ALTER TABLE attendance ADD COLUMN IF NOT EXISTS longitude_in NUMERIC(10,7)',
+        'ALTER TABLE attendance ADD COLUMN IF NOT EXISTS accuracy_in NUMERIC',
+        'ALTER TABLE attendance ADD COLUMN IF NOT EXISTS distance_in INTEGER',
+        'ALTER TABLE attendance ADD COLUMN IF NOT EXISTS location_in TEXT',
+        'ALTER TABLE attendance ADD COLUMN IF NOT EXISTS latitude_out NUMERIC(10,7)',
+        'ALTER TABLE attendance ADD COLUMN IF NOT EXISTS longitude_out NUMERIC(10,7)',
+        'ALTER TABLE attendance ADD COLUMN IF NOT EXISTS distance_out INTEGER',
+        'ALTER TABLE attendance ADD COLUMN IF NOT EXISTS location_out TEXT',
+        // Employee columns
+        'ALTER TABLE employees ADD COLUMN IF NOT EXISTS designation VARCHAR(200)',
+        'ALTER TABLE employees ADD COLUMN IF NOT EXISTS work_location VARCHAR(200)',
+        'ALTER TABLE employees ADD COLUMN IF NOT EXISTS blood_group VARCHAR(10)',
+        'ALTER TABLE employees ADD COLUMN IF NOT EXISTS gender VARCHAR(20)',
+        'ALTER TABLE employees ADD COLUMN IF NOT EXISTS marital_status VARCHAR(20)',
+        'ALTER TABLE employees ADD COLUMN IF NOT EXISTS address TEXT',
+        'ALTER TABLE employees ADD COLUMN IF NOT EXISTS emergency_contact VARCHAR(200)',
+        'ALTER TABLE employees ADD COLUMN IF NOT EXISTS aadhaar_number VARCHAR(20)',
+        'ALTER TABLE employees ADD COLUMN IF NOT EXISTS pan_number VARCHAR(20)',
+        'ALTER TABLE employees ADD COLUMN IF NOT EXISTS bank_name VARCHAR(100)',
+        'ALTER TABLE employees ADD COLUMN IF NOT EXISTS account_number VARCHAR(50)',
+        'ALTER TABLE employees ADD COLUMN IF NOT EXISTS ifsc_code VARCHAR(20)',
+        'ALTER TABLE employees ADD COLUMN IF NOT EXISTS bank_branch VARCHAR(100)',
+        'ALTER TABLE employees ADD COLUMN IF NOT EXISTS date_of_birth DATE',
+        'ALTER TABLE employees ADD COLUMN IF NOT EXISTS personal_email VARCHAR(200)',
+        'ALTER TABLE employees ADD COLUMN IF NOT EXISTS alternate_mobile VARCHAR(20)',
+        "ALTER TABLE employees ADD COLUMN IF NOT EXISTS employment_status VARCHAR(30) DEFAULT 'Active'",
+        'ALTER TABLE employees ADD COLUMN IF NOT EXISTS date_of_joining DATE',
+        'ALTER TABLE employees ADD COLUMN IF NOT EXISTS annual_ctc NUMERIC DEFAULT 0',
+        'ALTER TABLE employees ADD COLUMN IF NOT EXISTS photo_url TEXT'
+      ];
+      for (const sql of migrations) {
+        try { await db(sql); } catch(e2) {}
+      }
     } catch (e) {
       dbStatus = 'error: ' + e.message;
     }
