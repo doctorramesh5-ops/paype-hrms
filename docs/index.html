@@ -2712,8 +2712,11 @@ async function suspendEmp(id, currentStatus) {
 
 
 async function editEmp(id) {
-  var e = allEmps.find(function(emp){ return emp.id === id; });
-  if (!e) return;
+  // Fetch fresh employee data from API
+  var empRes = await req('GET', '/api/employees/' + id);
+  var e = empRes.success ? empRes.data : allEmps.find(function(emp){ return emp.id === id; });
+  if (!e) { toast('Employee not found','err'); return; }
+
   document.getElementById('ee-id').value = id;
   document.getElementById('ee1').value = e.first_name || '';
   document.getElementById('ee2').value = e.last_name || '';
@@ -2725,12 +2728,12 @@ async function editEmp(id) {
   document.getElementById('ee9').value = e.blood_group || '';
   document.getElementById('ee10').value = e.employment_status || 'Active';
 
-  // Load departments
+  // Load departments and pre-select
   var sel = document.getElementById('ee5');
-  var res = await req('GET', '/api/departments');
-  if (res.success) {
+  var deptRes = await req('GET', '/api/departments');
+  if (deptRes.success) {
     sel.innerHTML = '<option value="">Select Department</option>';
-    res.data.forEach(function(d) {
+    deptRes.data.forEach(function(d) {
       var op = document.createElement('option');
       op.value = d.id;
       op.textContent = d.name;
