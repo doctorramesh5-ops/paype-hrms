@@ -2692,7 +2692,10 @@ async function loadEmpEducationHR(empId) {
       if (edu.certno) h += '<div style="font-size:11px;color:#718096;margin-top:2px;">Cert No: <strong>' + edu.certno + '</strong></div>';
       h += '</div>';
       if (edu.cert_file) {
-        h += '<a href="' + edu.cert_file + '" target="_blank" style="font-size:11px;background:#0D1B3E;color:white;padding:4px 10px;border-radius:6px;text-decoration:none;">View Cert</a>';
+        window._hrFiles = window._hrFiles || [];
+        var fIdx = window._hrFiles.length;
+        window._hrFiles.push({data: edu.cert_file, name: edu.cert_file_name||'certificate'});
+        h += '<button onclick="openStoredFile(' + fIdx + ')" style="font-size:11px;background:#0D1B3E;color:white;padding:4px 10px;border-radius:6px;border:none;cursor:pointer;">📄 View Cert</button>';
       }
       h += '</div></div>';
     });
@@ -2720,7 +2723,10 @@ async function loadEmpExperienceHR(empId) {
       if (exp.resp) h += '<div style="font-size:11px;color:#718096;margin-top:4px;">' + exp.resp + '</div>';
       h += '</div>';
       if (exp.exp_file) {
-        h += '<a href="' + exp.exp_file + '" target="_blank" style="font-size:11px;background:#0D1B3E;color:white;padding:4px 10px;border-radius:6px;text-decoration:none;">View Letter</a>';
+        window._hrFiles = window._hrFiles || [];
+        var fIdx2 = window._hrFiles.length;
+        window._hrFiles.push({data: exp.exp_file, name: exp.exp_file_name||'experience_letter'});
+        h += '<button onclick="openStoredFile(' + fIdx2 + ')" style="font-size:11px;background:#0D1B3E;color:white;padding:4px 10px;border-radius:6px;border:none;cursor:pointer;">📄 View Letter</button>';
       }
       h += '</div></div>';
     });
@@ -4820,6 +4826,43 @@ function validatePAN(input) {
     input.style.borderColor = '#E63329';
   } else {
     input.style.borderColor = '#E2E8F0';
+  }
+}
+
+
+// ── OPEN BASE64 FILE ──────────────────────────────
+function openStoredFile(idx) {
+  var f = window._hrFiles && window._hrFiles[idx];
+  if (!f) { toast('File not found','err'); return; }
+  openBase64File(f.data, f.name);
+}
+
+function openBase64File(base64Data, fileName) {
+  if (!base64Data) { toast('File not available','err'); return; }
+  try {
+    // Convert base64 to blob
+    var parts = base64Data.split(',');
+    var mimeMatch = parts[0].match(/:(.*?);/);
+    var mime = mimeMatch ? mimeMatch[1] : 'application/octet-stream';
+    var byteStr = atob(parts[1] || parts[0]);
+    var ab = new ArrayBuffer(byteStr.length);
+    var ia = new Uint8Array(ab);
+    for (var i = 0; i < byteStr.length; i++) ia[i] = byteStr.charCodeAt(i);
+    var blob = new Blob([ab], {type: mime});
+    var url = URL.createObjectURL(blob);
+    // Open in new tab
+    var win = window.open(url, '_blank');
+    if (!win) {
+      // Fallback: download
+      var a = document.createElement('a');
+      a.href = url;
+      a.download = fileName || 'file';
+      a.click();
+    }
+    // Revoke after 60s
+    setTimeout(function() { URL.revokeObjectURL(url); }, 60000);
+  } catch(e) {
+    toast('Cannot open file: ' + e.message, 'err');
   }
 }
 
