@@ -362,12 +362,13 @@ app.get('/api/employees', auth, canHR, async (req, res) => {
       db(`SELECT e.id, e.employee_id, e.first_name, e.last_name,
                  e.first_name||' '||e.last_name AS full_name,
                  e.work_email, e.mobile, e.work_location,
-                 e.employment_type, e.date_of_joining, e.status, e.photo_url,
-                 d.name AS department_name, des.title AS designation
+                 e.employment_type, e.employment_status, e.date_of_joining,
+                 e.status, e.photo_url, e.blood_group, e.designation,
+                 e.annual_ctc, e.department_id,
+                 d.name AS department_name
           FROM employees e
-          LEFT JOIN departments d   ON d.id  = e.department_id
-          LEFT JOIN designations des ON des.id = e.designation_id
-          ${where} ORDER BY e.date_of_joining DESC
+          LEFT JOIN departments d ON d.id = e.department_id
+          ${where} ORDER BY e.first_name ASC
           LIMIT $${params.length-1} OFFSET $${params.length}`, params),
       db(`SELECT COUNT(*) c FROM employees e ${where}`, params.slice(0, -2))
     ]);
