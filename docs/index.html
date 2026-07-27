@@ -597,7 +597,7 @@ tr:hover td{background:#F7FAFC;}
         <div class="ff"><label>First Name *</label><input id="ee1" placeholder="First name"></div>
         <div class="ff"><label>Last Name *</label><input id="ee2" placeholder="Last name"></div>
         <div class="ff"><label>Work Email</label><input id="ee3" type="email" placeholder="name@paype.co.in"></div>
-        <div class="ff"><label>Mobile</label><input id="ee4" placeholder="9XXXXXXXXX"></div>
+        <div class="ff"><label>Mobile</label><input id="ee4" placeholder="9XXXXXXXXX" type="tel" maxlength="10" oninput="onlyNums(this)"></div>
         <div class="ff"><label>Department</label><select id="ee5"><option value="">Select</option></select></div>
         <div class="ff"><label>Designation</label><input id="ee6" placeholder="e.g. Sales Executive"></div>
         <div class="ff"><label>Date of Joining</label><input id="ee7" type="date"></div>
@@ -2915,7 +2915,7 @@ function loadEditProfile() {
     h += '<div class="ff"><label>Gender</label><select id="ep-gender"><option value="">Select</option><option' + (saved.gender==='Male'||e.gender==='Male'?' selected':'') + '>Male</option><option' + (saved.gender==='Female'||e.gender==='Female'?' selected':'') + '>Female</option><option' + (saved.gender==='Other'||e.gender==='Other'?' selected':'') + '>Other</option></select></div>';
     h += '<div class="ff"><label>Blood Group</label><select id="ep-blood"><option value="">Select</option><option' + ((saved.blood||e.blood_group)==='A+'?' selected':'') + '>A+</option><option' + ((saved.blood||e.blood_group)==='A-'?' selected':'') + '>A-</option><option' + ((saved.blood||e.blood_group)==='B+'?' selected':'') + '>B+</option><option' + ((saved.blood||e.blood_group)==='B-'?' selected':'') + '>B-</option><option' + ((saved.blood||e.blood_group)==='O+'?' selected':'') + '>O+</option><option' + ((saved.blood||e.blood_group)==='O-'?' selected':'') + '>O-</option><option' + ((saved.blood||e.blood_group)==='AB+'?' selected':'') + '>AB+</option><option' + ((saved.blood||e.blood_group)==='AB-'?' selected':'') + '>AB-</option></select></div>';
     h += '<div class="ff"><label>Marital Status</label><select id="ep-marital"><option value="">Select</option><option' + (saved.marital==='Single'?' selected':'') + '>Single</option><option' + (saved.marital==='Married'?' selected':'') + '>Married</option><option' + (saved.marital==='Divorced'?' selected':'') + '>Divorced</option><option' + (saved.marital==='Widowed'?' selected':'') + '>Widowed</option></select></div>';
-    h += '<div class="ff"><label>Personal Mobile</label><input id="ep-mobile2" placeholder="Alternate mobile" value="' + (saved.mobile2||'') + '"></div>';
+    h += '<div class="ff"><label>Personal Mobile</label><input id="ep-mobile2" type="tel" maxlength="10" oninput="onlyNums(this)" placeholder="Alternate mobile (numbers only)" value="' + (saved.mobile2||'') + '"></div>';
     h += '<div class="ff"><label>Personal Email</label><input id="ep-email2" type="email" placeholder="Personal email" value="' + (saved.email2||'') + '"></div>';
     h += '</div></div></div>';
 
@@ -2930,20 +2930,20 @@ function loadEditProfile() {
 
     h += '<div class="card" style="margin-top:12px;"><div class="ch"><div class="ct">Emergency Contact</div></div><div class="cb">';
     h += '<div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">';
-    h += '<div class="ff"><label>Contact Name</label><input id="ep-ec-name" placeholder="Name" value="' + (saved.ecName||'') + '"></div>';
-    h += '<div class="ff"><label>Relationship</label><input id="ep-ec-rel" placeholder="e.g. Father, Spouse" value="' + (saved.ecRel||'') + '"></div>';
-    h += '<div class="ff"><label>Mobile</label><input id="ep-ec-mob" placeholder="Mobile number" value="' + (saved.ecMob||'') + '"></div>';
+    h += '<div class="ff"><label>Contact Name</label><input id="ep-ec-name" placeholder="Name" oninput="onlyLetters(this)" value="' + (saved.ecName||'') + '"></div>';
+    h += '<div class="ff"><label>Relationship</label><input id="ep-ec-rel" placeholder="e.g. Father, Spouse" oninput="onlyLetters(this)" value="' + (saved.ecRel||'') + '"></div>';
+    h += '<div class="ff"><label>Mobile</label><input id="ep-ec-mob" type="tel" maxlength="10" oninput="onlyNums(this)" placeholder="Mobile number" value="' + (saved.ecMob||'') + '"></div>';
     h += '<div class="ff"><label>Email</label><input id="ep-ec-email" placeholder="Email" value="' + (saved.ecEmail||'') + '"></div>';
     h += '</div></div></div>';
 
     h += '<div class="card" style="margin-top:12px;"><div class="ch"><div class="ct">Bank Details</div></div><div class="cb">';
     h += '<div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">';
-    h += '<div class="ff"><label>Bank Name</label><input id="ep-bank" placeholder="e.g. SBI, HDFC" value="' + (saved.bank||'') + '"></div>';
+    h += '<div class="ff"><label>Bank Name</label><input id="ep-bank" placeholder="e.g. State Bank of India, HDFC Bank" oninput="onlyLetters(this)" onblur="validateBankName(this)" value="' + (saved.bank||'') + '"></div>';
     h += '<div class="ff"><label>Account Number</label><input id="ep-acc" placeholder="Account number" value="' + (saved.acc||'') + '"></div>';
-    h += '<div class="ff"><label>IFSC Code</label><input id="ep-ifsc" placeholder="e.g. SBIN0001234" value="' + (saved.ifsc||'') + '"></div>';
+    h += '<div class="ff"><label>IFSC Code</label><input id="ep-ifsc" placeholder="e.g. SBIN0001234" maxlength="11" oninput="onlyUpper(this)" style="letter-spacing:1px;" value="' + (saved.ifsc||'') + '"></div>';
     h += '<div class="ff"><label>Branch</label><input id="ep-branch" placeholder="Branch name" value="' + (saved.branch||'') + '"></div>';
-    h += '<div class="ff"><label>Aadhaar Number</label><input id="ep-aadhaar" placeholder="XXXX XXXX XXXX" maxlength="14" value="' + (saved.aadhaar||'') + '"></div>';
-    h += '<div class="ff"><label>PAN Number</label><input id="ep-pan" placeholder="ABCDE1234F" maxlength="10" value="' + (saved.pan||'') + '"></div>';
+    h += '<div class="ff"><label>Aadhaar Number</label><input id="ep-aadhaar" placeholder="XXXX XXXX XXXX" maxlength="14" type="tel" oninput="formatAadhaar(this)" value="' + (saved.aadhaar||'') + '"></div>';
+    h += '<div class="ff"><label>PAN Number</label><input id="ep-pan" placeholder="ABCDE1234F" maxlength="10" oninput="onlyPAN(this)" onblur="validatePAN(this)" style="text-transform:uppercase;letter-spacing:2px;" value="' + (saved.pan||'') + '"></div>';
     h += '</div></div></div>';
 
     h += '<div style="display:flex;gap:8px;margin-top:14px;">';
@@ -3050,7 +3050,7 @@ function renderEduItem(item, idx) {
     '<div class="ff"><label>Institution Name *</label><input id="edu-inst-' + idx + '" placeholder="School/College/Platform name" value="' + (item.inst||'') + '"></div>' +
     '<div class="ff"><label>Course / Degree / Subject</label><input id="edu-course-' + idx + '" placeholder="e.g. B.Com, HSC, Python" value="' + (item.course||'') + '"></div>' +
     '<div class="ff"><label>Specialization / Stream</label><input id="edu-spec-' + idx + '" placeholder="e.g. Computer Science, Commerce" value="' + (item.spec||'') + '"></div>' +
-    '<div class="ff"><label>Year of Completion</label><input id="edu-year-' + idx + '" type="number" placeholder="2022" min="1980" max="2030" value="' + (item.year||'') + '"></div>' +
+    '<div class="ff"><label>Year of Completion</label><input id="edu-year-' + idx + '" type="number" placeholder="2022" min="1980" max="2030" oninput="onlyNums(this)" value="' + (item.year||'') + '"></div>' +
     '<div class="ff"><label>Percentage / Grade / CGPA</label><input id="edu-score-' + idx + '" placeholder="e.g. 85% or 8.5 CGPA" value="' + (item.score||'') + '"></div>' +
     '<div class="ff"><label>Certificate Number</label><input id="edu-certno-' + idx + '" placeholder="e.g. CERT-2022-001" value="' + (item.certno||'') + '"></div>' +
     '<div class="ff"><label>Certificate Upload</label>' +
@@ -3157,8 +3157,8 @@ function renderExpItem(item, idx) {
     '<div class="ff"><label>Designation / Role *</label><input id="exp-role-' + idx + '" placeholder="e.g. Sales Executive" value="' + (item.role||'') + '"></div>' +
     '<div class="ff"><label>Department</label><input id="exp-dept-' + idx + '" placeholder="e.g. Sales" value="' + (item.dept||'') + '"></div>' +
     '<div class="ff"><label>Location</label><input id="exp-loc-' + idx + '" placeholder="City" value="' + (item.loc||'') + '"></div>' +
-    '<div class="ff"><label>From (Month/Year)</label><input id="exp-from-' + idx + '" type="month" value="' + (item.from||'') + '"></div>' +
-    '<div class="ff"><label>To (Month/Year)</label><input id="exp-to-' + idx + '" type="month" value="' + (item.to||'') + '"><div style="margin-top:5px;"><input type="checkbox" id="exp-curr-' + idx + '"' + (item.current?' checked':'') + '> <label style="font-size:11px;color:#718096;">Currently working here</label></div></div>' +
+    '<div class="ff"><label>From Date</label><input id="exp-from-' + idx + '" type="date" value="' + (item.from||'') + '"></div>' +
+    '<div class="ff"><label>To Date</label><input id="exp-to-' + idx + '" type="date" value="' + (item.to||'') + '"><div style="margin-top:5px;"><input type="checkbox" id="exp-curr-' + idx + '"' + (item.current?' checked':'') + '> <label style="font-size:11px;color:#718096;">Currently working here</label></div></div>' +
     '<div class="ff"><label>Last Drawn CTC (Annual)</label><input id="exp-ctc-' + idx + '" type="number" placeholder="e.g. 300000" value="' + (item.ctc||'') + '"></div>' +
     '<div class="ff"><label>Reason for Leaving</label><input id="exp-reason-' + idx + '" placeholder="e.g. Better opportunity" value="' + (item.reason||'') + '"></div>' +
     '<div class="ff" style="grid-column:span 2;"><label>Key Responsibilities</label><textarea id="exp-resp-' + idx + '" rows="2" style="border:1.5px solid #E2E8F0;border-radius:8px;padding:8px;font-family:inherit;font-size:13px;width:100%;resize:vertical;" placeholder="Brief description...">' + (item.resp||'') + '</textarea></div>' +
@@ -4768,6 +4768,47 @@ function isPWA() {
 // If running as PWA, hide browser UI elements
 if (isPWA()) {
   document.documentElement.style.setProperty('--pwa-mode', '1');
+}
+
+
+// ── FIELD VALIDATION HELPERS ──────────────────────
+function onlyNums(el) { el.value = el.value.replace(/[^0-9]/g, ''); }
+function onlyLetters(el) { el.value = el.value.replace(/[^a-zA-Z .]/g, ''); }
+function onlyPAN(el) { el.value = el.value.toUpperCase().replace(/[^A-Z0-9]/g, ''); }
+function onlyUpper(el) { el.value = el.value.toUpperCase().replace(/[^A-Z0-9]/g, ''); }
+
+function formatAadhaar(input) {
+  var v = input.value.replace(/[^0-9]/g, '').substring(0, 12);
+  var formatted = v.match(/.{1,4}/g) ? v.match(/.{1,4}/g).join(' ') : v;
+  input.value = formatted;
+}
+
+function validateBankName(input) {
+  var val = input.value.trim();
+  // List of short names to reject
+  var shortNames = ['sbi','hdfc','icici','axis','pnb','bob','boi','ubi','uco','iob','kvb','tmb','fb'];
+  if (shortNames.includes(val.toLowerCase())) {
+    toast('Please enter full bank name (e.g. State Bank of India, HDFC Bank)', 'err');
+    input.style.borderColor = '#E63329';
+    input.focus();
+  } else if (val.length > 0 && val.length < 5) {
+    toast('Please enter full bank name', 'err');
+    input.style.borderColor = '#E63329';
+  } else {
+    input.style.borderColor = '#E2E8F0';
+  }
+}
+
+function validatePAN(input) {
+  var val = input.value.toUpperCase();
+  input.value = val;
+  var panRegex = /^[A-Z]{5}[0-9]{4}[A-Z]{1}$/;
+  if (val.length === 10 && !panRegex.test(val)) {
+    toast('Invalid PAN format. Should be like ABCDE1234F', 'err');
+    input.style.borderColor = '#E63329';
+  } else {
+    input.style.borderColor = '#E2E8F0';
+  }
 }
 
 if (tok && CU) { startApp(); } else { document.getElementById('LP').style.display = 'flex'; document.getElementById('AP').style.display = 'none'; }
