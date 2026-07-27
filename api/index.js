@@ -537,9 +537,9 @@ app.post('/api/attendance/punch', auth, async (req, res) => {
     
     if (!ex.rows.length) {
       // Punch In
-      await db(`INSERT INTO attendance (employee_id, punch_in, latitude_in, longitude_in, accuracy_in, distance_in, location_in)
-        VALUES ($1, NOW(), $2, $3, $4, $5, $6)`,
-        [empId, latitude||null, longitude||null, accuracy||null, distance||null, locationJson]);
+      await db(`INSERT INTO attendance (employee_id, date, punch_in, latitude_in, longitude_in, accuracy_in, distance_in, location_in)
+        VALUES ($1, $2, NOW(), $3, $4, $5, $6, $7)`,
+        [empId, today, latitude||null, longitude||null, accuracy||null, distance||null, locationJson]);
       res.json({ success: true, message: 'Punched In successfully!' });
     } else {
       var rec = ex.rows[0];
