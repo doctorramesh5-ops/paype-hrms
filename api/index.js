@@ -133,7 +133,9 @@ app.get('/api/health', async (req, res) => {
         "ALTER TABLE employees ADD COLUMN IF NOT EXISTS employment_status VARCHAR(30) DEFAULT 'Active'",
         'ALTER TABLE employees ADD COLUMN IF NOT EXISTS date_of_joining DATE',
         'ALTER TABLE employees ADD COLUMN IF NOT EXISTS annual_ctc NUMERIC DEFAULT 0',
-        'ALTER TABLE employees ADD COLUMN IF NOT EXISTS photo_url TEXT'
+        'ALTER TABLE employees ADD COLUMN IF NOT EXISTS photo_url TEXT',
+        'ALTER TABLE users ADD COLUMN IF NOT EXISTS employee_id UUID',
+        `UPDATE users u SET employee_id = e.id FROM employees e WHERE u.employee_id IS NULL AND u.username = e.work_email`
       ];
       for (const sql of migrations) {
         try { await db(sql); } catch(e2) {}
@@ -516,10 +518,20 @@ app.post('/api/attendance/punch', auth, async (req, res) => {
     const { latitude, longitude, accuracy, distance, address } = req.body;
     const locationJson = latitude ? JSON.stringify({lat:latitude,lng:longitude,acc:accuracy,dist:distance,addr:address}) : null;
     
-    // Get employee id from user
-    const userEmp = await db('SELECT employee_id FROM users WHERE id=$1', [req.user.userId]);
-    const empId = userEmp.rows[0]?.employee_id;
-    if (!empId) return res.status(400).json({ success: false, message: 'Employee profile not linked' });
+    // Get employee_id - auth middleware already fetches it via JOIN
+    let empId = req.user.employee_id;
+    if (!empId) {
+      // Fallback: match by username/email
+      try {
+        const empRow = await db('SELECT id FROM employees WHERE work_email=$1 OR work_email=$2',
+          [req.user.username, req.user.work_email||'']);
+        if (empRow.rows.length) {
+          empId = empRow.rows[0].id;
+          await db('UPDATE users SET employee_id=$1 WHERE id=$2', [empId, req.user.id]);
+        }
+      } catch(e2) { console.log('emp lookup err:', e2.message); }
+    }
+    if (!empId) return res.status(400).json({ success: false, message: 'Employee profile not linked. Contact HR at hr@paype.co.in' });
 
     const ex = await db(`SELECT * FROM attendance WHERE employee_id=$1 AND DATE(punch_in)=$2`, [empId, today]);
     
@@ -1742,11 +1754,12 @@ app.get('/api/attendance/yesterday', auth, async (req, res) => {
     const yesterday = new Date();
     yesterday.setDate(yesterday.getDate() - 1);
     const yDate = yesterday.toISOString().split('T')[0];
+    const yEmpId = req.user.employee_id;
+    if (!yEmpId) return res.json({ success: false, message: 'No employee linked' });
     const r = await db(`SELECT a.* FROM attendance a
-      JOIN employees e ON e.id=a.employee_id
-      WHERE e.id=(SELECT employee_id FROM users WHERE id=$1)
+      WHERE a.employee_id=$1
       AND DATE(a.punch_in)=$2 ORDER BY a.punch_in DESC LIMIT 1`,
-      [req.user.userId, yDate]);
+      [yEmpId, yDate]);
     if (!r.rows.length) return res.json({ success: false, message: 'No record yesterday' });
     res.json({ success: true, data: r.rows[0] });
   } catch(e) { res.status(500).json({ success: false, message: e.message }); }
@@ -1755,11 +1768,12 @@ app.get('/api/attendance/yesterday', auth, async (req, res) => {
 app.get('/api/attendance/my-today', auth, async (req, res) => {
   try {
     const today = new Date().toISOString().split('T')[0];
+    const myEmpId2 = req.user.employee_id;
+    if (!myEmpId2) return res.json({ success: false, message: 'No employee linked' });
     const r = await db(`SELECT a.* FROM attendance a
-      JOIN employees e ON e.id=a.employee_id
-      WHERE e.id=(SELECT employee_id FROM users WHERE id=$1)
+      WHERE a.employee_id=$1
       AND DATE(a.punch_in)=$2 ORDER BY a.punch_in DESC LIMIT 1`,
-      [req.user.userId, today]);
+      [myEmpId2, today]);
     if (!r.rows.length) return res.json({ success: false, message: 'No record today' });
     res.json({ success: true, data: r.rows[0] });
   } catch(e) { res.status(500).json({ success: false, message: e.message }); }
