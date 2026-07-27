@@ -387,8 +387,9 @@ tr:hover td{background:#F7FAFC;}
                   <div id="vc-front" style="width:340px;height:190px;border-radius:12px;background:linear-gradient(135deg,#0D1B3E,#162952);position:relative;overflow:hidden;box-shadow:0 6px 24px rgba(0,0,0,.15);">
                     <div style="position:absolute;top:14px;left:14px;font-family:Syne,sans-serif;font-size:16px;font-weight:800;color:white;">Pay<span style="color:#00C2A8">Pe</span></div>
                     <div id="vc-empid-badge" style="position:absolute;top:14px;right:14px;background:rgba(0,194,168,.2);color:#00C2A8;font-size:8px;font-weight:700;padding:2px 7px;border-radius:8px;"></div>
+                    <div id="vc-blood" style="position:absolute;top:34px;right:14px;background:rgba(230,51,41,.2);color:#E63329;font-size:8px;font-weight:700;padding:2px 7px;border-radius:8px;">🩸 <span id="vc-blood-val">--</span></div>
                     <div id="vc-nm" style="position:absolute;top:48px;left:14px;color:white;font-size:15px;font-weight:700;"></div>
-                    <div id="vc-rl" style="position:absolute;top:68px;left:14px;color:rgba(255,255,255,.6);font-size:10px;"></div>
+                    <div id="vc-rl" style="position:absolute;top:68px;left:14px;color:rgba(255,255,255,.85);font-size:11px;font-weight:600;"></div>
                     <div id="vc-dp" style="position:absolute;top:82px;left:14px;color:rgba(255,255,255,.4);font-size:9px;"></div>
                     <div style="position:absolute;bottom:14px;left:14px;">
                       <div id="vc-em" style="color:rgba(255,255,255,.7);font-size:9px;margin-bottom:2px;"></div>
@@ -445,7 +446,7 @@ tr:hover td{background:#F7FAFC;}
                 </div>
                 <div id="idc-av" style="width:72px;height:72px;border-radius:50%;background:#00C2A8;display:flex;align-items:center;justify-content:center;font-size:24px;font-weight:700;color:white;margin:14px auto;border:3px solid #E2E8F0;overflow:hidden;"></div>
                 <div id="idc-nm" style="text-align:center;font-size:13px;font-weight:700;color:#0D1B3E;padding:0 10px;"></div>
-                <div id="idc-rl" style="text-align:center;font-size:10px;color:#718096;margin-top:2px;"></div>
+                <div id="idc-rl" style="text-align:center;font-size:11px;color:#00C2A8;margin-top:2px;font-weight:700;"></div>
                 <div id="idc-dp" style="text-align:center;font-size:9px;color:#00C2A8;margin-top:1px;"></div>
                 <div style="background:#0D1B3E;height:3px;margin:10px 0;"></div>
                 <div style="padding:0 14px;">
@@ -1827,6 +1828,16 @@ function selectDIDEmp(idx, el, type) {
     c.style.borderColor = '#E2E8F0';
   });
   el.style.borderColor = '#00C2A8';
+  // Fetch fresh data so designation + blood group are latest
+  var empId = allEmps[idx] ? allEmps[idx].id : null;
+  if (empId) {
+    req('GET', '/api/employees/' + empId).then(function(res) {
+      didSelEmp = res.success ? res.data : allEmps[idx];
+      if (type === 'vc') generateDIDVC(didSelEmp);
+      else generateDIDIDCard(didSelEmp);
+    });
+    return;
+  }
   didSelEmp = allEmps[idx];
   if (type === 'vc') generateDIDVC(didSelEmp);
   else generateDIDIDCard(didSelEmp);
@@ -1836,7 +1847,8 @@ function generateDIDVC(e) {
   var nm = e.first_name + ' ' + e.last_name;
   var el;
   el = document.getElementById('vc-nm'); if(el) el.textContent = nm;
-  el = document.getElementById('vc-rl'); if(el) el.textContent = e.designation || 'Team Member';
+  el = document.getElementById('vc-rl'); if(el) el.textContent = e.designation || e.role || '';
+  el = document.getElementById('vc-blood-val'); if(el) el.textContent = e.blood_group || '--';
   el = document.getElementById('vc-dp'); if(el) el.textContent = e.department_name || 'PayPe Technologies';
   el = document.getElementById('vc-empid-badge'); if(el) el.textContent = e.employee_id;
   el = document.getElementById('vc-em'); if(el) el.textContent = e.work_email || 'admin@paype.co.in';
@@ -1860,7 +1872,7 @@ function generateDIDIDCard(e) {
     else { av.textContent = e.first_name[0].toUpperCase(); }
   }
   var els = {
-    'idc-nm': nm, 'idc-rl': e.designation||'Team Member', 'idc-dp': e.department_name||'',
+    'idc-nm': nm, 'idc-rl': e.designation||e.role||'Staff', 'idc-dp': e.department_name||'',
     'idc-id': e.employee_id, 'idc-dept': e.department_name||'--',
     'idc-loc': e.work_location||'Coimbatore', 'idc-blood': e.blood_group||'--',
     'idc-joined': e.date_of_joining ? new Date(e.date_of_joining).toLocaleDateString('en-IN',{month:'short',year:'numeric'}) : '--'
@@ -1924,7 +1936,7 @@ function buildEmpAgreement(e, nm, today) {
     '<div style="' + SH + '"><div style="font-family:Syne,sans-serif;font-size:15px;font-weight:800;color:white;">PayPe Technologies Pvt. Ltd.</div><div style="font-size:9px;color:rgba(255,255,255,.5);">CIN: U74994TN2022PTC151114 | GST: 33AAMCP7960K1ZU | PAN: AAMCP7960K | TAN: CHEP24000E</div></div>' +
     '<h2 style="font-family:Syne,sans-serif;font-size:16px;color:#0D1B3E;text-align:center;margin-bottom:12px;">EMPLOYMENT AGREEMENT</h2>' +
     '<p>This Agreement is entered into on <strong>' + today + '</strong> between <strong>PayPe Technologies Pvt. Ltd.</strong> (Employer) and <strong>' + nm + '</strong> (Employee ID: ' + e.employee_id + ').</p>' +
-    '<p><strong>Position:</strong> ' + (e.designation||'Team Member') + ' | <strong>Department:</strong> ' + (e.department_name||'--') + ' | <strong>Joining:</strong> ' + joined + '</p>' +
+    '<p><strong>Position:</strong> ' + (e.designation||e.role||'Staff') + ' | <strong>Department:</strong> ' + (e.department_name||'--') + ' | <strong>Joining:</strong> ' + joined + '</p>' +
     '<p><strong>1. Working Hours:</strong> 9:00 AM to 6:00 PM, Monday to Saturday.</p>' +
     '<p><strong>2. Compensation:</strong> As per offer letter, paid monthly.</p>' +
     '<p><strong>3. Confidentiality:</strong> Employee agrees to maintain confidentiality of all company data.</p>' +
@@ -1951,7 +1963,7 @@ function buildOffer2(e, nm, today) {
     '<div style="' + SH + '"><div style="font-family:Syne,sans-serif;font-size:15px;font-weight:800;color:white;">PayPe Technologies Pvt. Ltd.</div><div style="font-size:9px;color:rgba(255,255,255,.5);">hr@paype.co.in | +91 99448 57191 | paype.co.in</div></div>' +
     '<p>Date: <strong>' + today + '</strong></p>' +
     '<p style="margin-top:10px;">Dear <strong>' + e.first_name + '</strong>,</p>' +
-    '<p>We are pleased to offer you the position of <strong>' + (e.designation||'Team Member') + '</strong> in the <strong>' + (e.department_name||'--') + '</strong> department.</p>' +
+    '<p>We are pleased to offer you the position of <strong>' + (e.designation||e.role||'Staff') + '</strong> in the <strong>' + (e.department_name||'--') + '</strong> department.</p>' +
     '<p><strong>Date of Joining:</strong> ' + joined + '</p>' +
     '<p><strong>Location:</strong> ' + (e.work_location||'Coimbatore') + '</p>' +
     '<p>This offer is subject to satisfactory background verification and document submission.</p>' +
@@ -2089,7 +2101,7 @@ function shareDIDWA(type) {
   function fallbackWA() {
     var msg = 'PayPe Technologies - ' + (type==='vc'?'Digital Visiting Card':'ID Card') + ' - ' + nm +
       ' | ID: ' + e.employee_id +
-      ' | Role: ' + (e.designation||'Team Member') +
+      ' | Role: ' + (e.designation||e.role||'Staff') +
       ' | Dept: ' + (e.department_name||'PayPe Technologies') +
       ' | Email: ' + (e.work_email||'admin@paype.co.in') +
       ' | Mobile: ' + (e.mobile ? '+91 '+e.mobile : '+91 99448 57191') +
@@ -2398,7 +2410,7 @@ function downloadAllMyDocs(nm) {
 function buildMyEmpAgreement(e, nm, today, joined) {
   return '<h2>EMPLOYMENT AGREEMENT</h2><p>Date: <strong>' + today + '</strong></p>' +
     '<p>Between <strong>PayPe Technologies Pvt. Ltd.</strong> (CIN: U74994TN2022PTC151114) and <strong>' + nm + '</strong> (ID: ' + e.employee_id + ').</p>' +
-    '<h3>1. Position</h3><p><strong>' + (e.designation||'Team Member') + '</strong> | ' + (e.department_name||'--') + '</p>' +
+    '<h3>1. Position</h3><p><strong>' + (e.designation||e.role||'Staff') + '</strong> | ' + (e.department_name||'--') + '</p>' +
     '<h3>2. Date of Joining</h3><p>' + joined + '</p>' +
     '<h3>3. Compensation</h3><p>As per offer letter, paid on last working day each month.</p>' +
     '<h3>4. Working Hours</h3><p>9:00 AM - 6:00 PM, Monday to Saturday.</p>' +
@@ -2421,7 +2433,7 @@ function buildMyNDA(e, nm, today) {
 function buildMyOffer(e, nm, today, joined) {
   return '<h2>OFFER LETTER</h2><p>Date: <strong>' + today + '</strong></p>' +
     '<p>Dear <strong>' + e.first_name + '</strong>,</p>' +
-    '<p>We are pleased to offer you the position of <strong>' + (e.designation||'Team Member') + '</strong> in the <strong>' + (e.department_name||'--') + '</strong> department.</p>' +
+    '<p>We are pleased to offer you the position of <strong>' + (e.designation||e.role||'Staff') + '</strong> in the <strong>' + (e.department_name||'--') + '</strong> department.</p>' +
     '<p><strong>Date of Joining:</strong> ' + joined + ' | <strong>Location:</strong> ' + (e.work_location||'Coimbatore') + '</p>' +
     '<p>Subject to satisfactory background verification and document submission.</p>' +
     '<p>Welcome to the PayPe family!</p>' +
@@ -4698,7 +4710,7 @@ async function loadOrgChart() {
       }
       h += '<div style="min-width:0;">';
       h += '<div style="font-size:12px;font-weight:700;color:#0D1B3E;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">' + nm + '</div>';
-      h += '<div style="font-size:10px;color:#718096;">' + (e.designation||'Staff') + '</div>';
+      h += '<div style="font-size:10px;color:#718096;">' + (e.designation||'') + '</div>';
       if (isHead) h += '<div style="font-size:9px;color:' + clr + ';font-weight:700;">DEPT HEAD</div>';
       h += '</div></div>';
     });
