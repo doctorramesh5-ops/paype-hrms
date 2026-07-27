@@ -545,7 +545,14 @@ app.post('/api/attendance/punch', auth, async (req, res) => {
     } else {
       var rec = ex.rows[0];
       if (rec.punch_out) return res.status(400).json({ success: false, message: 'Already punched out today' });
-      // Punch Out
+      // Punch Out - ensure columns exist first
+      try {
+        await db('ALTER TABLE attendance ADD COLUMN IF NOT EXISTS latitude_out NUMERIC(10,7)');
+        await db('ALTER TABLE attendance ADD COLUMN IF NOT EXISTS longitude_out NUMERIC(10,7)');
+        await db('ALTER TABLE attendance ADD COLUMN IF NOT EXISTS accuracy_out NUMERIC');
+        await db('ALTER TABLE attendance ADD COLUMN IF NOT EXISTS distance_out INTEGER');
+        await db('ALTER TABLE attendance ADD COLUMN IF NOT EXISTS location_out TEXT');
+      } catch(ec) {}
       await db(`UPDATE attendance SET punch_out=NOW(), latitude_out=$1, longitude_out=$2, accuracy_out=$3, distance_out=$4, location_out=$5, updated_at=NOW()
         WHERE id=$6`,
         [latitude||null, longitude||null, accuracy||null, distance||null, locationJson, rec.id]);
