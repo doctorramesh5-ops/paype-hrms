@@ -1,0 +1,739 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>PayPe Technologies — About Us, Terms & Contact</title>
+<meta name="description" content="PayPe Technologies Pvt. Ltd. — About us, Terms & Conditions, Privacy Policy, and Contact Information.">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Syne:wght@700;800;900&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box;}
+:root{--navy:#0D1B3E;--teal:#00C2A8;--red:#E63329;--bg:#F0F4F8;--border:#E2E8F0;--gray:#718096;--green:#38A169;--orange:#DD6B20;--purple:#805AD5;}
+html{scroll-behavior:smooth;}
+body{font-family:'Inter',sans-serif;color:#1A202C;font-size:14px;background:var(--bg);}
+
+/* NAV */
+nav{position:fixed;top:0;left:0;right:0;z-index:100;background:rgba(13,27,62,.97);backdrop-filter:blur(12px);border-bottom:1px solid rgba(255,255,255,.08);padding:0 24px;height:64px;display:flex;align-items:center;gap:16px;}
+.nav-brand{font-family:'Syne',sans-serif;font-size:22px;font-weight:800;color:white;text-decoration:none;}
+.nav-brand span{color:var(--teal);}
+.nav-links{display:flex;gap:6px;margin-left:24px;}
+.nav-link{padding:6px 14px;border-radius:8px;color:rgba(255,255,255,.6);text-decoration:none;font-size:13px;font-weight:500;transition:.15s;cursor:pointer;}
+.nav-link:hover,.nav-link.on{background:rgba(255,255,255,.08);color:white;}
+.nav-right{margin-left:auto;display:flex;align-items:center;gap:10px;}
+.nav-back{padding:7px 16px;background:rgba(0,194,168,.15);border:1px solid rgba(0,194,168,.3);border-radius:8px;color:var(--teal);font-size:13px;font-weight:700;text-decoration:none;transition:.15s;}
+.nav-back:hover{background:rgba(0,194,168,.25);}
+
+/* LAYOUT */
+.page-wrap{display:flex;min-height:100vh;padding-top:64px;}
+.sidebar{width:240px;background:white;border-right:1px solid var(--border);flex-shrink:0;position:sticky;top:64px;height:calc(100vh - 64px);overflow-y:auto;padding:20px 12px;}
+.sidebar::-webkit-scrollbar{width:3px;}.sidebar::-webkit-scrollbar-thumb{background:var(--border);}
+.sb-section{font-size:10px;font-weight:700;color:var(--gray);text-transform:uppercase;letter-spacing:1px;padding:10px 8px 4px;}
+.sb-link{display:flex;align-items:center;gap:8px;padding:8px 10px;border-radius:8px;cursor:pointer;color:var(--gray);font-size:12px;font-weight:500;transition:.15s;text-decoration:none;margin-bottom:1px;}
+.sb-link:hover{background:var(--bg);color:var(--navy);}
+.sb-link.on{background:rgba(0,194,168,.08);color:var(--teal);font-weight:700;}
+.main-content{flex:1;padding:32px;max-width:900px;}
+
+/* SECTIONS */
+.pg{display:none;}.pg.on{display:block;}
+.page-header{margin-bottom:28px;}
+.page-badge{display:inline-flex;align-items:center;gap:6px;padding:4px 12px;background:rgba(0,194,168,.1);border:1px solid rgba(0,194,168,.2);border-radius:20px;font-size:11px;font-weight:700;color:var(--teal);margin-bottom:12px;}
+.page-title{font-family:'Syne',sans-serif;font-size:32px;font-weight:800;color:var(--navy);margin-bottom:8px;}
+.page-sub{font-size:14px;color:var(--gray);line-height:1.6;}
+
+/* CARDS */
+.card{background:white;border-radius:14px;border:1px solid var(--border);margin-bottom:16px;overflow:hidden;}
+.card-header{padding:16px 20px;border-bottom:1px solid var(--bg);display:flex;align-items:center;gap:10px;}
+.card-icon{font-size:20px;}
+.card-title{font-size:15px;font-weight:700;color:var(--navy);}
+.card-body{padding:20px;}
+
+/* COMPANY INFO */
+.info-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+.info-item{padding:12px 14px;background:var(--bg);border-radius:10px;}
+.info-label{font-size:10px;font-weight:700;color:var(--gray);text-transform:uppercase;letter-spacing:.5px;margin-bottom:4px;}
+.info-val{font-size:13px;font-weight:600;color:var(--navy);}
+
+/* CONTACT */
+.contact-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:12px;}
+.contact-card{padding:16px;background:var(--bg);border-radius:12px;border:1px solid var(--border);transition:.2s;}
+.contact-card:hover{border-color:var(--teal);background:rgba(0,194,168,.03);}
+.contact-type{font-size:10px;font-weight:700;color:var(--gray);text-transform:uppercase;letter-spacing:.5px;margin-bottom:6px;}
+.contact-icon{font-size:22px;margin-bottom:6px;}
+.contact-val{font-size:13px;font-weight:600;color:var(--navy);}
+.contact-val a{color:var(--teal);text-decoration:none;}
+.contact-val a:hover{text-decoration:underline;}
+
+/* PRODUCTS */
+.product-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;}
+.product-card{padding:20px;border-radius:14px;border:1px solid var(--border);background:white;position:relative;overflow:hidden;}
+.product-card::before{content:'';position:absolute;top:-20px;right:-20px;width:100px;height:100px;border-radius:50%;background:var(--pc,rgba(0,194,168,.06));}
+.product-logo{font-family:'Syne',sans-serif;font-size:22px;font-weight:800;color:var(--navy);margin-bottom:4px;}
+.product-logo span{color:var(--teal);}
+.product-desc{font-size:13px;color:var(--gray);line-height:1.6;margin-bottom:12px;}
+.product-url{display:inline-flex;align-items:center;gap:5px;font-size:12px;font-weight:700;color:var(--teal);text-decoration:none;}
+.product-url:hover{text-decoration:underline;}
+.product-tag{display:inline-block;padding:2px 8px;border-radius:20px;font-size:10px;font-weight:700;background:rgba(0,194,168,.1);color:var(--teal);margin-bottom:8px;}
+
+/* TEAM */
+.team-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:14px;}
+.team-card{padding:20px;background:var(--bg);border-radius:12px;text-align:center;}
+.team-avatar{width:56px;height:56px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:'Syne',sans-serif;font-size:20px;font-weight:800;color:white;margin:0 auto 10px;}
+.team-name{font-size:14px;font-weight:700;color:var(--navy);}
+.team-role{font-size:11px;color:var(--gray);margin-top:3px;}
+
+/* TERMS */
+.terms-section{margin-bottom:24px;}
+.terms-section h3{font-size:16px;font-weight:700;color:var(--navy);margin-bottom:10px;padding-bottom:6px;border-bottom:2px solid var(--teal);display:inline-block;}
+.terms-section p{font-size:13px;color:#4A5568;line-height:1.8;margin-bottom:10px;}
+.terms-section ul{padding-left:20px;margin-bottom:10px;}
+.terms-section ul li{font-size:13px;color:#4A5568;line-height:1.8;margin-bottom:4px;}
+.terms-highlight{background:rgba(0,194,168,.06);border:1px solid rgba(0,194,168,.15);border-radius:10px;padding:14px 16px;margin-bottom:14px;font-size:13px;color:var(--navy);line-height:1.7;}
+
+/* BADGE */
+.b{display:inline-flex;align-items:center;padding:2px 8px;border-radius:20px;font-size:10px;font-weight:700;}
+.bg{background:#F0FFF4;color:var(--green);}
+.bt{background:rgba(0,194,168,.1);color:var(--teal);}
+.bo{background:rgba(221,107,32,.1);color:var(--orange);}
+
+/* REG TABLE */
+.reg-table{width:100%;border-collapse:collapse;}
+.reg-table td{padding:10px 14px;border-bottom:1px solid var(--bg);font-size:13px;}
+.reg-table td:first-child{font-weight:700;color:var(--gray);width:200px;}
+.reg-table td:last-child{color:var(--navy);font-family:monospace;font-weight:600;}
+.reg-table tr:last-child td{border-bottom:none;}
+.reg-table tr:hover td{background:rgba(0,194,168,.02);}
+
+@media(max-width:768px){.sidebar{display:none;}.info-grid{grid-template-columns:1fr;}.product-grid{grid-template-columns:1fr;}.contact-grid{grid-template-columns:1fr;}}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <a href="landing.html" class="nav-brand">Pay<span>Pe</span></a>
+  <div class="nav-links">
+    <span class="nav-link on" onclick="showPage('about',this)">About</span>
+    <span class="nav-link" onclick="showPage('contact',this)">Contact</span>
+    <span class="nav-link" onclick="showPage('terms',this)">Terms</span>
+    <span class="nav-link" onclick="showPage('privacy',this)">Privacy</span>
+    <span class="nav-link" onclick="showPage('refund',this)">Refund</span>
+  </div>
+  <div class="nav-right">
+    <a href="https://erp.paype.co.in" target="_blank" class="nav-back">Sign In →</a>
+  </div>
+</nav>
+
+<div class="page-wrap">
+  <!-- SIDEBAR -->
+  <div class="sidebar">
+    <div class="sb-section">Company</div>
+    <span class="sb-link on" onclick="showPage('about',this)">🏢 About Us</span>
+    <span class="sb-link" onclick="showPage('contact',this)">📞 Contact Us</span>
+    <div class="sb-section">Legal</div>
+    <span class="sb-link" onclick="showPage('terms',this)">📋 Terms & Conditions</span>
+    <span class="sb-link" onclick="showPage('privacy',this)">🔒 Privacy Policy</span>
+    <span class="sb-link" onclick="showPage('refund',this)">💰 Refund Policy</span>
+    <div class="sb-section">Products</div>
+    <a class="sb-link" href="https://paype.co.in" target="_blank">🤖 paype.co.in</a>
+    <a class="sb-link" href="https://bankme.co.in" target="_blank">🏦 bankme.co.in</a>
+    <a class="sb-link" href="https://erp.paype.co.in" target="_blank">📊 ERP Login</a>
+    <a class="sb-link" href="https://hr.paype.co.in" target="_blank">👥 HRMS Login</a>
+  </div>
+
+  <!-- MAIN -->
+  <div class="main-content">
+
+    <!-- ABOUT -->
+    <div class="pg on" id="pg-about">
+      <div class="page-header">
+        <div class="page-badge">🏢 Est. 2022 · Coimbatore, India</div>
+        <div class="page-title">About PayPe Technologies</div>
+        <div class="page-sub">We build intelligent business software that empowers Indian businesses to scale globally.</div>
+      </div>
+
+      <!-- Company Overview -->
+      <div class="card">
+        <div class="card-header"><div class="card-icon">🏢</div><div class="card-title">Company Overview</div></div>
+        <div class="card-body">
+          <div class="terms-highlight">
+            PayPe Technologies Pvt. Ltd. is a technology company incorporated in Tamil Nadu, India. We build AI-powered ERP software, digital payment solutions, and financial technology products for businesses in India and globally.
+          </div>
+          <div class="info-grid">
+            <div class="info-item"><div class="info-label">Company Name</div><div class="info-val">PayPe Technologies Pvt. Ltd.</div></div>
+            <div class="info-item"><div class="info-label">Type</div><div class="info-val">Private Limited Company</div></div>
+            <div class="info-item"><div class="info-label">Incorporated</div><div class="info-val">2022</div></div>
+            <div class="info-item"><div class="info-label">Headquarters</div><div class="info-val">Coimbatore, Tamil Nadu, India</div></div>
+            <div class="info-item"><div class="info-label">Industry</div><div class="info-val">Software / FinTech / ERP</div></div>
+            <div class="info-item"><div class="info-label">Markets</div><div class="info-val">India & Global</div></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Registration Details -->
+      <div class="card">
+        <div class="card-header"><div class="card-icon">📋</div><div class="card-title">Registration & Compliance Details</div></div>
+        <div class="card-body">
+          <table class="reg-table">
+            <tr><td>CIN</td><td>U74994TN2022PTC151114</td></tr>
+            <tr><td>PAN</td><td>AAMCP7960K</td></tr>
+            <tr><td>GSTIN</td><td>33AAMCP7960K1ZU</td></tr>
+            <tr><td>TAN</td><td>CHEP24000E</td></tr>
+            <tr><td>LEI Number</td><td>335800NXKQ2UOIJYB714</td></tr>
+            <tr><td>MSME Registration</td><td>Registered — MSME Coimbatore</td></tr>
+            <tr><td>State</td><td>Tamil Nadu (State Code: 33)</td></tr>
+            <tr><td>ROC</td><td>Registrar of Companies, Chennai</td></tr>
+          </table>
+        </div>
+      </div>
+
+      <!-- Registered Address -->
+      <div class="card">
+        <div class="card-header"><div class="card-icon">📍</div><div class="card-title">Registered Office Address</div></div>
+        <div class="card-body">
+          <div class="terms-highlight" style="font-size:14px;line-height:2;">
+            PayPe Technologies Pvt. Ltd.<br>
+            Coimbatore, Tamil Nadu — 641 001<br>
+            India<br>
+            <br>
+            📞 +91 99448 57191<br>
+            📞 +91 82488 39950<br>
+            📧 admin@paype.co.in<br>
+            🌐 www.paype.co.in
+          </div>
+        </div>
+      </div>
+
+      <!-- Products -->
+      <div class="card">
+        <div class="card-header"><div class="card-icon">🚀</div><div class="card-title">Our Products</div></div>
+        <div class="card-body">
+          <div class="product-grid">
+            <div class="product-card" style="--pc:rgba(0,194,168,.06);">
+              <div class="product-tag">AI Builder & ERP Platform</div>
+              <div class="product-logo">Pay<span>Pe</span></div>
+              <div class="product-desc">Complete AI-powered ERP platform with HRMS, Accounting, Inventory, CRM, Procurement, AI Assistant and CEO Dashboard. Built for Indian businesses, used globally.</div>
+              <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:10px;">
+                <span class="b bt">ERP</span>
+                <span class="b bt">HRMS</span>
+                <span class="b bt">AI</span>
+                <span class="b bt">GST</span>
+                <span class="b bg">Live</span>
+              </div>
+              <a class="product-url" href="https://paype.co.in" target="_blank">🌐 paype.co.in →</a>&nbsp;&nbsp;
+              <a class="product-url" href="https://erp.paype.co.in" target="_blank">📊 ERP Login →</a>
+            </div>
+            <div class="product-card" style="--pc:rgba(128,90,213,.06);">
+              <div class="product-tag">Banking & Financial Tools</div>
+              <div class="product-logo" style="color:var(--purple);">Bank<span style="color:var(--teal);">Me</span></div>
+              <div class="product-desc">Digital banking tools and financial management platform. Smart banking assistant for businesses and individuals to manage finances, track expenses, and grow wealth.</div>
+              <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:10px;">
+                <span class="b bo">FinTech</span>
+                <span class="b bt">Banking</span>
+                <span class="b bt">Finance</span>
+                <span class="b bg">Live</span>
+              </div>
+              <a class="product-url" href="https://bankme.co.in" target="_blank">🏦 bankme.co.in →</a>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Mission -->
+      <div class="card">
+        <div class="card-header"><div class="card-icon">🎯</div><div class="card-title">Our Mission & Vision</div></div>
+        <div class="card-body">
+          <div class="info-grid">
+            <div class="info-item">
+              <div class="info-label">Mission</div>
+              <div style="font-size:13px;color:#4A5568;line-height:1.7;margin-top:6px;">To empower every Indian business with enterprise-grade software at accessible prices — making AI, automation, and intelligent insights available to businesses of all sizes.</div>
+            </div>
+            <div class="info-item">
+              <div class="info-label">Vision</div>
+              <div style="font-size:13px;color:#4A5568;line-height:1.7;margin-top:6px;">To become the most trusted business software company from India — serving 10,000+ businesses globally by 2030 with products that are simple, powerful, and genuinely helpful.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Founder -->
+      <div class="card">
+        <div class="card-header"><div class="card-icon">👤</div><div class="card-title">Leadership</div></div>
+        <div class="card-body">
+          <div class="team-grid">
+            <div class="team-card">
+              <div class="team-avatar" style="background:linear-gradient(135deg,var(--navy),var(--teal));">RM</div>
+              <div class="team-name">Ramesh Muthuvel</div>
+              <div class="team-role">Founder & CEO</div>
+              <div style="font-size:11px;color:var(--teal);margin-top:6px;">PayPe Technologies Pvt. Ltd.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- CONTACT -->
+    <div class="pg" id="pg-contact">
+      <div class="page-header">
+        <div class="page-badge">📞 We're here to help</div>
+        <div class="page-title">Contact Us</div>
+        <div class="page-sub">Reach out to our team for sales, support, billing, or any other queries.</div>
+      </div>
+
+      <!-- Contact Cards -->
+      <div class="card">
+        <div class="card-header"><div class="card-icon">📬</div><div class="card-title">Email Contacts</div></div>
+        <div class="card-body">
+          <div class="contact-grid">
+            <div class="contact-card">
+              <div class="contact-icon">🤝</div>
+              <div class="contact-type">Sales & General</div>
+              <div class="contact-val"><a href="mailto:admin@paype.co.in">admin@paype.co.in</a></div>
+            </div>
+            <div class="contact-card">
+              <div class="contact-icon">💻</div>
+              <div class="contact-type">IT Support</div>
+              <div class="contact-val"><a href="mailto:itsupport@paype.co.in">itsupport@paype.co.in</a></div>
+            </div>
+            <div class="contact-card">
+              <div class="contact-icon">💰</div>
+              <div class="contact-type">Accounts & Billing</div>
+              <div class="contact-val"><a href="mailto:accounts@paype.co.in">accounts@paype.co.in</a></div>
+            </div>
+            <div class="contact-card">
+              <div class="contact-icon">🌐</div>
+              <div class="contact-type">Website</div>
+              <div class="contact-val"><a href="https://paype.co.in" target="_blank">www.paype.co.in</a></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Phone -->
+      <div class="card">
+        <div class="card-header"><div class="card-icon">📞</div><div class="card-title">Phone Numbers</div></div>
+        <div class="card-body">
+          <div class="contact-grid">
+            <div class="contact-card">
+              <div class="contact-icon">📱</div>
+              <div class="contact-type">Primary</div>
+              <div class="contact-val"><a href="tel:+919944857191">+91 99448 57191</a></div>
+            </div>
+            <div class="contact-card">
+              <div class="contact-icon">📱</div>
+              <div class="contact-type">Secondary</div>
+              <div class="contact-val"><a href="tel:+918248839950">+91 82488 39950</a></div>
+            </div>
+            <div class="contact-card">
+              <div class="contact-icon">💬</div>
+              <div class="contact-type">WhatsApp</div>
+              <div class="contact-val"><a href="https://wa.me/919944857191" target="_blank">+91 99448 57191</a></div>
+            </div>
+            <div class="contact-card">
+              <div class="contact-icon">🕐</div>
+              <div class="contact-type">Support Hours</div>
+              <div class="contact-val">Mon–Sat, 9 AM – 6 PM IST</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Products Contact -->
+      <div class="card">
+        <div class="card-header"><div class="card-icon">🌐</div><div class="card-title">Our Products</div></div>
+        <div class="card-body">
+          <div class="contact-grid">
+            <div class="contact-card">
+              <div class="contact-icon">🤖</div>
+              <div class="contact-type">PayPe AI Builder & ERP</div>
+              <div class="contact-val"><a href="https://paype.co.in" target="_blank">paype.co.in</a></div>
+            </div>
+            <div class="contact-card">
+              <div class="contact-icon">🏦</div>
+              <div class="contact-type">BankMe — Banking Tools</div>
+              <div class="contact-val"><a href="https://bankme.co.in" target="_blank">bankme.co.in</a></div>
+            </div>
+            <div class="contact-card">
+              <div class="contact-icon">📊</div>
+              <div class="contact-type">PayPe ERP Login</div>
+              <div class="contact-val"><a href="https://erp.paype.co.in" target="_blank">erp.paype.co.in</a></div>
+            </div>
+            <div class="contact-card">
+              <div class="contact-icon">👥</div>
+              <div class="contact-type">PayPe HRMS Login</div>
+              <div class="contact-val"><a href="https://hr.paype.co.in" target="_blank">hr.paype.co.in</a></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Address -->
+      <div class="card">
+        <div class="card-header"><div class="card-icon">📍</div><div class="card-title">Office Address</div></div>
+        <div class="card-body">
+          <div class="terms-highlight" style="font-size:14px;line-height:2.2;">
+            <strong>PayPe Technologies Pvt. Ltd.</strong><br>
+            Coimbatore, Tamil Nadu — 641 001<br>
+            India<br><br>
+            <strong>CIN:</strong> U74994TN2022PTC151114<br>
+            <strong>GSTIN:</strong> 33AAMCP7960K1ZU<br>
+            <strong>TAN:</strong> CHEP24000E<br>
+            <strong>LEI:</strong> 335800NXKQ2UOIJYB714
+          </div>
+        </div>
+      </div>
+
+      <!-- Contact Form -->
+      <div class="card">
+        <div class="card-header"><div class="card-icon">✉️</div><div class="card-title">Send Us a Message</div></div>
+        <div class="card-body">
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
+            <div style="display:flex;flex-direction:column;gap:5px;">
+              <label style="font-size:11px;font-weight:700;color:var(--gray);text-transform:uppercase;">Full Name *</label>
+              <input id="cf-name" placeholder="Your name" style="border:1.5px solid var(--border);border-radius:8px;padding:9px 12px;font-family:inherit;font-size:13px;outline:none;">
+            </div>
+            <div style="display:flex;flex-direction:column;gap:5px;">
+              <label style="font-size:11px;font-weight:700;color:var(--gray);text-transform:uppercase;">Email *</label>
+              <input id="cf-email" type="email" placeholder="you@email.com" style="border:1.5px solid var(--border);border-radius:8px;padding:9px 12px;font-family:inherit;font-size:13px;outline:none;">
+            </div>
+            <div style="display:flex;flex-direction:column;gap:5px;">
+              <label style="font-size:11px;font-weight:700;color:var(--gray);text-transform:uppercase;">Mobile</label>
+              <input id="cf-mobile" placeholder="+91 XXXXX XXXXX" style="border:1.5px solid var(--border);border-radius:8px;padding:9px 12px;font-family:inherit;font-size:13px;outline:none;">
+            </div>
+            <div style="display:flex;flex-direction:column;gap:5px;">
+              <label style="font-size:11px;font-weight:700;color:var(--gray);text-transform:uppercase;">Subject</label>
+              <select id="cf-subject" style="border:1.5px solid var(--border);border-radius:8px;padding:9px 12px;font-family:inherit;font-size:13px;outline:none;">
+                <option>Sales Enquiry</option>
+                <option>Technical Support</option>
+                <option>Billing</option>
+                <option>Partnership</option>
+                <option>Other</option>
+              </select>
+            </div>
+          </div>
+          <div style="display:flex;flex-direction:column;gap:5px;margin-top:12px;">
+            <label style="font-size:11px;font-weight:700;color:var(--gray);text-transform:uppercase;">Message *</label>
+            <textarea id="cf-msg" rows="4" placeholder="How can we help you?" style="border:1.5px solid var(--border);border-radius:8px;padding:9px 12px;font-family:inherit;font-size:13px;outline:none;resize:none;"></textarea>
+          </div>
+          <button onclick="submitContactForm()" style="margin-top:14px;padding:11px 24px;background:var(--navy);color:white;border:none;border-radius:8px;font-size:13px;font-weight:700;cursor:pointer;font-family:inherit;">Send Message</button>
+          <div id="cf-success" style="display:none;margin-top:10px;padding:10px 14px;background:#F0FFF4;border:1px solid #C6F6D5;border-radius:8px;font-size:12px;color:var(--green);">✅ Message sent! We'll respond within 24 hours.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- TERMS -->
+    <div class="pg" id="pg-terms">
+      <div class="page-header">
+        <div class="page-badge">📋 Last updated: July 2026</div>
+        <div class="page-title">Terms & Conditions</div>
+        <div class="page-sub">Please read these terms carefully before using PayPe Technologies products and services.</div>
+      </div>
+
+      <div class="card">
+        <div class="card-body">
+          <div class="terms-highlight">
+            These Terms and Conditions govern your use of PayPe Technologies Pvt. Ltd. products and services including paype.co.in, bankme.co.in, PayPe ERP, PayPe HRMS, and all associated software platforms. By accessing or using our services, you agree to be bound by these terms.
+          </div>
+
+          <div class="terms-section">
+            <h3>1. Company Information</h3>
+            <p>PayPe Technologies Pvt. Ltd. (hereinafter "PayPe", "we", "us", or "our") is a private limited company incorporated under the Companies Act, 2013 in Tamil Nadu, India.</p>
+            <ul>
+              <li><strong>CIN:</strong> U74994TN2022PTC151114</li>
+              <li><strong>GSTIN:</strong> 33AAMCP7960K1ZU</li>
+              <li><strong>TAN:</strong> CHEP24000E</li>
+              <li><strong>LEI Number:</strong> 335800NXKQ2UOIJYB714</li>
+              <li><strong>PAN:</strong> AAMCP7960K</li>
+              <li><strong>Registered Office:</strong> Coimbatore, Tamil Nadu, India</li>
+            </ul>
+          </div>
+
+          <div class="terms-section">
+            <h3>2. Acceptance of Terms</h3>
+            <p>By registering for, accessing, or using any PayPe Technologies service, you confirm that you are at least 18 years old, have read and understood these Terms, have the authority to bind yourself or your organization, and agree to comply with all applicable laws.</p>
+          </div>
+
+          <div class="terms-section">
+            <h3>3. Services Provided</h3>
+            <p>PayPe Technologies provides the following software-as-a-service (SaaS) products:</p>
+            <ul>
+              <li><strong>PayPe ERP</strong> — Complete ERP including HRMS, Accounting, Inventory, CRM, Procurement, AI Assistant, and CEO Dashboard (paype.co.in / erp.paype.co.in)</li>
+              <li><strong>PayPe HRMS</strong> — Human Resource Management System (hr.paype.co.in)</li>
+              <li><strong>BankMe</strong> — Digital banking tools and financial management (bankme.co.in)</li>
+              <li><strong>PayPe Payments</strong> — Payment gateway integration services via PhonePe TSP</li>
+            </ul>
+          </div>
+
+          <div class="terms-section">
+            <h3>4. Subscription & Billing</h3>
+            <p>Our services are offered on a subscription basis with the following terms:</p>
+            <ul>
+              <li>Subscriptions are billed monthly or annually as selected at signup</li>
+              <li>Prices are in Indian Rupees (INR) or US Dollars (USD) as applicable</li>
+              <li>All prices are exclusive of applicable taxes including GST (18%)</li>
+              <li>Annual subscriptions receive a 20% discount over monthly billing</li>
+              <li>Subscription fees are non-refundable except as stated in our Refund Policy</li>
+              <li>We reserve the right to change pricing with 30 days written notice</li>
+              <li>Failed payments may result in service suspension after 7 days</li>
+            </ul>
+          </div>
+
+          <div class="terms-section">
+            <h3>5. Free Trial</h3>
+            <p>New customers are entitled to a 14-day free trial with the following conditions:</p>
+            <ul>
+              <li>No credit card required to start the trial</li>
+              <li>Full access to all features of the selected plan during trial</li>
+              <li>Trial automatically ends after 14 days — no automatic charges</li>
+              <li>Data entered during trial is preserved when you subscribe</li>
+              <li>One free trial per company — duplicate registrations are not permitted</li>
+            </ul>
+          </div>
+
+          <div class="terms-section">
+            <h3>6. Demo Access</h3>
+            <p>PayPe provides a publicly accessible demo environment with the code PAYPE-DEMO-2026. The demo environment contains sample data only. Users of the demo agree not to enter any real business or personal data into the demo environment. Demo access may be revoked at any time without notice.</p>
+          </div>
+
+          <div class="terms-section">
+            <h3>7. Data & Privacy</h3>
+            <p>We take your data seriously. Key commitments include:</p>
+            <ul>
+              <li>Your business data belongs to you — we do not sell or share it with third parties</li>
+              <li>Data is stored on secure servers with daily backups</li>
+              <li>We comply with Indian data protection laws and GDPR where applicable</li>
+              <li>AI features (Claude AI) process data per Anthropic's privacy policy</li>
+              <li>You may export or delete your data at any time by contacting us</li>
+              <li>Upon subscription termination, data is retained for 30 days then deleted</li>
+            </ul>
+          </div>
+
+          <div class="terms-section">
+            <h3>8. Acceptable Use</h3>
+            <p>You agree not to use PayPe services to:</p>
+            <ul>
+              <li>Violate any applicable Indian or international laws or regulations</li>
+              <li>Store, process, or transmit illegal, harmful, or fraudulent content</li>
+              <li>Attempt to reverse engineer, hack, or compromise the platform</li>
+              <li>Resell or sublicense access without prior written permission</li>
+              <li>Use automated bots or scrapers without authorization</li>
+              <li>Conduct any activity that violates GST, income tax, or financial laws</li>
+            </ul>
+          </div>
+
+          <div class="terms-section">
+            <h3>9. Intellectual Property</h3>
+            <p>All software, designs, algorithms, AI models, and content on PayPe platforms are the exclusive intellectual property of PayPe Technologies Pvt. Ltd. You are granted a limited, non-exclusive, non-transferable license to use the software during your subscription period. This license does not include the right to copy, modify, distribute, or create derivative works.</p>
+          </div>
+
+          <div class="terms-section">
+            <h3>10. Service Availability & SLA</h3>
+            <p>We target 99.5% uptime for all services. Planned maintenance will be communicated 24 hours in advance. Unplanned outages will be resolved within 4 business hours. Service credits may be provided for extended outages at our discretion. We are not liable for downtime caused by third-party services, internet outages, or force majeure events.</p>
+          </div>
+
+          <div class="terms-section">
+            <h3>11. Limitation of Liability</h3>
+            <p>PayPe Technologies' total liability to you for any claims arising from use of our services shall not exceed the amount paid by you in the 3 months preceding the claim. We are not liable for indirect, incidental, special, or consequential damages including loss of business, data loss, or loss of profits. Users are responsible for compliance with tax filings, GST returns, and financial reporting — PayPe provides tools but not professional advice.</p>
+          </div>
+
+          <div class="terms-section">
+            <h3>12. Termination</h3>
+            <p>Either party may terminate the subscription by providing 30 days written notice. We reserve the right to immediately terminate accounts for serious violations of these terms. Upon termination, access will be revoked and data will be held for 30 days before deletion.</p>
+          </div>
+
+          <div class="terms-section">
+            <h3>13. Governing Law & Disputes</h3>
+            <p>These Terms shall be governed by the laws of India. Any disputes shall be subject to the exclusive jurisdiction of the courts of Coimbatore, Tamil Nadu, India. We encourage resolution through mutual discussion before escalating to legal proceedings.</p>
+          </div>
+
+          <div class="terms-section">
+            <h3>14. Changes to Terms</h3>
+            <p>We may update these Terms from time to time. We will notify you of significant changes via email or in-app notification at least 14 days before they take effect. Continued use of our services after changes take effect constitutes acceptance of the new terms.</p>
+          </div>
+
+          <div class="terms-section">
+            <h3>15. Contact for Legal Matters</h3>
+            <p>For legal queries, data requests, or formal communications:</p>
+            <ul>
+              <li>📧 admin@paype.co.in</li>
+              <li>📞 +91 99448 57191</li>
+              <li>📍 PayPe Technologies Pvt. Ltd., Coimbatore, Tamil Nadu — 641 001, India</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- PRIVACY -->
+    <div class="pg" id="pg-privacy">
+      <div class="page-header">
+        <div class="page-badge">🔒 Last updated: July 2026</div>
+        <div class="page-title">Privacy Policy</div>
+        <div class="page-sub">How PayPe Technologies collects, uses, and protects your information.</div>
+      </div>
+      <div class="card">
+        <div class="card-body">
+          <div class="terms-highlight">
+            PayPe Technologies Pvt. Ltd. is committed to protecting your privacy. This Privacy Policy explains what information we collect, how we use it, and your rights regarding your personal and business data.
+          </div>
+
+          <div class="terms-section">
+            <h3>1. Information We Collect</h3>
+            <ul>
+              <li><strong>Account Information:</strong> Name, email, mobile number, company details</li>
+              <li><strong>Business Data:</strong> Invoices, journal entries, employee records, inventory data — entered by you</li>
+              <li><strong>Usage Data:</strong> Login times, features used, device type, browser type</li>
+              <li><strong>Payment Information:</strong> Billing details — processed securely via payment partners</li>
+              <li><strong>Communication:</strong> Emails and messages you send to our support team</li>
+            </ul>
+          </div>
+
+          <div class="terms-section">
+            <h3>2. How We Use Your Information</h3>
+            <ul>
+              <li>To provide, operate, and improve our software services</li>
+              <li>To process subscription payments and send invoices</li>
+              <li>To send product updates, security alerts, and support messages</li>
+              <li>To analyze usage patterns and improve user experience</li>
+              <li>To comply with legal and regulatory obligations</li>
+            </ul>
+          </div>
+
+          <div class="terms-section">
+            <h3>3. Data Storage & Security</h3>
+            <p>Your data is stored on secure cloud infrastructure with encryption at rest and in transit. We implement industry-standard security measures including HTTPS, JWT authentication, and regular security audits. Business data is backed up daily.</p>
+          </div>
+
+          <div class="terms-section">
+            <h3>4. AI Data Processing</h3>
+            <p>PayPe's AI features are powered by Claude AI (Anthropic). When you use AI features, your queries and relevant context are sent to Anthropic's API for processing. We do not send your full business database to AI — only the specific context needed to answer your query. Please review Anthropic's privacy policy at anthropic.com for details on how they handle API data.</p>
+          </div>
+
+          <div class="terms-section">
+            <h3>5. Data Sharing</h3>
+            <p>We do not sell your personal or business data. We may share data with:</p>
+            <ul>
+              <li>Cloud infrastructure providers (for hosting services)</li>
+              <li>Payment processors (for subscription billing)</li>
+              <li>Anthropic (for AI features, query data only)</li>
+              <li>Government authorities if required by law</li>
+            </ul>
+          </div>
+
+          <div class="terms-section">
+            <h3>6. Your Rights</h3>
+            <ul>
+              <li>Right to access your personal data</li>
+              <li>Right to correct inaccurate data</li>
+              <li>Right to export your business data</li>
+              <li>Right to delete your account and data</li>
+              <li>Right to withdraw consent for marketing communications</li>
+            </ul>
+            <p>To exercise these rights, contact: <strong>admin@paype.co.in</strong></p>
+          </div>
+
+          <div class="terms-section">
+            <h3>7. Cookies</h3>
+            <p>We use essential cookies for authentication and session management. We do not use tracking cookies for advertising. You can disable cookies in your browser settings, but this may affect functionality.</p>
+          </div>
+
+          <div class="terms-section">
+            <h3>8. Contact for Privacy</h3>
+            <p>For privacy-related queries: <strong>admin@paype.co.in</strong> | +91 99448 57191</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- REFUND -->
+    <div class="pg" id="pg-refund">
+      <div class="page-header">
+        <div class="page-badge">💰 Last updated: July 2026</div>
+        <div class="page-title">Refund Policy</div>
+        <div class="page-sub">Our fair refund and cancellation policy for all PayPe Technologies subscriptions.</div>
+      </div>
+      <div class="card">
+        <div class="card-body">
+          <div class="terms-highlight">
+            At PayPe Technologies, we want you to be completely satisfied. If you're not happy with our service, please contact us within the applicable refund window and we'll do our best to help.
+          </div>
+
+          <div class="terms-section">
+            <h3>1. Free Trial</h3>
+            <p>Our 14-day free trial allows you to fully evaluate PayPe ERP before committing. No payment is taken during the trial period, so no refund is applicable for trial usage.</p>
+          </div>
+
+          <div class="terms-section">
+            <h3>2. Monthly Subscriptions</h3>
+            <ul>
+              <li>Cancellations made within <strong>7 days</strong> of payment — full refund</li>
+              <li>Cancellations after 7 days — no refund for the current month; service continues until end of billing period</li>
+              <li>Automatic renewal can be cancelled at any time from account settings</li>
+            </ul>
+          </div>
+
+          <div class="terms-section">
+            <h3>3. Annual Subscriptions</h3>
+            <ul>
+              <li>Cancellations within <strong>14 days</strong> of payment — full refund</li>
+              <li>Cancellations between 15–30 days — 75% refund of remaining months</li>
+              <li>Cancellations after 30 days — no refund; service continues until end of annual period</li>
+            </ul>
+          </div>
+
+          <div class="terms-section">
+            <h3>4. Exceptions — No Refund</h3>
+            <ul>
+              <li>Accounts terminated for violations of our Terms of Service</li>
+              <li>Demo access or free tier services</li>
+              <li>Add-on services or one-time setup fees</li>
+              <li>Payment gateway transaction fees</li>
+            </ul>
+          </div>
+
+          <div class="terms-section">
+            <h3>5. How to Request a Refund</h3>
+            <p>To request a refund, contact us within the applicable window:</p>
+            <ul>
+              <li>📧 accounts@paype.co.in</li>
+              <li>📞 +91 99448 57191</li>
+              <li>Subject: "Refund Request — [Your Company Name]"</li>
+            </ul>
+            <p>Refunds are processed within 7–10 business days to the original payment method.</p>
+          </div>
+
+          <div class="terms-section">
+            <h3>6. Disputes</h3>
+            <p>For billing disputes, contact accounts@paype.co.in within 30 days of the charge. Disputes raised after 30 days may not be entertained. All disputes are subject to the jurisdiction of courts in Coimbatore, Tamil Nadu, India.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<script>
+function showPage(name, el){
+  document.querySelectorAll('.pg').forEach(function(p){p.classList.remove('on');});
+  document.querySelectorAll('.nav-link, .sb-link').forEach(function(l){l.classList.remove('on');});
+  document.getElementById('pg-'+name).classList.add('on');
+  if(el) el.classList.add('on');
+  // Sync sidebar and nav
+  document.querySelectorAll('[onclick*="showPage(\''+name+'\'"]').forEach(function(l){l.classList.add('on');});
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+function submitContactForm(){
+  var name=document.getElementById('cf-name').value.trim();
+  var email=document.getElementById('cf-email').value.trim();
+  var msg=document.getElementById('cf-msg').value.trim();
+  if(!name||!email||!msg){alert('Please fill all required fields');return;}
+  document.getElementById('cf-success').style.display='block';
+  document.getElementById('cf-name').value='';
+  document.getElementById('cf-email').value='';
+  document.getElementById('cf-mobile').value='';
+  document.getElementById('cf-msg').value='';
+}
+</script>
+</body>
+</html>

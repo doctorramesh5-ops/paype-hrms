@@ -1,0 +1,1070 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>PayPe ERP — CEO Dashboard</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Syne:wght@700;800&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;}
+:root{--navy:#0D1B3E;--teal:#00C2A8;--red:#E63329;--bg:#F0F4F8;--border:#E2E8F0;--gray:#718096;--green:#38A169;--orange:#DD6B20;--purple:#805AD5;}
+body{font-family:'Inter',sans-serif;background:var(--bg);color:#1A202C;font-size:13px;}
+
+/* LOGIN */
+.login-wrap{display:flex;min-height:100vh;}
+.login-left{flex:1;background:linear-gradient(135deg,#0D1B3E,#0a0f2e);display:flex;flex-direction:column;justify-content:center;padding:60px;position:relative;overflow:hidden;}
+.login-left::before{content:'';position:absolute;top:-100px;right:-80px;width:500px;height:500px;border-radius:50%;background:rgba(0,194,168,.05);}
+.login-left::after{content:'';position:absolute;bottom:-100px;left:-60px;width:350px;height:350px;border-radius:50%;background:rgba(128,90,213,.05);}
+.ll-brand{font-family:'Syne',sans-serif;font-size:30px;font-weight:800;color:white;margin-bottom:4px;position:relative;z-index:1;}
+.ll-brand span{color:var(--teal);}
+.ll-sub{font-size:11px;color:rgba(255,255,255,.3);letter-spacing:2px;text-transform:uppercase;margin-bottom:36px;position:relative;z-index:1;}
+.ll-title{font-size:28px;font-weight:800;color:white;margin-bottom:12px;line-height:1.3;position:relative;z-index:1;}
+.ll-title span{background:linear-gradient(135deg,var(--teal),var(--purple));-webkit-background-clip:text;-webkit-text-fill-color:transparent;}
+.ll-desc{font-size:14px;color:rgba(255,255,255,.5);line-height:1.7;margin-bottom:32px;max-width:420px;position:relative;z-index:1;}
+.ll-modules{display:grid;grid-template-columns:1fr 1fr;gap:8px;position:relative;z-index:1;}
+.ll-mod{padding:10px 14px;background:rgba(255,255,255,.04);border-radius:10px;border:1px solid rgba(255,255,255,.07);display:flex;align-items:center;gap:8px;font-size:12px;color:rgba(255,255,255,.65);}
+.ll-mod-dot{width:7px;height:7px;border-radius:50%;background:var(--green);}
+.login-right{width:440px;background:white;display:flex;flex-direction:column;justify-content:center;padding:60px 50px;flex-shrink:0;}
+.lr-logo{font-family:'Syne',sans-serif;font-size:22px;font-weight:800;color:var(--navy);margin-bottom:4px;}
+.lr-logo span{color:var(--teal);}
+.lr-badge{display:inline-flex;align-items:center;gap:6px;padding:3px 12px;background:linear-gradient(135deg,rgba(0,194,168,.1),rgba(128,90,213,.1));border-radius:20px;font-size:11px;font-weight:700;color:var(--navy);margin-bottom:24px;border:1px solid rgba(0,194,168,.2);}
+.lr-welcome{font-size:22px;font-weight:800;color:var(--navy);margin-bottom:6px;}
+.lr-sub{font-size:13px;color:var(--gray);margin-bottom:28px;}
+.ff{display:flex;flex-direction:column;gap:5px;margin-bottom:14px;}
+.ff label{font-size:11px;font-weight:700;color:var(--gray);text-transform:uppercase;letter-spacing:.5px;}
+.ff input{border:1.5px solid var(--border);border-radius:10px;padding:11px 14px;font-family:inherit;font-size:13px;outline:none;transition:.15s;width:100%;}
+.ff input:focus{border-color:var(--teal);}
+.pass-wrap{position:relative;}.pass-wrap input{padding-right:40px;}
+.pass-eye{position:absolute;right:12px;top:50%;transform:translateY(-50%);cursor:pointer;background:none;border:none;font-size:14px;}
+.login-btn{width:100%;padding:13px;background:linear-gradient(135deg,var(--navy),#1a3a7c);color:white;border:none;border-radius:10px;font-size:14px;font-weight:700;cursor:pointer;font-family:inherit;transition:.2s;margin-top:8px;}
+.login-btn:hover{opacity:.9;}
+.login-err{background:#FFF5F5;border:1px solid #FED7D7;color:var(--red);border-radius:8px;padding:10px 14px;font-size:12px;margin-top:10px;display:none;}
+.login-footer{margin-top:24px;padding-top:16px;border-top:1px solid var(--border);font-size:11px;color:var(--gray);}
+
+/* APP */
+.app{display:none;min-height:100vh;flex-direction:column;}
+.app.on{display:flex;}
+
+/* TOP NAV */
+.topnav{background:var(--navy);padding:0 24px;height:60px;display:flex;align-items:center;gap:16px;flex-shrink:0;}
+.tn-brand{font-family:'Syne',sans-serif;font-size:18px;font-weight:800;color:white;}
+.tn-brand span{color:var(--teal);}
+.tn-badge{padding:3px 10px;background:rgba(0,194,168,.15);border-radius:20px;font-size:10px;font-weight:700;color:var(--teal);border:1px solid rgba(0,194,168,.2);}
+.tn-right{margin-left:auto;display:flex;align-items:center;gap:12px;}
+.tn-date{font-size:11px;color:rgba(255,255,255,.4);}
+.tn-refresh{background:rgba(255,255,255,.1);border:none;color:rgba(255,255,255,.7);padding:6px 12px;border-radius:8px;cursor:pointer;font-size:11px;font-weight:600;font-family:inherit;transition:.15s;}
+.tn-refresh:hover{background:rgba(255,255,255,.2);color:white;}
+.tn-user{display:flex;align-items:center;gap:8px;}
+.tn-avatar{width:32px;height:32px;border-radius:50%;background:linear-gradient(135deg,var(--teal),var(--purple));color:white;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;}
+.tn-name{font-size:12px;color:rgba(255,255,255,.7);}
+.tn-logout{background:none;border:none;color:rgba(255,255,255,.4);cursor:pointer;font-size:11px;font-family:inherit;transition:.15s;}
+.tn-logout:hover{color:var(--red);}
+
+/* MODULE TABS */
+.mod-tabs{background:white;border-bottom:1px solid var(--border);padding:0 24px;display:flex;gap:4px;overflow-x:auto;}
+.mod-tabs::-webkit-scrollbar{display:none;}
+.mod-tab{padding:12px 16px;border-bottom:2px solid transparent;cursor:pointer;font-size:12px;font-weight:600;color:var(--gray);white-space:nowrap;transition:.15s;display:flex;align-items:center;gap:6px;}
+.mod-tab:hover{color:var(--navy);}
+.mod-tab.on{color:var(--navy);border-bottom-color:var(--teal);}
+
+/* CONTENT */
+.ceo-content{flex:1;overflow-y:auto;padding:20px 24px;}
+.section{display:none;}.section.on{display:block;}
+
+/* KPI GRID */
+.kpi-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:12px;margin-bottom:16px;}
+.kpi-card{background:white;border-radius:14px;padding:18px;border:1px solid var(--border);position:relative;overflow:hidden;}
+.kpi-card::before{content:'';position:absolute;top:-20px;right:-20px;width:80px;height:80px;border-radius:50%;background:var(--kc,rgba(0,194,168,.06));}
+.kpi-icon{font-size:22px;margin-bottom:8px;}
+.kpi-val{font-size:22px;font-weight:800;color:var(--navy);}
+.kpi-label{font-size:11px;color:var(--gray);margin-top:3px;}
+.kpi-trend{font-size:11px;font-weight:600;margin-top:6px;display:flex;align-items:center;gap:4px;}
+.trend-up{color:var(--green);}
+.trend-dn{color:var(--red);}
+
+/* CARDS */
+.card{background:white;border-radius:14px;border:1px solid var(--border);margin-bottom:14px;}
+.ch{padding:14px 16px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--bg);}
+.ct{font-size:14px;font-weight:700;color:var(--navy);}
+.cb{padding:16px;}
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:14px;}
+.g3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;}
+
+/* TABLE */
+.tbl-wrap{overflow-x:auto;}
+table{width:100%;border-collapse:collapse;}
+th{background:var(--bg);padding:8px 12px;text-align:left;font-size:11px;font-weight:700;color:var(--gray);text-transform:uppercase;letter-spacing:.5px;}
+td{padding:10px 12px;border-bottom:1px solid var(--bg);font-size:12px;vertical-align:middle;}
+tr:last-child td{border-bottom:none;}
+tr:hover td{background:rgba(0,194,168,.02);}
+
+/* BADGE */
+.b{display:inline-flex;align-items:center;padding:2px 8px;border-radius:20px;font-size:10px;font-weight:700;}
+.bg{background:#F0FFF4;color:var(--green);}
+.br{background:#FFF5F5;color:var(--red);}
+.by{background:#FFFBEB;color:#B7791F;}
+.bt{background:rgba(0,194,168,.1);color:var(--teal);}
+.bn{background:var(--bg);color:var(--gray);}
+.bo{background:rgba(221,107,32,.1);color:var(--orange);}
+.bp{background:#FAF5FF;color:var(--purple);}
+
+/* PROGRESS */
+.progress{height:6px;background:var(--bg);border-radius:3px;overflow:hidden;}
+.progress-fill{height:100%;border-radius:3px;transition:.5s;}
+
+/* ACTION ITEMS */
+.action-item{padding:10px 12px;border-radius:10px;margin-bottom:6px;display:flex;align-items:center;gap:10px;border:1px solid var(--border);}
+.action-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0;}
+.action-text{flex:1;font-size:12px;}
+.action-due{font-size:11px;font-weight:600;}
+
+/* STAT ROW */
+.stat-row{display:flex;align-items:center;justify-content:space-between;padding:8px 0;border-bottom:1px solid var(--bg);}
+.stat-row:last-child{border-bottom:none;}
+
+/* CHART */
+.chart-wrap{position:relative;height:220px;}
+
+/* LOADER */
+.ld{display:flex;align-items:center;gap:8px;color:var(--gray);padding:30px;justify-content:center;}
+.sp{width:18px;height:18px;border:2px solid var(--border);border-top-color:var(--teal);border-radius:50%;animation:spin .7s linear infinite;}
+@keyframes spin{to{transform:rotate(360deg);}}
+.em{text-align:center;padding:20px;color:var(--gray);}
+
+/* MINI STAT */
+.mini-stat{text-align:center;padding:14px;background:var(--bg);border-radius:10px;}
+.mini-val{font-size:20px;font-weight:800;color:var(--navy);}
+.mini-label{font-size:11px;color:var(--gray);margin-top:3px;}
+
+/* MODULE CARD */
+.mod-status-card{background:white;border-radius:14px;padding:16px;border:1px solid var(--border);display:flex;align-items:center;gap:14px;}
+.mod-status-icon{width:44px;height:44px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0;}
+.mod-status-name{font-size:13px;font-weight:700;color:var(--navy);}
+.mod-status-url{font-size:11px;color:var(--gray);margin-top:2px;}
+.mod-status-live{margin-left:auto;display:flex;align-items:center;gap:5px;font-size:11px;font-weight:700;color:var(--green);}
+.live-dot{width:7px;height:7px;border-radius:50%;background:var(--green);animation:pulse 2s infinite;}
+@keyframes pulse{0%,100%{opacity:1;}50%{opacity:.4;}}
+
+@media(max-width:768px){.g2,.g3{grid-template-columns:1fr;}.kpi-grid{grid-template-columns:1fr 1fr;}}
+</style>
+</head>
+<body>
+
+<!-- LOGIN -->
+<div class="login-wrap" id="login-page">
+  <div class="login-left">
+    <div class="ll-brand">Pay<span>Pe</span> ERP</div>
+    <div class="ll-sub">CEO Executive Dashboard — Module 8</div>
+    <div class="ll-title">Complete Business<br><span>Intelligence</span></div>
+    <div class="ll-desc">Real-time view of your entire business — Finance, HR, Sales, Inventory, Procurement — all in one executive dashboard.</div>
+    <div class="ll-modules">
+      <div class="ll-mod"><div class="ll-mod-dot"></div>📊 Accounting & Finance</div>
+      <div class="ll-mod"><div class="ll-mod-dot"></div>👥 HR & Payroll</div>
+      <div class="ll-mod"><div class="ll-mod-dot"></div>🎯 CRM & Sales Pipeline</div>
+      <div class="ll-mod"><div class="ll-mod-dot"></div>📦 Inventory & Stock</div>
+      <div class="ll-mod"><div class="ll-mod-dot"></div>🛒 Procurement</div>
+      <div class="ll-mod"><div class="ll-mod-dot"></div>🤖 AI Insights</div>
+    </div>
+  </div>
+  <div class="login-right">
+    <div class="lr-logo">Pay<span>Pe</span> CEO</div>
+    <div class="lr-badge">👑 Executive Access Only</div>
+    <div class="lr-welcome">Executive Sign In</div>
+    <div class="lr-sub">Access your complete business dashboard</div>
+    <div class="ff"><label>Email</label><input id="l-email" type="email" value="admin@paype.co.in"></div>
+    <div class="ff"><label>Password</label><div class="pass-wrap"><input id="l-pass" type="password" value="Admin@PayPe2026"><button class="pass-eye" onclick="togglePass()">👁</button></div></div>
+    <button class="login-btn" id="l-btn" onclick="doLogin()">👑 Access CEO Dashboard</button>
+    <div class="login-err" id="l-err"></div>
+    <div class="login-footer">admin@paype.co.in / Admin@PayPe2026</div>
+  </div>
+</div>
+
+<!-- CEO APP -->
+<div class="app" id="ceo-app">
+  <!-- TOP NAV -->
+  <div class="topnav">
+    <div class="tn-brand">Pay<span>Pe</span></div>
+    <div class="tn-badge">👑 CEO Dashboard</div>
+    <div class="tn-right">
+      <div class="tn-date" id="tn-date"></div>
+      <button class="tn-refresh" onclick="refreshAll()">🔄 Refresh</button>
+      <div class="tn-user">
+        <div class="tn-avatar" id="tn-avatar">R</div>
+        <div class="tn-name" id="tn-name">CEO</div>
+      </div>
+      <button class="tn-logout" onclick="doLogout()">Sign Out</button>
+    </div>
+  </div>
+
+  <!-- MODULE TABS -->
+  <div class="mod-tabs">
+    <div class="mod-tab on" onclick="showSection('overview',this)">🏠 Overview</div>
+    <div class="mod-tab" onclick="showSection('finance',this)">📊 Finance</div>
+    <div class="mod-tab" onclick="showSection('hrms',this)">👥 HR & People</div>
+    <div class="mod-tab" onclick="showSection('sales',this)">🎯 Sales & CRM</div>
+    <div class="mod-tab" onclick="showSection('inventory',this)">📦 Inventory</div>
+    <div class="mod-tab" onclick="showSection('procurement',this)">🛒 Procurement</div>
+    <div class="mod-tab" onclick="showSection('modules',this)">🔗 All Modules</div>
+    <div class="mod-tab" onclick="showSection('profile',this)">👤 Profile</div>
+    <div class="mod-tab" onclick="showSection('settings',this)">⚙️ Settings</div>
+  </div>
+
+  <div class="ceo-content">
+
+    <!-- OVERVIEW -->
+    <div class="section on" id="sec-overview">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;">
+        <div>
+          <div style="font-family:Syne,sans-serif;font-size:22px;font-weight:800;color:var(--navy);" id="ov-greeting">Good Morning, Ramesh!</div>
+          <div style="font-size:12px;color:var(--gray);margin-top:3px;">Here's your business at a glance</div>
+        </div>
+        <div style="font-size:12px;color:var(--gray);background:white;padding:6px 14px;border-radius:20px;border:1px solid var(--border);">FY 2026-27</div>
+      </div>
+
+      <!-- Top KPIs -->
+      <div class="kpi-grid" id="ov-kpis">
+        <div class="ld"><div class="sp"></div></div>
+      </div>
+
+      <!-- Charts + Actions -->
+      <div class="g2" style="margin-bottom:14px;">
+        <div class="card">
+          <div class="ch"><div class="ct">📈 Revenue Trend</div><span style="font-size:11px;color:var(--gray);">Last 6 months</span></div>
+          <div class="cb"><div class="chart-wrap"><canvas id="revenue-chart"></canvas></div></div>
+        </div>
+        <div class="card">
+          <div class="ch"><div class="ct">🔴 Action Required</div><span id="action-count" style="font-size:11px;font-weight:700;color:var(--red);"></span></div>
+          <div class="cb" id="action-items"><div class="ld"><div class="sp"></div></div></div>
+        </div>
+      </div>
+
+      <!-- Module summaries -->
+      <div class="g3" id="ov-modules">
+        <div class="ld"><div class="sp"></div></div>
+      </div>
+    </div>
+
+    <!-- FINANCE -->
+    <div class="section" id="sec-finance">
+      <div class="kpi-grid" id="fin-kpis" style="margin-bottom:16px;"></div>
+      <div class="g2">
+        <div class="card">
+          <div class="ch"><div class="ct">📊 P&L Summary</div></div>
+          <div class="cb" id="fin-pl"></div>
+        </div>
+        <div class="card">
+          <div class="ch"><div class="ct">🔢 GST Overview</div></div>
+          <div class="cb" id="fin-gst"></div>
+        </div>
+      </div>
+      <div class="g2">
+        <div class="card">
+          <div class="ch"><div class="ct">📋 Recent Invoices</div><a href="https://erp.paype.co.in" target="_blank" style="font-size:11px;color:var(--teal);">Open Accounting →</a></div>
+          <div class="cb" id="fin-invoices"></div>
+        </div>
+        <div class="card">
+          <div class="ch"><div class="ct">💸 Expense Breakdown</div></div>
+          <div class="cb"><div class="chart-wrap"><canvas id="expense-chart"></canvas></div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- HRMS -->
+    <div class="section" id="sec-hrms">
+      <div class="kpi-grid" id="hr-kpis" style="margin-bottom:16px;"></div>
+      <div class="g2">
+        <div class="card">
+          <div class="ch"><div class="ct">👥 Employee List</div><a href="https://hr.paype.co.in" target="_blank" style="font-size:11px;color:var(--teal);">Open HRMS →</a></div>
+          <div class="cb" id="hr-employees"></div>
+        </div>
+        <div class="card">
+          <div class="ch"><div class="ct">📅 Attendance Today</div></div>
+          <div class="cb" id="hr-attendance"></div>
+        </div>
+      </div>
+      <div class="g2">
+        <div class="card">
+          <div class="ch"><div class="ct">🏖 Leave Requests</div></div>
+          <div class="cb" id="hr-leaves"></div>
+        </div>
+        <div class="card">
+          <div class="ch"><div class="ct">💰 Payroll Summary</div></div>
+          <div class="cb" id="hr-payroll"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SALES & CRM -->
+    <div class="section" id="sec-sales">
+      <div class="kpi-grid" id="crm-kpis" style="margin-bottom:16px;"></div>
+      <div class="g2">
+        <div class="card">
+          <div class="ch"><div class="ct">🎯 Sales Pipeline</div><a href="https://doctorramesh5-ops.github.io/paype-erp/inventory.html" target="_blank" style="font-size:11px;color:var(--teal);">Open CRM →</a></div>
+          <div class="cb" id="crm-pipeline"></div>
+        </div>
+        <div class="card">
+          <div class="ch"><div class="ct">📊 Pipeline by Stage</div></div>
+          <div class="cb"><div class="chart-wrap"><canvas id="pipeline-chart"></canvas></div></div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="ch"><div class="ct">🔥 Recent Leads</div></div>
+        <div class="cb" id="crm-leads"></div>
+      </div>
+    </div>
+
+    <!-- INVENTORY -->
+    <div class="section" id="sec-inventory">
+      <div class="kpi-grid" id="inv-kpis" style="margin-bottom:16px;"></div>
+      <div class="g2">
+        <div class="card">
+          <div class="ch"><div class="ct">⚠️ Low Stock Alerts</div><a href="https://doctorramesh5-ops.github.io/paype-erp/inventory.html" target="_blank" style="font-size:11px;color:var(--teal);">Open Inventory →</a></div>
+          <div class="cb" id="inv-lowstock"></div>
+        </div>
+        <div class="card">
+          <div class="ch"><div class="ct">📦 Top Products</div></div>
+          <div class="cb" id="inv-products"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- PROCUREMENT -->
+    <div class="section" id="sec-procurement">
+      <div class="kpi-grid" id="proc-kpis" style="margin-bottom:16px;"></div>
+      <div class="g2">
+        <div class="card">
+          <div class="ch"><div class="ct">🏪 Top Vendors</div></div>
+          <div class="cb" id="proc-vendors"></div>
+        </div>
+        <div class="card">
+          <div class="ch"><div class="ct">✅ Pending Approvals</div></div>
+          <div class="cb" id="proc-approvals"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ALL MODULES -->
+    <div class="section" id="sec-modules">
+      <div style="font-family:Syne,sans-serif;font-size:18px;font-weight:800;color:var(--navy);margin-bottom:14px;">🔗 PayPe ERP — All Modules</div>
+      <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:12px;" id="all-modules"></div>
+    </div>
+
+    <!-- PROFILE -->
+    <div class="section" id="sec-profile">
+      <div style="font-family:Syne,sans-serif;font-size:22px;font-weight:800;color:var(--navy);margin-bottom:16px;">👤 My Profile</div>
+      <div id="profile-content"></div>
+    </div>
+
+    <!-- SETTINGS -->
+    <div class="section" id="sec-settings">
+      <div style="font-family:Syne,sans-serif;font-size:22px;font-weight:800;color:var(--navy);margin-bottom:16px;">⚙️ Dashboard Settings</div>
+      <div id="settings-content"></div>
+    </div>
+
+  </div>
+</div>
+
+<script>
+var ERP_API = 'https://erpapi.paype.co.in';
+var HR_API  = 'https://hrapi.paype.co.in';
+var TOKEN   = localStorage.getItem('erp_token');
+var HR_TOK  = localStorage.getItem('hr_token');
+var USER    = JSON.parse(localStorage.getItem('erp_user')||'null');
+var charts  = {};
+
+function togglePass(){var i=document.getElementById('l-pass');i.type=i.type==='password'?'text':'password';}
+
+async function doLogin(){
+  var email=document.getElementById('l-email').value.trim(), pass=document.getElementById('l-pass').value;
+  var err=document.getElementById('l-err'), btn=document.getElementById('l-btn');
+  err.style.display='none';
+  if(!email||!pass){err.textContent='Enter email and password';err.style.display='block';return;}
+  btn.textContent='Signing in...';btn.disabled=true;
+  try {
+    // Login to ERP
+    var res=await fetch(ERP_API+'/api/auth/login',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({email,password:pass})});
+    var data=await res.json();
+    if(data.success){
+      TOKEN=data.token||data.data?.token||data.data?.accessToken;
+      USER=data.user||data.data?.user;
+      localStorage.setItem('erp_token',TOKEN);
+      localStorage.setItem('erp_user',JSON.stringify(USER));
+      // Also login to HRMS
+      try {
+        var hr=await fetch(HR_API+'/api/auth/login',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({username:email,password:pass})});
+        var hd=await hr.json();
+        if(hd.success) { HR_TOK=hd.data?.accessToken||hd.token; localStorage.setItem('hr_token',HR_TOK); }
+      } catch(e){}
+      startApp();
+    } else { err.textContent=data.message||'Invalid credentials'; err.style.display='block'; }
+  } catch(e){ err.textContent='Connection error'; err.style.display='block'; }
+  btn.textContent='👑 Access CEO Dashboard'; btn.disabled=false;
+}
+
+function startApp(){
+  document.getElementById('login-page').style.display='none';
+  document.getElementById('ceo-app').classList.add('on');
+  var h=new Date().getHours();
+  var gr=h<12?'Good Morning':'h<17'?'Good Afternoon':'Good Evening';
+  var name=(USER?.name||'').split(' ')[0]||'Ramesh';
+  document.getElementById('ov-greeting').textContent=(h<12?'Good Morning':h<17?'Good Afternoon':'Good Evening')+', '+name+'! 👑';
+  document.getElementById('tn-avatar').textContent=name.charAt(0).toUpperCase();
+  document.getElementById('tn-name').textContent=USER?.name||'CEO';
+  document.getElementById('tn-date').textContent=new Date().toLocaleDateString('en-IN',{weekday:'short',day:'numeric',month:'short',year:'numeric'});
+  loadOverview();
+}
+function doLogout(){localStorage.removeItem('erp_token');localStorage.removeItem('erp_user');localStorage.removeItem('hr_token');location.reload();}
+
+function showSection(name,el){
+  document.querySelectorAll('.section').forEach(function(s){s.classList.remove('on');});
+  document.querySelectorAll('.mod-tab').forEach(function(t){t.classList.remove('on');});
+  document.getElementById('sec-'+name).classList.add('on');
+  el.classList.add('on');
+  var loaders={overview:loadOverview,finance:loadFinance,hrms:loadHRMS,sales:loadSales,inventory:loadInventory,procurement:loadProcurement,modules:loadModules,profile:loadCEOProfile,settings:loadCEOSettings};
+  if(loaders[name]) loaders[name]();
+}
+
+// ── API HELPERS ────────────────────────────
+async function erpApi(path){ var r=await fetch(ERP_API+path,{headers:{'Authorization':'Bearer '+TOKEN}}); return r.json(); }
+async function hrApi(path){ var r=await fetch(HR_API+path,{headers:{'Authorization':'Bearer '+HR_TOK}}); return r.json(); }
+
+function fmt(n){ return 'Rs '+(n||0).toLocaleString('en-IN',{minimumFractionDigits:2,maximumFractionDigits:2}); }
+function fmtN(n){ if(n>=10000000) return 'Rs '+(n/10000000).toFixed(2)+' Cr'; if(n>=100000) return 'Rs '+(n/100000).toFixed(2)+' L'; return fmt(n); }
+
+// ── OVERVIEW ──────────────────────────────
+async function loadOverview(){
+  // ERP Dashboard
+  try {
+    var d=await erpApi('/api/dashboard');
+    if(d.success){
+      var dd=d.data;
+      document.getElementById('ov-kpis').innerHTML=`
+        <div class="kpi-card" style="--kc:rgba(56,161,105,.06)"><div class="kpi-icon">💰</div><div class="kpi-val">${fmtN(dd.revenue||0)}</div><div class="kpi-label">Total Revenue</div><div class="kpi-trend trend-up">↑ This FY</div></div>
+        <div class="kpi-card" style="--kc:rgba(230,51,41,.06)"><div class="kpi-icon">💸</div><div class="kpi-val">${fmtN(dd.expenses||0)}</div><div class="kpi-label">Total Expenses</div><div class="kpi-trend" style="color:var(--gray);">FY 2026-27</div></div>
+        <div class="kpi-card" style="--kc:rgba(0,194,168,.06)"><div class="kpi-icon">📈</div><div class="kpi-val">${fmtN((dd.revenue||0)-(dd.expenses||0))}</div><div class="kpi-label">Net Profit</div><div class="kpi-trend trend-up">↑ Growing</div></div>
+        <div class="kpi-card" style="--kc:rgba(221,107,32,.06)"><div class="kpi-icon">🧾</div><div class="kpi-val">${fmtN(dd.receivable||0)}</div><div class="kpi-label">Receivables (AR)</div><div class="kpi-trend trend-dn">↓ Collect Now</div></div>
+        <div class="kpi-card" style="--kc:rgba(128,90,213,.06)"><div class="kpi-icon">📋</div><div class="kpi-val">${dd.invoiceCount||0}</div><div class="kpi-label">Total Invoices</div><div class="kpi-trend" style="color:var(--gray);">${dd.draftCount||0} drafts</div></div>
+        <div class="kpi-card" style="--kc:rgba(13,27,62,.04)"><div class="kpi-icon">💳</div><div class="kpi-val">${fmtN(dd.payable||0)}</div><div class="kpi-label">Payables (AP)</div><div class="kpi-trend trend-dn">Due Soon</div></div>
+      `;
+    }
+  } catch(e){ document.getElementById('ov-kpis').innerHTML='<div class="em">Finance data unavailable</div>'; }
+
+  // Revenue Chart
+  try {
+    var months=['Jan','Feb','Mar','Apr','May','Jun','Jul'];
+    var revenues=[180000,220000,195000,280000,310000,260000,340000];
+    var expenses=[120000,150000,140000,180000,200000,170000,220000];
+    var ctx=document.getElementById('revenue-chart').getContext('2d');
+    if(charts.revenue) charts.revenue.destroy();
+    charts.revenue=new Chart(ctx,{
+      type:'line',
+      data:{
+        labels:months,
+        datasets:[
+          {label:'Revenue',data:revenues,borderColor:'#00C2A8',backgroundColor:'rgba(0,194,168,.1)',fill:true,tension:.4,pointRadius:4},
+          {label:'Expenses',data:expenses,borderColor:'#E63329',backgroundColor:'rgba(230,51,41,.05)',fill:true,tension:.4,pointRadius:4}
+        ]
+      },
+      options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'top'}},scales:{y:{beginAtZero:true,ticks:{callback:function(v){return 'Rs '+(v/1000)+'K';}}}}}
+    });
+  } catch(e){}
+
+  // Action Items
+  loadActionItems();
+
+  // Module summaries
+  document.getElementById('ov-modules').innerHTML=`
+    <div class="card"><div class="ch"><div class="ct">📊 Finance</div><a href="https://erp.paype.co.in" target="_blank" style="font-size:11px;color:var(--teal);">Open →</a></div>
+    <div class="cb" id="ov-fin-sum"><div class="ld"><div class="sp"></div></div></div></div>
+    <div class="card"><div class="ch"><div class="ct">👥 HR & People</div><a href="https://hr.paype.co.in" target="_blank" style="font-size:11px;color:var(--teal);">Open →</a></div>
+    <div class="cb" id="ov-hr-sum"><div class="ld"><div class="sp"></div></div></div></div>
+    <div class="card"><div class="ch"><div class="ct">📦 Inventory</div><a href="https://doctorramesh5-ops.github.io/paype-erp/inventory.html" target="_blank" style="font-size:11px;color:var(--teal);">Open →</a></div>
+    <div class="cb" id="ov-inv-sum"><div class="ld"><div class="sp"></div></div></div></div>
+  `;
+  loadModuleSummaries();
+}
+
+async function loadActionItems(){
+  var items=[];
+  // GST due dates
+  var now=new Date();
+  var month=now.toLocaleString('en-IN',{month:'long'});
+  items.push({color:now.getDate()>11?'var(--red)':'var(--orange)',text:'GSTR-1 filing for '+month,due:'Due 11th'});
+  items.push({color:now.getDate()>20?'var(--red)':'var(--orange)',text:'GSTR-3B payment for '+month,due:'Due 20th'});
+  items.push({color:'var(--orange)',text:'TDS payment for '+month,due:'Due 7th'});
+  // AR overdue
+  try {
+    var inv=await erpApi('/api/invoices?status=Overdue&limit=3');
+    if(inv.success && inv.data?.length){
+      inv.data.forEach(function(i){
+        items.push({color:'var(--red)',text:'Overdue invoice '+i.invoice_no+' — '+fmtN(i.balance_due||0),due:'Overdue'});
+      });
+    }
+  } catch(e){}
+  // HRMS leaves
+  try {
+    var lv=await hrApi('/api/leave/requests?status=Pending');
+    if(lv.success && lv.data?.length){
+      items.push({color:'var(--purple)',text:lv.data.length+' leave request(s) pending approval',due:'Action needed'});
+    }
+  } catch(e){}
+
+  document.getElementById('action-count').textContent=items.length+' items';
+  document.getElementById('action-items').innerHTML=items.length?items.map(function(a){
+    return`<div class="action-item"><div class="action-dot" style="background:${a.color};"></div>
+    <div class="action-text">${a.text}</div>
+    <div class="action-due" style="color:${a.color};">${a.due}</div></div>`;
+  }).join(''):'<div class="em">✅ No urgent actions!</div>';
+}
+
+async function loadModuleSummaries(){
+  // Finance summary
+  try {
+    var d=await erpApi('/api/dashboard');
+    if(d.success){
+      document.getElementById('ov-fin-sum').innerHTML=`
+        <div class="stat-row"><span>Revenue</span><span style="font-weight:700;color:var(--green);">${fmtN(d.data.revenue||0)}</span></div>
+        <div class="stat-row"><span>Receivable</span><span style="font-weight:700;color:var(--orange);">${fmtN(d.data.receivable||0)}</span></div>
+        <div class="stat-row"><span>Payable</span><span style="font-weight:700;color:var(--red);">${fmtN(d.data.payable||0)}</span></div>
+      `;
+    }
+  } catch(e){ document.getElementById('ov-fin-sum').innerHTML='<div class="em">Unavailable</div>'; }
+
+  // HR summary
+  try {
+    var hr=await hrApi('/api/dashboard/stats');
+    if(hr.success){
+      document.getElementById('ov-hr-sum').innerHTML=`
+        <div class="stat-row"><span>Total Employees</span><span style="font-weight:700;">${hr.data.totalEmployees||0}</span></div>
+        <div class="stat-row"><span>Present Today</span><span style="font-weight:700;color:var(--green);">${hr.data.presentToday||0}</span></div>
+        <div class="stat-row"><span>On Leave</span><span style="font-weight:700;color:var(--orange);">${hr.data.onLeave||0}</span></div>
+      `;
+    }
+  } catch(e){ document.getElementById('ov-hr-sum').innerHTML='<div class="em">Unavailable</div>'; }
+
+  // Inventory summary
+  try {
+    var inv=await erpApi('/api/products/stats');
+    if(inv.success){
+      document.getElementById('ov-inv-sum').innerHTML=`
+        <div class="stat-row"><span>Total Products</span><span style="font-weight:700;">${inv.data.total||0}</span></div>
+        <div class="stat-row"><span>Low Stock</span><span style="font-weight:700;color:var(--red);">${inv.data.lowStock||0}</span></div>
+        <div class="stat-row"><span>Stock Value</span><span style="font-weight:700;color:var(--navy);">${fmtN(inv.data.totalValue||0)}</span></div>
+      `;
+    }
+  } catch(e){ document.getElementById('ov-inv-sum').innerHTML='<div class="em">Unavailable</div>'; }
+}
+
+// ── FINANCE ───────────────────────────────
+async function loadFinance(){
+  try {
+    var d=await erpApi('/api/dashboard');
+    if(d.success){
+      var dd=d.data;
+      document.getElementById('fin-kpis').innerHTML=`
+        <div class="kpi-card" style="--kc:rgba(56,161,105,.06)"><div class="kpi-icon">💰</div><div class="kpi-val">${fmtN(dd.revenue||0)}</div><div class="kpi-label">Total Revenue</div></div>
+        <div class="kpi-card" style="--kc:rgba(230,51,41,.06)"><div class="kpi-icon">💸</div><div class="kpi-val">${fmtN(dd.expenses||0)}</div><div class="kpi-label">Total Expenses</div></div>
+        <div class="kpi-card" style="--kc:rgba(0,194,168,.06)"><div class="kpi-icon">📈</div><div class="kpi-val">${fmtN((dd.revenue||0)-(dd.expenses||0))}</div><div class="kpi-label">Net Profit</div></div>
+        <div class="kpi-card" style="--kc:rgba(221,107,32,.06)"><div class="kpi-icon">🧾</div><div class="kpi-val">${fmtN(dd.receivable||0)}</div><div class="kpi-label">AR Outstanding</div></div>
+        <div class="kpi-card" style="--kc:rgba(128,90,213,.06)"><div class="kpi-icon">💳</div><div class="kpi-val">${fmtN(dd.payable||0)}</div><div class="kpi-label">AP Outstanding</div></div>
+        <div class="kpi-card" style="--kc:rgba(13,27,62,.04)"><div class="kpi-icon">📋</div><div class="kpi-val">${dd.invoiceCount||0}</div><div class="kpi-label">Total Invoices</div></div>
+      `;
+      document.getElementById('fin-pl').innerHTML=`
+        <div class="stat-row"><span>Gross Revenue</span><span style="font-weight:700;color:var(--green);">${fmtN(dd.revenue||0)}</span></div>
+        <div class="stat-row"><span>Total Expenses</span><span style="font-weight:700;color:var(--red);">(${fmtN(dd.expenses||0)})</span></div>
+        <div class="stat-row" style="border-top:2px solid var(--border);padding-top:10px;"><span style="font-weight:700;">Net Profit</span><span style="font-weight:800;font-size:15px;color:var(--navy);">${fmtN((dd.revenue||0)-(dd.expenses||0))}</span></div>
+        <div class="stat-row"><span>Profit Margin</span><span style="font-weight:700;color:var(--teal);">${dd.revenue?Math.round(((dd.revenue-dd.expenses)/dd.revenue)*100):0}%</span></div>
+      `;
+    }
+  } catch(e){}
+
+  // GST
+  try {
+    var m=new Date().getMonth()+1, y=new Date().getFullYear();
+    var g=await erpApi('/api/gst/summary?month='+m+'&year='+y);
+    if(g.success){
+      document.getElementById('fin-gst').innerHTML=`
+        <div class="stat-row"><span>Output GST (Sales)</span><span style="font-weight:700;">${fmtN(g.data.outputGst||0)}</span></div>
+        <div class="stat-row"><span>Input GST (ITC)</span><span style="font-weight:700;color:var(--green);">(${fmtN(g.data.inputGst||0)})</span></div>
+        <div class="stat-row" style="border-top:2px solid var(--border);padding-top:10px;"><span style="font-weight:700;">Net GST Payable</span><span style="font-weight:800;color:var(--red);">${fmtN(g.data.netPayable||0)}</span></div>
+        <div style="margin-top:10px;padding:8px 12px;background:rgba(230,51,41,.05);border-radius:8px;font-size:11px;color:var(--red);font-weight:600;">⚠️ Due by 20th of next month</div>
+      `;
+    }
+  } catch(e){ document.getElementById('fin-gst').innerHTML='<div class="em">GST data unavailable</div>'; }
+
+  // Expense chart
+  try {
+    var ctx=document.getElementById('expense-chart').getContext('2d');
+    if(charts.expense) charts.expense.destroy();
+    charts.expense=new Chart(ctx,{
+      type:'doughnut',
+      data:{
+        labels:['Salaries','Rent','Utilities','Marketing','Software','Others'],
+        datasets:[{data:[45,20,8,12,8,7],backgroundColor:['#0D1B3E','#00C2A8','#805AD5','#DD6B20','#38A169','#718096']}]
+      },
+      options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'right'}}}
+    });
+  } catch(e){}
+
+  // Recent invoices
+  try {
+    var inv=await erpApi('/api/invoices?limit=5');
+    if(inv.success && inv.data){
+      var rows=inv.data.slice(0,5);
+      document.getElementById('fin-invoices').innerHTML=rows.length?`
+        <table><thead><tr><th>Invoice</th><th>Party</th><th>Amount</th><th>Status</th></tr></thead>
+        <tbody>${rows.map(function(r){return`<tr>
+          <td style="font-weight:600;">${r.invoice_no||r.bill_no||'—'}</td>
+          <td>${r.party_name||'—'}</td>
+          <td style="font-weight:700;">${fmtN(r.total||0)}</td>
+          <td><span class="b ${r.status==='Paid'?'bg':r.status==='Overdue'?'br':'by'}">${r.status||'Draft'}</span></td>
+        </tr>`;}).join('')}</tbody></table>`:'<div class="em">No invoices</div>';
+    }
+  } catch(e){ document.getElementById('fin-invoices').innerHTML='<div class="em">Unavailable</div>'; }
+}
+
+// ── HRMS ──────────────────────────────────
+async function loadHRMS(){
+  try {
+    var s=await hrApi('/api/dashboard/stats');
+    if(s.success){
+      var d=s.data;
+      document.getElementById('hr-kpis').innerHTML=`
+        <div class="kpi-card" style="--kc:rgba(0,194,168,.06)"><div class="kpi-icon">👥</div><div class="kpi-val">${d.totalEmployees||0}</div><div class="kpi-label">Total Employees</div></div>
+        <div class="kpi-card" style="--kc:rgba(56,161,105,.06)"><div class="kpi-icon">✅</div><div class="kpi-val">${d.presentToday||0}</div><div class="kpi-label">Present Today</div></div>
+        <div class="kpi-card" style="--kc:rgba(221,107,32,.06)"><div class="kpi-icon">🏖</div><div class="kpi-val">${d.onLeave||0}</div><div class="kpi-label">On Leave</div></div>
+        <div class="kpi-card" style="--kc:rgba(230,51,41,.06)"><div class="kpi-icon">📋</div><div class="kpi-val">${d.pendingLeaves||0}</div><div class="kpi-label">Leave Requests</div></div>
+      `;
+    }
+  } catch(e){ document.getElementById('hr-kpis').innerHTML='<div class="em">HR data unavailable — check hrapi.paype.co.in</div>'; }
+
+  try {
+    var emp=await hrApi('/api/employees');
+    var emps=emp.data||[];
+    if(Array.isArray(emps)){
+      document.getElementById('hr-employees').innerHTML=emps.length?`
+        <table><thead><tr><th>ID</th><th>Name</th><th>Role</th><th>Department</th><th>Status</th></tr></thead>
+        <tbody>${emps.map(function(e){return`<tr>
+          <td style="font-weight:700;color:var(--teal);">${e.employee_id||'—'}</td>
+          <td style="font-weight:600;">${e.first_name} ${e.last_name}</td>
+          <td>${e.designation||e.role||'—'}</td>
+          <td>${e.department_name||'—'}</td>
+          <td><span class="b bg">Active</span></td>
+        </tr>`;}).join('')}</tbody></table>`:'<div class="em">No employees</div>';
+    }
+  } catch(e){ document.getElementById('hr-employees').innerHTML='<div class="em">Unavailable</div>'; }
+
+  try {
+    var att=await hrApi('/api/attendance/today');
+    var at=att.data||[];
+    document.getElementById('hr-attendance').innerHTML=at.length?`
+      <table><thead><tr><th>Employee</th><th>Punch In</th><th>Punch Out</th><th>Status</th></tr></thead>
+      <tbody>${at.slice(0,5).map(function(a){return`<tr>
+        <td>${a.employee_name||'—'}</td>
+        <td>${a.punch_in?new Date(a.punch_in).toLocaleTimeString('en-IN',{hour:'2-digit',minute:'2-digit'}):'—'}</td>
+        <td>${a.punch_out?new Date(a.punch_out).toLocaleTimeString('en-IN',{hour:'2-digit',minute:'2-digit'}):'—'}</td>
+        <td><span class="b ${a.status==='Present'?'bg':'by'}">${a.status||'Present'}</span></td>
+      </tr>`;}).join('')}</tbody></table>`:'<div class="em">No attendance data today</div>';
+  } catch(e){ document.getElementById('hr-attendance').innerHTML='<div class="em">Unavailable</div>'; }
+
+  try {
+    var lv=await hrApi('/api/leave/requests');
+    var lvs=lv.data||[];
+    document.getElementById('hr-leaves').innerHTML=lvs.length?`
+      <table><thead><tr><th>Employee</th><th>Type</th><th>From</th><th>To</th><th>Status</th></tr></thead>
+      <tbody>${lvs.slice(0,5).map(function(l){return`<tr>
+        <td>${l.employee_name||'—'}</td>
+        <td>${l.leave_type||'—'}</td>
+        <td>${l.from_date?new Date(l.from_date).toLocaleDateString('en-IN'):'—'}</td>
+        <td>${l.to_date?new Date(l.to_date).toLocaleDateString('en-IN'):'—'}</td>
+        <td><span class="b ${l.status==='Approved'?'bg':l.status==='Rejected'?'br':'by'}">${l.status||'Pending'}</span></td>
+      </tr>`;}).join('')}</tbody></table>`:'<div class="em">No leave requests</div>';
+  } catch(e){ document.getElementById('hr-leaves').innerHTML='<div class="em">Unavailable</div>'; }
+
+  var m=new Date().getMonth()+1, y=new Date().getFullYear();
+  document.getElementById('hr-payroll').innerHTML=`
+    <div class="stat-row"><span>Month</span><span style="font-weight:700;">${new Date().toLocaleString('en-IN',{month:'long'})} ${y}</span></div>
+    <div class="stat-row"><span>Status</span><span class="b by">Not Run</span></div>
+    <div style="margin-top:10px;"><a href="https://hr.paype.co.in" target="_blank" class="btn btp" style="font-size:11px;">Run Payroll →</a></div>
+  `;
+}
+
+// ── SALES & CRM ───────────────────────────
+async function loadSales(){
+  try {
+    var d=await erpApi('/api/crm/dashboard');
+    if(d.success){
+      var dd=d.data;
+      document.getElementById('crm-kpis').innerHTML=`
+        <div class="kpi-card" style="--kc:rgba(0,194,168,.06)"><div class="kpi-icon">🎯</div><div class="kpi-val">${dd.totalLeads||0}</div><div class="kpi-label">Total Leads</div></div>
+        <div class="kpi-card" style="--kc:rgba(56,161,105,.06)"><div class="kpi-icon">✅</div><div class="kpi-val">${dd.wonLeads||0}</div><div class="kpi-label">Won Deals</div></div>
+        <div class="kpi-card" style="--kc:rgba(221,107,32,.06)"><div class="kpi-icon">🔥</div><div class="kpi-val">${dd.hotLeads||0}</div><div class="kpi-label">Hot Leads</div></div>
+        <div class="kpi-card" style="--kc:rgba(128,90,213,.06)"><div class="kpi-icon">💰</div><div class="kpi-val">${fmtN(dd.pipelineValue||0)}</div><div class="kpi-label">Pipeline Value</div></div>
+      `;
+    }
+  } catch(e){ document.getElementById('crm-kpis').innerHTML=''; }
+
+  // Pipeline by stage
+  try {
+    var ctx=document.getElementById('pipeline-chart').getContext('2d');
+    if(charts.pipeline) charts.pipeline.destroy();
+    charts.pipeline=new Chart(ctx,{
+      type:'bar',
+      data:{
+        labels:['New','Contacted','Qualified','Proposal','Negotiation','Won','Lost'],
+        datasets:[{label:'Leads',data:[12,8,6,5,3,4,2],backgroundColor:['#63B3ED','#00C2A8','#805AD5','#DD6B20','#F6AD55','#38A169','#E63329']}]
+      },
+      options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}}}
+    });
+  } catch(e){}
+
+  // Pipeline table
+  document.getElementById('crm-pipeline').innerHTML=`
+    <div class="stat-row"><span>New Leads</span><span class="b bt">12</span></div>
+    <div class="stat-row"><span>Contacted</span><span class="b bp">8</span></div>
+    <div class="stat-row"><span>Qualified</span><span class="b bo">6</span></div>
+    <div class="stat-row"><span>Proposal Sent</span><span class="b by">5</span></div>
+    <div class="stat-row"><span>Won This Month</span><span class="b bg">4</span></div>
+    <div style="margin-top:10px;"><div style="font-size:11px;color:var(--gray);margin-bottom:4px;">Conversion Rate</div>
+    <div class="progress"><div class="progress-fill" style="width:28%;background:var(--green);"></div></div>
+    <div style="font-size:11px;font-weight:700;color:var(--green);margin-top:4px;">28% → 4 deals won</div></div>
+  `;
+
+  // Recent leads
+  try {
+    var leads=await erpApi('/api/crm/leads?limit=5');
+    if(leads.success && leads.data){
+      document.getElementById('crm-leads').innerHTML=leads.data.length?`
+        <table><thead><tr><th>Lead</th><th>Company</th><th>Value</th><th>Stage</th><th>Assigned To</th></tr></thead>
+        <tbody>${leads.data.map(function(l){return`<tr>
+          <td style="font-weight:600;">${l.name||'—'}</td>
+          <td>${l.company||'—'}</td>
+          <td style="font-weight:700;">${fmtN(l.value||0)}</td>
+          <td><span class="b bt">${l.stage||'New'}</span></td>
+          <td>${l.assigned_to_name||'—'}</td>
+        </tr>`;}).join('')}</tbody></table>`:'<div class="em">No leads yet</div>';
+    }
+  } catch(e){ document.getElementById('crm-leads').innerHTML='<div class="em">CRM data unavailable</div>'; }
+}
+
+// ── INVENTORY ─────────────────────────────
+async function loadInventory(){
+  try {
+    var d=await erpApi('/api/products?limit=100');
+    var prods=d.data||[];
+    var totalVal=prods.reduce(function(s,p){return s+(p.stock||0)*(p.sell_price||0);},0);
+    var lowStock=prods.filter(function(p){return (p.stock||0)<=(p.min_stock||5);});
+    document.getElementById('inv-kpis').innerHTML=`
+      <div class="kpi-card" style="--kc:rgba(0,194,168,.06)"><div class="kpi-icon">📦</div><div class="kpi-val">${prods.length}</div><div class="kpi-label">Total Products</div></div>
+      <div class="kpi-card" style="--kc:rgba(230,51,41,.06)"><div class="kpi-icon">⚠️</div><div class="kpi-val" style="color:var(--red);">${lowStock.length}</div><div class="kpi-label">Low Stock Items</div></div>
+      <div class="kpi-card" style="--kc:rgba(56,161,105,.06)"><div class="kpi-icon">💰</div><div class="kpi-val">${fmtN(totalVal)}</div><div class="kpi-label">Total Stock Value</div></div>
+      <div class="kpi-card" style="--kc:rgba(128,90,213,.06)"><div class="kpi-icon">✅</div><div class="kpi-val">${prods.filter(function(p){return(p.stock||0)>0;}).length}</div><div class="kpi-label">In Stock Products</div></div>
+    `;
+    document.getElementById('inv-lowstock').innerHTML=lowStock.length?`
+      <table><thead><tr><th>Product</th><th>Current Stock</th><th>Min Stock</th><th>Action</th></tr></thead>
+      <tbody>${lowStock.slice(0,8).map(function(p){return`<tr>
+        <td style="font-weight:600;">${p.name}</td>
+        <td style="color:var(--red);font-weight:700;">${p.stock||0} ${p.unit||''}</td>
+        <td>${p.min_stock||5}</td>
+        <td><span class="b br">Reorder Now</span></td>
+      </tr>`;}).join('')}</tbody></table>`:'<div class="em">✅ All products well stocked!</div>';
+    var topProds=[...prods].sort(function(a,b){return ((b.stock||0)*(b.sell_price||0))-((a.stock||0)*(a.sell_price||0));}).slice(0,5);
+    document.getElementById('inv-products').innerHTML=topProds.length?`
+      <table><thead><tr><th>Product</th><th>Stock</th><th>Price</th><th>Value</th></tr></thead>
+      <tbody>${topProds.map(function(p){return`<tr>
+        <td style="font-weight:600;">${p.name}</td>
+        <td>${p.stock||0} ${p.unit||''}</td>
+        <td>${fmt(p.sell_price||0)}</td>
+        <td style="font-weight:700;">${fmtN((p.stock||0)*(p.sell_price||0))}</td>
+      </tr>`;}).join('')}</tbody></table>`:'<div class="em">No products</div>';
+  } catch(e){ document.getElementById('inv-kpis').innerHTML='<div class="em">Inventory data unavailable</div>'; }
+}
+
+// ── PROCUREMENT ───────────────────────────
+async function loadProcurement(){
+  try {
+    var d=await erpApi('/api/procurement/dashboard');
+    if(d.success){
+      var dd=d.data;
+      document.getElementById('proc-kpis').innerHTML=`
+        <div class="kpi-card" style="--kc:rgba(221,107,32,.06)"><div class="kpi-icon">🏪</div><div class="kpi-val">${dd.vendors?.active||0}</div><div class="kpi-label">Active Vendors</div></div>
+        <div class="kpi-card" style="--kc:rgba(0,194,168,.06)"><div class="kpi-icon">📋</div><div class="kpi-val">${dd.rfqs?.open||0}</div><div class="kpi-label">Open RFQs</div></div>
+        <div class="kpi-card" style="--kc:rgba(230,51,41,.06)"><div class="kpi-icon">⏳</div><div class="kpi-val" style="color:var(--red);">${dd.approvals?.pending||0}</div><div class="kpi-label">Pending Approvals</div></div>
+        <div class="kpi-card" style="--kc:rgba(56,161,105,.06)"><div class="kpi-icon">💳</div><div class="kpi-val">${fmtN(dd.totalPayments||0)}</div><div class="kpi-label">Total Payments</div></div>
+      `;
+    }
+  } catch(e){ document.getElementById('proc-kpis').innerHTML=''; }
+
+  try {
+    var v=await erpApi('/api/procurement/vendors');
+    var vs=v.data||[];
+    document.getElementById('proc-vendors').innerHTML=vs.length?`
+      <table><thead><tr><th>Vendor</th><th>Category</th><th>POs</th><th>Rating</th></tr></thead>
+      <tbody>${vs.slice(0,5).map(function(v){return`<tr>
+        <td style="font-weight:600;">${v.name}</td>
+        <td><span class="b bn">${v.category||'General'}</span></td>
+        <td>${v.po_count||0}</td>
+        <td style="color:#F6AD55;">${'★'.repeat(Math.round(v.rating||5))}</td>
+      </tr>`;}).join('')}</tbody></table>`:'<div class="em">No vendors yet</div>';
+  } catch(e){ document.getElementById('proc-vendors').innerHTML='<div class="em">Unavailable</div>'; }
+
+  try {
+    var ap=await erpApi('/api/procurement/approvals');
+    var pending=(ap.data||[]).filter(function(a){return a.status==='Pending';});
+    document.getElementById('proc-approvals').innerHTML=pending.length?`
+      <table><thead><tr><th>PO</th><th>Amount</th><th>By</th><th>Status</th></tr></thead>
+      <tbody>${pending.map(function(a){return`<tr>
+        <td>${a.po_no||'—'}</td>
+        <td style="font-weight:700;">${fmtN(a.amount||0)}</td>
+        <td>${a.requested_by_name||'—'}</td>
+        <td><span class="b by">Pending</span></td>
+      </tr>`;}).join('')}</tbody></table>`:'<div class="em">✅ No pending approvals</div>';
+  } catch(e){ document.getElementById('proc-approvals').innerHTML='<div class="em">Unavailable</div>'; }
+}
+
+// ── ALL MODULES ───────────────────────────
+function loadModules(){
+  var mods=[
+    {icon:'📊',name:'Accounting',url:'https://erp.paype.co.in',desc:'Journal entries, GST, TDS, reports',color:'rgba(0,194,168,.1)'},
+    {icon:'👥',name:'HRMS',url:'https://hr.paype.co.in',desc:'Employees, payroll, attendance, leaves',color:'rgba(128,90,213,.1)'},
+    {icon:'📦',name:'Inventory & CRM',url:'https://doctorramesh5-ops.github.io/paype-erp/inventory.html',desc:'Stock, orders, leads, pipeline',color:'rgba(221,107,32,.1)'},
+    {icon:'🤖',name:'AI Assistant',url:'https://doctorramesh5-ops.github.io/paype-erp/ai.html',desc:'AI bookkeeping, GST, email, insights',color:'rgba(128,90,213,.1)'},
+    {icon:'🛒',name:'Procurement',url:'paype_procurement.html',desc:'Vendors, RFQ, GRN, payments',color:'rgba(56,161,105,.1)'},
+    {icon:'👑',name:'CEO Dashboard',url:'#',desc:'You are here!',color:'rgba(13,27,62,.06)'},
+  ];
+  document.getElementById('all-modules').innerHTML=mods.map(function(m){return`
+    <div class="mod-status-card">
+      <div class="mod-status-icon" style="background:${m.color};">${m.icon}</div>
+      <div>
+        <div class="mod-status-name">${m.name}</div>
+        <div class="mod-status-url">${m.desc}</div>
+      </div>
+      <div class="mod-status-live">
+        <div class="live-dot"></div>
+        <a href="${m.url}" target="_blank" style="color:var(--green);text-decoration:none;">Live →</a>
+      </div>
+    </div>
+  `;}).join('');
+}
+
+function refreshAll(){
+  var active=document.querySelector('.mod-tab.on');
+  if(active) active.click();
+}
+
+
+// ── CEO PROFILE ───────────────────────────
+function loadCEOProfile() {
+  var c = document.getElementById('profile-content');
+  var initials = (USER?.name||'R').split(' ').map(function(w){return w[0];}).join('').toUpperCase().slice(0,2);
+  var h = '';
+
+  // Header card
+  h += '<div class="card" style="margin-bottom:14px;">';
+  h += '<div style="background:linear-gradient(135deg,#0D1B3E,#1a1a4e,#2d1b69);padding:28px;border-radius:13px 13px 0 0;display:flex;align-items:center;gap:20px;position:relative;overflow:hidden;">';
+  h += '<div style="position:absolute;top:-30px;right:-30px;width:180px;height:180px;border-radius:50%;background:rgba(0,194,168,.1);pointer-events:none;"></div>';
+  h += '<div id="ceo-avatar-disp" style="width:72px;height:72px;border-radius:50%;background:linear-gradient(135deg,var(--teal),var(--purple));display:flex;align-items:center;justify-content:center;font-family:Syne,sans-serif;font-size:26px;font-weight:800;color:white;flex-shrink:0;border:3px solid rgba(255,255,255,.2);position:relative;z-index:1;">'+initials+'</div>';
+  h += '<div style="position:relative;z-index:1;"><div style="font-family:Syne,sans-serif;font-size:20px;font-weight:800;color:white;">'+(USER?.name||'CEO')+'</div>';
+  h += '<div style="font-size:12px;color:rgba(255,255,255,.5);margin-top:2px;">'+(USER?.email||'admin@paype.co.in')+'</div>';
+  h += '<div style="margin-top:8px;display:inline-flex;align-items:center;gap:6px;padding:3px 12px;border-radius:20px;font-size:11px;font-weight:700;background:rgba(255,255,255,.1);color:white;">👑 CEO — Full Access</div></div>';
+  h += '<div style="margin-left:auto;text-align:right;position:relative;z-index:1;">';
+  h += '<div style="font-size:10px;color:rgba(255,255,255,.4);">COMPANY</div>';
+  h += '<div style="font-size:13px;font-weight:700;color:white;">'+(USER?.company||'PayPe Technologies')+'</div>';
+  h += '<div style="font-size:11px;color:rgba(255,255,255,.4);margin-top:2px;">FY 2026-27</div></div></div>';
+
+  // Avatar colours
+  h += '<div class="cb"><div style="font-size:11px;font-weight:700;color:var(--gray);text-transform:uppercase;margin-bottom:8px;">Avatar Colour</div><div style="display:flex;gap:8px;flex-wrap:wrap;">';
+  ['#0D1B3E','#00C2A8','#805AD5','#E63329','#DD6B20','#38A169','#3182CE','#D53F8C','#1A202C'].forEach(function(clr,i){
+    h += '<div onclick="setCEOAvatar('+i+')" style="width:32px;height:32px;border-radius:50%;background:'+clr+';cursor:pointer;border:3px solid transparent;transition:.15s;" title="'+clr+'"></div>';
+  });
+  h += '</div></div></div>';
+
+  // Edit form + change password
+  h += '<div class="g2">';
+  h += '<div class="card"><div class="ch"><div class="ct">Personal Information</div></div><div class="cb">';
+  h += '<div style="display:flex;flex-direction:column;gap:5px;margin-bottom:12px;"><label style="font-size:11px;font-weight:700;color:var(--gray);text-transform:uppercase;">Full Name</label><input id="ceo-prof-name" value="'+(USER?.name||'')+'" style="border:1.5px solid var(--border);border-radius:8px;padding:9px 12px;font-family:inherit;font-size:13px;outline:none;"></div>';
+  h += '<div style="display:flex;flex-direction:column;gap:5px;margin-bottom:12px;"><label style="font-size:11px;font-weight:700;color:var(--gray);text-transform:uppercase;">Email</label><input value="'+(USER?.email||'')+'" readonly style="border:1.5px solid var(--border);border-radius:8px;padding:9px 12px;font-family:inherit;font-size:13px;background:var(--bg);"></div>';
+  h += '<div style="display:flex;flex-direction:column;gap:5px;margin-bottom:12px;"><label style="font-size:11px;font-weight:700;color:var(--gray);text-transform:uppercase;">Mobile</label><input id="ceo-prof-mobile" placeholder="+91 XXXXX XXXXX" style="border:1.5px solid var(--border);border-radius:8px;padding:9px 12px;font-family:inherit;font-size:13px;outline:none;"></div>';
+  h += '<div style="display:flex;flex-direction:column;gap:5px;margin-bottom:12px;"><label style="font-size:11px;font-weight:700;color:var(--gray);text-transform:uppercase;">Designation</label><input id="ceo-prof-desig" value="Founder & CEO" style="border:1.5px solid var(--border);border-radius:8px;padding:9px 12px;font-family:inherit;font-size:13px;outline:none;"></div>';
+  h += '<button onclick="saveCEOProfile()" style="width:100%;padding:10px;background:var(--navy);color:white;border:none;border-radius:8px;font-size:13px;font-weight:700;cursor:pointer;font-family:inherit;">Save Profile</button>';
+  h += '</div></div>';
+
+  h += '<div class="card"><div class="ch"><div class="ct">Change Password</div></div><div class="cb">';
+  h += '<div style="display:flex;flex-direction:column;gap:5px;margin-bottom:12px;"><label style="font-size:11px;font-weight:700;color:var(--gray);text-transform:uppercase;">Current Password</label><input id="ceo-old-pw" type="password" placeholder="Current password" style="border:1.5px solid var(--border);border-radius:8px;padding:9px 12px;font-family:inherit;font-size:13px;outline:none;"></div>';
+  h += '<div style="display:flex;flex-direction:column;gap:5px;margin-bottom:12px;"><label style="font-size:11px;font-weight:700;color:var(--gray);text-transform:uppercase;">New Password</label><input id="ceo-new-pw" type="password" placeholder="Min 8 characters" style="border:1.5px solid var(--border);border-radius:8px;padding:9px 12px;font-family:inherit;font-size:13px;outline:none;"></div>';
+  h += '<div style="display:flex;flex-direction:column;gap:5px;margin-bottom:12px;"><label style="font-size:11px;font-weight:700;color:var(--gray);text-transform:uppercase;">Confirm Password</label><input id="ceo-conf-pw" type="password" placeholder="Re-enter new password" style="border:1.5px solid var(--border);border-radius:8px;padding:9px 12px;font-family:inherit;font-size:13px;outline:none;"></div>';
+  h += '<button onclick="changeCEOPwd()" style="width:100%;padding:10px;background:var(--navy);color:white;border:none;border-radius:8px;font-size:13px;font-weight:700;cursor:pointer;font-family:inherit;">Update Password</button>';
+  h += '</div></div></div>';
+
+  // System info
+  h += '<div class="card"><div class="ch"><div class="ct">ℹ️ System Information</div></div><div class="cb"><div class="g2">';
+  var info = [
+    ['Module','CEO Dashboard v1.0'],['ERP API','erpapi.paype.co.in'],
+    ['HRMS API','hrapi.paype.co.in'],['AI Model','Claude Sonnet 4.6'],
+    ['Role',USER?.role||'admin'],['Company',USER?.company||'PayPe Technologies'],
+    ['Session','Active ✅'],['Last Login',new Date().toLocaleString('en-IN')]
+  ];
+  info.forEach(function(i){
+    h += '<div style="display:flex;flex-direction:column;gap:4px;margin-bottom:10px;"><label style="font-size:10px;font-weight:700;color:var(--gray);text-transform:uppercase;">'+i[0]+'</label><input value="'+i[1]+'" readonly style="border:1.5px solid var(--border);border-radius:8px;padding:8px 11px;font-family:inherit;font-size:12px;background:var(--bg);"></div>';
+  });
+  h += '</div></div></div>';
+  c.innerHTML = h;
+
+  // Apply saved avatar color
+  var ac = localStorage.getItem('ceoAvatarColor');
+  if(ac){ document.getElementById('ceo-avatar-disp').style.background=ac; document.getElementById('tn-avatar').style.background=ac; }
+}
+
+function setCEOAvatar(i){
+  var colors=['#0D1B3E','#00C2A8','#805AD5','#E63329','#DD6B20','#38A169','#3182CE','#D53F8C','#1A202C'];
+  var c=colors[i];
+  document.getElementById('ceo-avatar-disp').style.background=c;
+  document.getElementById('tn-avatar').style.background=c;
+  localStorage.setItem('ceoAvatarColor',c);
+  ceoToast('Avatar updated!','ok');
+}
+function saveCEOProfile(){
+  var name=document.getElementById('ceo-prof-name')?.value.trim();
+  if(name&&USER){USER.name=name;localStorage.setItem('erp_user',JSON.stringify(USER));document.getElementById('tn-name').textContent=name;document.getElementById('tn-avatar').textContent=name.charAt(0).toUpperCase();}
+  ceoToast('Profile saved!','ok');
+}
+function changeCEOPwd(){
+  var np=document.getElementById('ceo-new-pw')?.value, cp=document.getElementById('ceo-conf-pw')?.value;
+  if(!np){ceoToast('Enter new password','err');return;}
+  if(np!==cp){ceoToast('Passwords do not match','err');return;}
+  if(np.length<8){ceoToast('Min 8 characters','err');return;}
+  ceoToast('Password updated!','ok');
+  ['ceo-old-pw','ceo-new-pw','ceo-conf-pw'].forEach(function(id){var e=document.getElementById(id);if(e)e.value='';});
+}
+
+// ── CEO SETTINGS ──────────────────────────
+function loadCEOSettings(){
+  var c = document.getElementById('settings-content');
+  var savedTheme = localStorage.getItem('ceoTheme')||'navy';
+  var h = '';
+
+  // Theme
+  h += '<div class="card" style="margin-bottom:14px;"><div class="ch"><div class="ct">🎨 Dashboard Theme</div></div><div class="cb">';
+  h += '<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(130px,1fr));gap:10px;margin-bottom:16px;">';
+  var themes=[
+    {id:'navy',name:'Navy Blue',p:'#0D1B3E',a:'#00C2A8',icon:'🔵'},
+    {id:'midnight',name:'Midnight',p:'#1A1A2E',a:'#E94560',icon:'🌙'},
+    {id:'purple',name:'Deep Purple',p:'#2D1B69',a:'#9F7AEA',icon:'🟣'},
+    {id:'green',name:'Forest',p:'#1A3D2B',a:'#48BB78',icon:'🌿'},
+    {id:'charcoal',name:'Charcoal',p:'#1A202C',a:'#63B3ED',icon:'⚫'},
+    {id:'crimson',name:'Crimson',p:'#7B1F1F',a:'#FC8181',icon:'🔴'},
+    {id:'ocean',name:'Ocean',p:'#1A365D',a:'#4299E1',icon:'🌊'},
+    {id:'sunset',name:'Sunset',p:'#7B341E',a:'#F6AD55',icon:'🌅'},
+  ];
+  themes.forEach(function(t,ti){
+    var isOn=savedTheme===t.id;
+    h += '<div onclick="applyCEOTheme('+ti+')" style="border-radius:12px;padding:12px;cursor:pointer;border:2px solid '+(isOn?'var(--teal)':'var(--border)')+';text-align:center;background:white;transition:.2s;">';
+    h += '<div style="width:48px;height:48px;border-radius:10px;background:linear-gradient(135deg,'+t.p+','+t.a+');margin:0 auto 8px;display:flex;align-items:center;justify-content:center;font-size:20px;">'+t.icon+'</div>';
+    h += '<div style="font-size:12px;font-weight:700;color:var(--navy);">'+t.name+'</div>';
+    if(isOn) h += '<div style="font-size:10px;color:var(--teal);margin-top:3px;">✓ Active</div>';
+    h += '</div>';
+  });
+  h += '</div></div></div>';
+
+  // Dashboard Config
+  h += '<div class="card" style="margin-bottom:14px;"><div class="ch"><div class="ct">📊 Dashboard Configuration</div></div><div class="cb"><div class="g2">';
+  h += '<div style="display:flex;flex-direction:column;gap:5px;margin-bottom:12px;"><label style="font-size:11px;font-weight:700;color:var(--gray);text-transform:uppercase;">Company Name</label><input id="cfg-company" value="PayPe Technologies Pvt. Ltd." style="border:1.5px solid var(--border);border-radius:8px;padding:9px 12px;font-family:inherit;font-size:13px;outline:none;"></div>';
+  h += '<div style="display:flex;flex-direction:column;gap:5px;margin-bottom:12px;"><label style="font-size:11px;font-weight:700;color:var(--gray);text-transform:uppercase;">Financial Year</label><select id="cfg-fy" style="border:1.5px solid var(--border);border-radius:8px;padding:9px 12px;font-family:inherit;font-size:13px;"><option selected>2026-27</option><option>2025-26</option></select></div>';
+  h += '<div style="display:flex;flex-direction:column;gap:5px;margin-bottom:12px;"><label style="font-size:11px;font-weight:700;color:var(--gray);text-transform:uppercase;">Currency</label><select style="border:1.5px solid var(--border);border-radius:8px;padding:9px 12px;font-family:inherit;font-size:13px;"><option selected>INR (₹)</option><option>USD ($)</option></select></div>';
+  h += '<div style="display:flex;flex-direction:column;gap:5px;margin-bottom:12px;"><label style="font-size:11px;font-weight:700;color:var(--gray);text-transform:uppercase;">Auto Refresh</label><select id="cfg-refresh" style="border:1.5px solid var(--border);border-radius:8px;padding:9px 12px;font-family:inherit;font-size:13px;"><option value="0">Manual Only</option><option value="60">Every 1 minute</option><option value="300" selected>Every 5 minutes</option><option value="600">Every 10 minutes</option></select></div>';
+  h += '</div><button onclick="saveCEOConfig()" style="padding:9px 18px;background:var(--navy);color:white;border:none;border-radius:8px;font-size:12px;font-weight:700;cursor:pointer;font-family:inherit;">Save Config</button>';
+  h += '</div></div>';
+
+  // Widget toggles
+  h += '<div class="card" style="margin-bottom:14px;"><div class="ch"><div class="ct">🔧 Dashboard Widgets</div></div><div class="cb"><div class="g2">';
+  var widgets=[
+    {id:'w-finance',label:'Finance Overview',desc:'Revenue, expenses, P&L'},
+    {id:'w-hrms',label:'HR Summary',desc:'Employees, attendance'},
+    {id:'w-crm',label:'Sales Pipeline',desc:'Leads and deals'},
+    {id:'w-inventory',label:'Inventory Alerts',desc:'Low stock warnings'},
+    {id:'w-procurement',label:'Procurement Status',desc:'Vendors and approvals'},
+    {id:'w-actions',label:'Action Items',desc:'GST dues, overdue invoices'},
+  ];
+  widgets.forEach(function(w){
+    h += '<div style="display:flex;align-items:center;justify-content:space-between;padding:10px 12px;background:var(--bg);border-radius:8px;margin-bottom:6px;">';
+    h += '<div><div style="font-weight:600;font-size:12px;">'+w.label+'</div><div style="font-size:11px;color:var(--gray);">'+w.desc+'</div></div>';
+    h += '<input type="checkbox" id="'+w.id+'" checked style="accent-color:var(--teal);width:16px;height:16px;cursor:pointer;"></div>';
+  });
+  h += '</div></div></div>';
+
+  // Notification settings
+  h += '<div class="card" style="margin-bottom:14px;"><div class="ch"><div class="ct">🔔 Alerts & Notifications</div></div><div class="cb"><div class="g2">';
+  var notifs=[
+    {id:'n-gst',label:'GST Due Reminders',desc:'Alert before filing dates',def:true},
+    {id:'n-ar',label:'Overdue AR Alerts',desc:'Alert on overdue invoices',def:true},
+    {id:'n-leave',label:'Leave Approvals',desc:'Alert on pending leaves',def:true},
+    {id:'n-stock',label:'Low Stock Alerts',desc:'Alert when stock is low',def:true},
+    {id:'n-approval',label:'Purchase Approvals',desc:'Alert on pending POs',def:false},
+    {id:'n-payroll',label:'Payroll Reminders',desc:'Alert before payroll date',def:true},
+  ];
+  notifs.forEach(function(n){
+    h += '<div style="display:flex;align-items:center;justify-content:space-between;padding:10px 12px;background:var(--bg);border-radius:8px;margin-bottom:6px;">';
+    h += '<div><div style="font-weight:600;font-size:12px;">'+n.label+'</div><div style="font-size:11px;color:var(--gray);">'+n.desc+'</div></div>';
+    h += '<input type="checkbox" id="'+n.id+'" '+(n.def?'checked':'')+' style="accent-color:var(--teal);width:16px;height:16px;cursor:pointer;"></div>';
+  });
+  h += '</div></div></div>';
+
+  // Clear & logout
+  h += '<div class="card"><div class="ch"><div class="ct">⚠️ Account Actions</div></div><div class="cb"><div style="display:flex;gap:8px;flex-wrap:wrap;">';
+  h += '<button onclick="ceoClearCache()" style="padding:9px 16px;background:var(--bg);border:1px solid var(--border);color:var(--navy);border-radius:8px;font-size:12px;font-weight:600;cursor:pointer;font-family:inherit;">🗑 Clear Cache</button>';
+  h += '<button onclick="ceoRefreshAll()" style="padding:9px 16px;background:var(--bg);border:1px solid var(--border);color:var(--navy);border-radius:8px;font-size:12px;font-weight:600;cursor:pointer;font-family:inherit;">🔄 Refresh All Data</button>';
+  h += '<button onclick="doLogout()" style="padding:9px 16px;background:rgba(230,51,41,.1);border:1px solid rgba(230,51,41,.2);color:var(--red);border-radius:8px;font-size:12px;font-weight:600;cursor:pointer;font-family:inherit;">🚪 Sign Out</button>';
+  h += '</div></div></div>';
+
+  c.innerHTML = h;
+  // Apply saved colors
+  var ac=localStorage.getItem('ceoAvatarColor');
+  if(ac) document.getElementById('tn-avatar').style.background=ac;
+}
+
+var ceoThemes=[
+  {id:'navy',p:'#0D1B3E',a:'#00C2A8'},{id:'midnight',p:'#1A1A2E',a:'#E94560'},
+  {id:'purple',p:'#2D1B69',a:'#9F7AEA'},{id:'green',p:'#1A3D2B',a:'#48BB78'},
+  {id:'charcoal',p:'#1A202C',a:'#63B3ED'},{id:'crimson',p:'#7B1F1F',a:'#FC8181'},
+  {id:'ocean',p:'#1A365D',a:'#4299E1'},{id:'sunset',p:'#7B341E',a:'#F6AD55'}
+];
+function applyCEOTheme(ti){
+  var t=ceoThemes[ti]||ceoThemes[0];
+  document.documentElement.style.setProperty('--navy',t.p);
+  document.documentElement.style.setProperty('--teal',t.a);
+  localStorage.setItem('ceoTheme',t.id);
+  localStorage.setItem('ceoThemeP',t.p);
+  localStorage.setItem('ceoThemeA',t.a);
+  ceoToast('Theme applied! 🎨','ok');
+  loadCEOSettings();
+}
+function saveCEOConfig(){ ceoToast('Configuration saved!','ok'); }
+
+// Toast for CEO
+function ceoToast(msg,type){
+  var existing=document.getElementById('ceo-toast');
+  if(!existing){var td=document.createElement('div');td.id='ceo-toast';td.style.cssText='position:fixed;bottom:20px;right:20px;z-index:9999;display:flex;flex-direction:column;gap:6px;';document.body.appendChild(td);existing=td;}
+  var t=document.createElement('div');
+  t.style.cssText='padding:10px 16px;border-radius:10px;font-size:12px;font-weight:600;box-shadow:0 4px 16px rgba(0,0,0,.2);color:white;animation:sIn .3s ease;background:'+(type==='ok'?'#38A169':type==='err'?'#E63329':'#0D1B3E');
+  t.textContent=msg;
+  existing.appendChild(t);
+  setTimeout(function(){t.remove();},3000);
+}
+
+function ceoClearCache(){localStorage.removeItem("ceoTheme");localStorage.removeItem("ceoThemeP");localStorage.removeItem("ceoThemeA");localStorage.removeItem("ceoAvatarColor");ceoToast("Cache cleared!","ok");}
+function ceoRefreshAll(){refreshAll();ceoToast("Dashboard refreshed!","ok");}
+
+// Apply saved theme on load
+(function(){
+  var p=localStorage.getItem('ceoThemeP'), a=localStorage.getItem('ceoThemeA'), ac=localStorage.getItem('ceoAvatarColor');
+  if(p) document.documentElement.style.setProperty('--navy',p);
+  if(a) document.documentElement.style.setProperty('--teal',a);
+  if(ac) { var av=document.getElementById('tn-avatar'); if(av) av.style.background=ac; }
+})();
+
+if(TOKEN&&USER) startApp();
+</script>
+<script src="paype-chatbot.js"></script>
+</body>
+</html>

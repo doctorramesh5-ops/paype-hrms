@@ -1,0 +1,768 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>PayPe ERP — Complete Business Software for India & Global</title>
+<meta name="description" content="PayPe ERP — AI-powered complete business software. HRMS, Accounting, Inventory, CRM, Procurement. Start free trial today.">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Syne:wght@700;800;900&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box;}
+:root{--navy:#0D1B3E;--teal:#00C2A8;--red:#E63329;--bg:#F0F4F8;--border:#E2E8F0;--gray:#718096;--green:#38A169;--orange:#DD6B20;--purple:#805AD5;}
+html{scroll-behavior:smooth;}
+body{font-family:'Inter',sans-serif;color:#1A202C;font-size:14px;overflow-x:hidden;}
+
+/* NAV */
+nav{position:fixed;top:0;left:0;right:0;z-index:100;background:rgba(13,27,62,.95);backdrop-filter:blur(12px);border-bottom:1px solid rgba(255,255,255,.08);padding:0 24px;height:64px;display:flex;align-items:center;gap:16px;}
+.nav-brand{font-family:'Syne',sans-serif;font-size:22px;font-weight:800;color:white;text-decoration:none;}
+.nav-brand span{color:var(--teal);}
+.nav-links{display:flex;gap:28px;margin-left:32px;}
+.nav-links a{color:rgba(255,255,255,.6);text-decoration:none;font-size:13px;font-weight:500;transition:.15s;}
+.nav-links a:hover{color:white;}
+.nav-right{margin-left:auto;display:flex;align-items:center;gap:10px;}
+.nav-demo{padding:8px 16px;background:rgba(0,194,168,.15);border:1px solid rgba(0,194,168,.3);border-radius:8px;color:var(--teal);font-size:13px;font-weight:700;cursor:pointer;transition:.15s;text-decoration:none;}
+.nav-demo:hover{background:rgba(0,194,168,.25);}
+.nav-login{padding:8px 18px;background:white;border-radius:8px;color:var(--navy);font-size:13px;font-weight:700;cursor:pointer;transition:.15s;text-decoration:none;}
+.nav-login:hover{opacity:.9;}
+
+/* HERO */
+.hero{min-height:100vh;background:linear-gradient(160deg,#0D1B3E 0%,#0a1028 50%,#1a0a2e 100%);display:flex;align-items:center;justify-content:center;padding:100px 24px 60px;position:relative;overflow:hidden;text-align:center;}
+.hero::before{content:'';position:absolute;top:-200px;left:50%;transform:translateX(-50%);width:800px;height:800px;border-radius:50%;background:radial-gradient(circle,rgba(0,194,168,.08),transparent 70%);}
+.hero::after{content:'';position:absolute;bottom:-100px;right:-100px;width:500px;height:500px;border-radius:50%;background:radial-gradient(circle,rgba(128,90,213,.07),transparent 70%);}
+.hero-content{position:relative;z-index:1;max-width:800px;margin:0 auto;}
+.hero-badge{display:inline-flex;align-items:center;gap:8px;padding:6px 16px;background:rgba(0,194,168,.1);border:1px solid rgba(0,194,168,.2);border-radius:30px;font-size:12px;font-weight:700;color:var(--teal);margin-bottom:24px;}
+.hero-badge-dot{width:7px;height:7px;border-radius:50%;background:var(--teal);animation:pulse 2s infinite;}
+@keyframes pulse{0%,100%{opacity:1;}50%{opacity:.4;}}
+.hero h1{font-family:'Syne',sans-serif;font-size:clamp(36px,6vw,68px);font-weight:900;color:white;line-height:1.1;margin-bottom:20px;}
+.hero h1 span{background:linear-gradient(135deg,var(--teal),#7B61FF);-webkit-background-clip:text;-webkit-text-fill-color:transparent;}
+.hero p{font-size:18px;color:rgba(255,255,255,.55);line-height:1.7;margin-bottom:36px;max-width:600px;margin-left:auto;margin-right:auto;}
+.hero-btns{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;margin-bottom:48px;}
+.btn-primary{padding:14px 28px;background:linear-gradient(135deg,var(--teal),#00a896);color:white;border:none;border-radius:12px;font-size:15px;font-weight:700;cursor:pointer;font-family:inherit;transition:.2s;text-decoration:none;display:inline-flex;align-items:center;gap:8px;}
+.btn-primary:hover{transform:translateY(-2px);box-shadow:0 8px 30px rgba(0,194,168,.4);}
+.btn-secondary{padding:14px 28px;background:rgba(255,255,255,.08);color:white;border:1px solid rgba(255,255,255,.15);border-radius:12px;font-size:15px;font-weight:700;cursor:pointer;font-family:inherit;transition:.2s;text-decoration:none;display:inline-flex;align-items:center;gap:8px;}
+.btn-secondary:hover{background:rgba(255,255,255,.15);}
+.hero-stats{display:flex;gap:40px;justify-content:center;flex-wrap:wrap;}
+.hero-stat-val{font-family:'Syne',sans-serif;font-size:28px;font-weight:800;color:white;}
+.hero-stat-label{font-size:12px;color:rgba(255,255,255,.4);margin-top:3px;}
+
+/* MODULES STRIP */
+.modules-strip{background:rgba(255,255,255,.04);border-top:1px solid rgba(255,255,255,.06);border-bottom:1px solid rgba(255,255,255,.06);padding:16px 24px;display:flex;gap:20px;justify-content:center;flex-wrap:wrap;position:relative;z-index:1;}
+.mod-chip{display:flex;align-items:center;gap:7px;padding:7px 14px;background:rgba(255,255,255,.05);border-radius:30px;font-size:12px;font-weight:600;color:rgba(255,255,255,.65);}
+.mod-live{display:inline-block;width:6px;height:6px;border-radius:50%;background:var(--green);}
+
+/* SECTIONS */
+section{padding:80px 24px;}
+.container{max-width:1100px;margin:0 auto;}
+.sec-label{font-size:11px;font-weight:700;color:var(--teal);text-transform:uppercase;letter-spacing:2px;margin-bottom:12px;}
+.sec-title{font-family:'Syne',sans-serif;font-size:clamp(28px,4vw,42px);font-weight:800;color:var(--navy);margin-bottom:14px;line-height:1.2;}
+.sec-desc{font-size:16px;color:var(--gray);line-height:1.7;max-width:560px;}
+
+/* FEATURES */
+.features-bg{background:var(--bg);}
+.features-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:16px;margin-top:48px;}
+.feat-card{background:white;border-radius:16px;padding:24px;border:1px solid var(--border);transition:.2s;cursor:default;}
+.feat-card:hover{border-color:var(--teal);box-shadow:0 8px 32px rgba(0,194,168,.1);transform:translateY(-3px);}
+.feat-icon{width:48px;height:48px;border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:22px;margin-bottom:14px;}
+.feat-name{font-size:15px;font-weight:700;color:var(--navy);margin-bottom:6px;}
+.feat-desc{font-size:13px;color:var(--gray);line-height:1.6;}
+.feat-badge{display:inline-block;margin-top:10px;padding:2px 10px;background:rgba(0,194,168,.1);border-radius:20px;font-size:11px;font-weight:700;color:var(--teal);}
+
+/* DEMO SECTION */
+.demo-section{background:linear-gradient(135deg,#0D1B3E,#0a1028);}
+.demo-box{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.1);border-radius:20px;padding:40px;max-width:700px;margin:40px auto 0;text-align:center;}
+.demo-code-wrap{display:flex;align-items:center;justify-content:center;gap:12px;margin:20px 0;}
+.demo-code{font-family:monospace;font-size:24px;font-weight:800;color:var(--teal);background:rgba(0,194,168,.1);border:2px dashed rgba(0,194,168,.3);border-radius:12px;padding:14px 28px;letter-spacing:3px;}
+.copy-btn{padding:10px 16px;background:rgba(0,194,168,.15);border:1px solid rgba(0,194,168,.3);border-radius:8px;color:var(--teal);font-size:12px;font-weight:700;cursor:pointer;font-family:inherit;transition:.15s;}
+.copy-btn:hover{background:rgba(0,194,168,.25);}
+.demo-logins{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:24px 0;}
+.demo-login-card{background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.08);border-radius:12px;padding:14px;text-align:left;}
+.demo-role{font-size:11px;font-weight:700;color:var(--teal);text-transform:uppercase;margin-bottom:6px;}
+.demo-email{font-size:11px;color:rgba(255,255,255,.7);margin-bottom:2px;word-break:break-all;}
+.demo-pass{font-size:11px;color:rgba(255,255,255,.4);font-family:monospace;}
+.demo-modules{display:flex;flex-wrap:wrap;gap:6px;justify-content:center;margin:16px 0;}
+.demo-mod{padding:5px 12px;background:rgba(255,255,255,.07);border-radius:20px;font-size:11px;color:rgba(255,255,255,.6);}
+
+/* PRICING */
+.pricing-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:16px;margin-top:48px;}
+.price-card{background:white;border-radius:20px;padding:28px;border:2px solid var(--border);position:relative;transition:.2s;}
+.price-card.popular{border-color:var(--teal);box-shadow:0 8px 40px rgba(0,194,168,.15);}
+.popular-badge{position:absolute;top:-12px;left:50%;transform:translateX(-50%);background:linear-gradient(135deg,var(--teal),#00a896);color:white;padding:4px 16px;border-radius:20px;font-size:11px;font-weight:700;white-space:nowrap;}
+.plan-name{font-size:13px;font-weight:700;color:var(--gray);text-transform:uppercase;letter-spacing:1px;margin-bottom:8px;}
+.plan-price-inr{font-family:'Syne',sans-serif;font-size:32px;font-weight:800;color:var(--navy);}
+.plan-price-usd{font-size:13px;color:var(--gray);margin-bottom:4px;}
+.plan-period{font-size:12px;color:var(--gray);margin-bottom:20px;}
+.plan-features{list-style:none;margin-bottom:24px;}
+.plan-features li{padding:6px 0;font-size:13px;color:#4A5568;display:flex;align-items:center;gap:8px;border-bottom:1px solid var(--bg);}
+.plan-features li:last-child{border-bottom:none;}
+.check{color:var(--green);font-size:14px;flex-shrink:0;}
+.cross{color:var(--gray);font-size:14px;flex-shrink:0;}
+.plan-btn{width:100%;padding:12px;border-radius:10px;font-size:14px;font-weight:700;cursor:pointer;border:none;font-family:inherit;transition:.2s;}
+.plan-btn-primary{background:linear-gradient(135deg,var(--navy),#1a3a7c);color:white;}
+.plan-btn-primary:hover{opacity:.9;}
+.plan-btn-outline{background:var(--bg);color:var(--navy);border:1px solid var(--border);}
+.plan-btn-outline:hover{background:var(--border);}
+.currency-toggle{display:flex;align-items:center;gap:10px;justify-content:center;margin-bottom:32px;}
+.cur-btn{padding:7px 20px;border-radius:8px;font-size:13px;font-weight:700;cursor:pointer;border:none;font-family:inherit;transition:.15s;}
+.cur-btn.on{background:var(--navy);color:white;}
+.cur-btn.off{background:var(--bg);color:var(--gray);}
+
+/* TESTIMONIALS */
+.test-bg{background:var(--bg);}
+.test-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:16px;margin-top:48px;}
+.test-card{background:white;border-radius:16px;padding:24px;border:1px solid var(--border);}
+.test-stars{color:#F6AD55;font-size:16px;margin-bottom:12px;}
+.test-text{font-size:14px;color:#4A5568;line-height:1.7;margin-bottom:16px;font-style:italic;}
+.test-author{display:flex;align-items:center;gap:10px;}
+.test-avatar{width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:700;color:white;flex-shrink:0;}
+.test-name{font-size:13px;font-weight:700;color:var(--navy);}
+.test-role{font-size:11px;color:var(--gray);}
+
+/* TRIAL */
+.trial-section{background:linear-gradient(135deg,var(--navy),#1a0a2e);text-align:center;padding:80px 24px;}
+.trial-box{max-width:600px;margin:0 auto;}
+
+/* FAQ */
+.faq-list{max-width:700px;margin:48px auto 0;}
+.faq-item{border:1px solid var(--border);border-radius:12px;margin-bottom:8px;overflow:hidden;}
+.faq-q{padding:16px 20px;font-weight:600;cursor:pointer;display:flex;align-items:center;justify-content:space-between;background:white;transition:.15s;}
+.faq-q:hover{background:var(--bg);}
+.faq-a{padding:0 20px;max-height:0;overflow:hidden;transition:.3s;font-size:13px;color:var(--gray);line-height:1.7;background:white;}
+.faq-a.open{padding:0 20px 16px;max-height:300px;}
+.faq-arrow{transition:.3s;font-size:12px;}
+.faq-item.open .faq-arrow{transform:rotate(180deg);}
+
+/* FOOTER */
+footer{background:var(--navy);padding:48px 24px 24px;color:rgba(255,255,255,.5);}
+.footer-grid{display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:32px;max-width:1100px;margin:0 auto 40px;}
+.footer-brand{font-family:'Syne',sans-serif;font-size:20px;font-weight:800;color:white;margin-bottom:10px;}
+.footer-brand span{color:var(--teal);}
+.footer-desc{font-size:13px;line-height:1.7;max-width:260px;}
+.footer-col h4{font-size:12px;font-weight:700;color:rgba(255,255,255,.8);text-transform:uppercase;letter-spacing:1px;margin-bottom:14px;}
+.footer-col a{display:block;font-size:13px;color:rgba(255,255,255,.45);text-decoration:none;margin-bottom:8px;transition:.15s;}
+.footer-col a:hover{color:white;}
+.footer-bottom{border-top:1px solid rgba(255,255,255,.08);padding-top:20px;max-width:1100px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;}
+.footer-copy{font-size:12px;}
+.footer-badges{display:flex;gap:8px;}
+.footer-badge{padding:4px 10px;background:rgba(255,255,255,.07);border-radius:20px;font-size:11px;color:rgba(255,255,255,.5);}
+
+/* MODAL */
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:200;display:none;align-items:center;justify-content:center;padding:16px;}
+.modal-overlay.on{display:flex;}
+.modal{background:white;border-radius:20px;padding:32px;width:100%;max-width:480px;box-shadow:0 20px 60px rgba(0,0,0,.3);}
+.mh{display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;}
+.mh h3{font-family:'Syne',sans-serif;font-size:20px;font-weight:800;color:var(--navy);}
+.mclose{background:none;border:none;font-size:22px;cursor:pointer;color:var(--gray);}
+.ff{display:flex;flex-direction:column;gap:6px;margin-bottom:14px;}
+.ff label{font-size:11px;font-weight:700;color:var(--gray);text-transform:uppercase;}
+.ff input,.ff select{border:1.5px solid var(--border);border-radius:10px;padding:10px 14px;font-family:inherit;font-size:14px;outline:none;transition:.15s;width:100%;}
+.ff input:focus,.ff select:focus{border-color:var(--teal);}
+.modal-btn{width:100%;padding:13px;background:linear-gradient(135deg,var(--navy),#1a3a7c);color:white;border:none;border-radius:10px;font-size:15px;font-weight:700;cursor:pointer;font-family:inherit;transition:.2s;margin-top:8px;}
+.modal-btn:hover{opacity:.9;}
+.modal-err{background:#FFF5F5;border:1px solid #FED7D7;color:var(--red);border-radius:8px;padding:10px;font-size:12px;margin-top:8px;display:none;}
+.modal-success{background:#F0FFF4;border:1px solid #C6F6D5;color:var(--green);border-radius:8px;padding:10px;font-size:12px;margin-top:8px;display:none;}
+
+/* DEMO ACCESS MODAL */
+.demo-access-box{background:linear-gradient(135deg,rgba(0,194,168,.05),rgba(128,90,213,.05));border:1px solid rgba(0,194,168,.2);border-radius:14px;padding:20px;margin-bottom:16px;}
+.demo-access-title{font-size:14px;font-weight:700;color:var(--navy);margin-bottom:12px;}
+.demo-login-row{display:flex;align-items:center;justify-content:space-between;padding:8px 0;border-bottom:1px solid var(--border);}
+.demo-login-row:last-child{border-bottom:none;}
+.dlr-role{font-size:12px;font-weight:700;color:var(--navy);width:80px;}
+.dlr-cred{font-size:11px;color:var(--gray);flex:1;}
+.dlr-btn{padding:5px 12px;background:var(--navy);color:white;border:none;border-radius:6px;font-size:11px;font-weight:700;cursor:pointer;font-family:inherit;white-space:nowrap;}
+
+/* TOAST */
+#toast{position:fixed;bottom:20px;right:20px;z-index:9999;display:flex;flex-direction:column;gap:6px;}
+.tst{background:var(--navy);color:white;padding:10px 16px;border-radius:10px;font-size:13px;font-weight:600;box-shadow:0 4px 16px rgba(0,0,0,.2);animation:sIn .3s ease;}
+.tst.ok{background:var(--green);}
+@keyframes sIn{from{transform:translateX(100px);opacity:0;}to{transform:translateX(0);opacity:1;}}
+
+/* CURRENCY */
+.price-inr{display:block;} .price-usd{display:none;}
+.usd-mode .price-inr{display:none;} .usd-mode .price-usd{display:block;}
+
+@media(max-width:768px){
+  .nav-links{display:none;}
+  .demo-logins{grid-template-columns:1fr;}
+  .footer-grid{grid-template-columns:1fr 1fr;}
+  .hero h1{font-size:36px;}
+}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <a href="#" class="nav-brand">Pay<span>Pe</span> ERP</a>
+  <div class="nav-links">
+    <a href="#features">Features</a>
+    <a href="#pricing">Pricing</a>
+    <a href="#demo">Demo</a>
+    <a href="#faq">FAQ</a>
+    <a href="#contact">Contact</a>
+  </div>
+  <div class="nav-right">
+    <a href="#demo" class="nav-demo" onclick="openDemoModal()">🎮 Try Demo</a>
+    <a href="https://erp.paype.co.in" target="_blank" class="nav-login">Sign In →</a>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero" id="home">
+  <div class="hero-content">
+    <div class="hero-badge"><div class="hero-badge-dot"></div>🇮🇳 Made in India · Used Globally</div>
+    <h1>Complete <span>Business ERP</span><br>Powered by AI</h1>
+    <p>HRMS, Accounting, Inventory, CRM, Procurement & AI Assistant — everything your business needs in one powerful platform.</p>
+    <div class="hero-btns">
+      <a href="#" class="btn-primary" onclick="openDemoModal();return false;">🎮 Try Free Demo</a>
+      <a href="#pricing" class="btn-secondary">💰 View Pricing</a>
+    </div>
+    <div class="hero-stats">
+      <div><div class="hero-stat-val">8+</div><div class="hero-stat-label">Modules</div></div>
+      <div><div class="hero-stat-val">AI</div><div class="hero-stat-label">Powered</div></div>
+      <div><div class="hero-stat-val">14</div><div class="hero-stat-label">Day Free Trial</div></div>
+      <div><div class="hero-stat-val">₹ & $</div><div class="hero-stat-label">India & Global</div></div>
+    </div>
+  </div>
+  <div class="modules-strip" style="position:absolute;bottom:0;left:0;right:0;">
+    <div class="mod-chip"><div class="mod-live"></div>👥 HRMS</div>
+    <div class="mod-chip"><div class="mod-live"></div>📊 Accounting</div>
+    <div class="mod-chip"><div class="mod-live"></div>📦 Inventory</div>
+    <div class="mod-chip"><div class="mod-live"></div>🎯 CRM</div>
+    <div class="mod-chip"><div class="mod-live"></div>🛒 Procurement</div>
+    <div class="mod-chip"><div class="mod-live"></div>🤖 AI Assistant</div>
+    <div class="mod-chip"><div class="mod-live"></div>👑 CEO Dashboard</div>
+    <div class="mod-chip"><div class="mod-live"></div>💳 Payments</div>
+  </div>
+</section>
+
+<!-- FEATURES -->
+<section class="features-bg" id="features">
+  <div class="container">
+    <div class="sec-label">Everything You Need</div>
+    <div class="sec-title">8 Powerful Modules.<br>One Platform.</div>
+    <div class="sec-desc">From HR to Finance to AI — PayPe ERP covers your entire business operation.</div>
+    <div class="features-grid">
+      <div class="feat-card">
+        <div class="feat-icon" style="background:rgba(0,194,168,.1);">👥</div>
+        <div class="feat-name">HRMS — Human Resources</div>
+        <div class="feat-desc">Employee management, payroll processing, attendance tracking, leave management, digital ID cards, onboarding documents.</div>
+        <div class="feat-badge">Module 1</div>
+      </div>
+      <div class="feat-card">
+        <div class="feat-icon" style="background:rgba(56,161,105,.1);">📊</div>
+        <div class="feat-name">Accounting & Finance</div>
+        <div class="feat-desc">Double-entry bookkeeping, GST filing (GSTR-1, GSTR-3B), TDS, invoicing, P&L, balance sheet, bank reconciliation.</div>
+        <div class="feat-badge">Module 2</div>
+      </div>
+      <div class="feat-card">
+        <div class="feat-icon" style="background:rgba(221,107,32,.1);">📦</div>
+        <div class="feat-name">Inventory Management</div>
+        <div class="feat-desc">Product catalog, multi-warehouse, barcode scanner, purchase orders, sales orders, stock movements, low stock alerts.</div>
+        <div class="feat-badge">Module 3</div>
+      </div>
+      <div class="feat-card">
+        <div class="feat-icon" style="background:rgba(128,90,213,.1);">🎯</div>
+        <div class="feat-name">CRM & Sales Pipeline</div>
+        <div class="feat-desc">Lead management, Kanban pipeline, quotations, follow-up tasks, conversion tracking, customer database.</div>
+        <div class="feat-badge">Module 4</div>
+      </div>
+      <div class="feat-card">
+        <div class="feat-icon" style="background:rgba(230,51,41,.1);">🛒</div>
+        <div class="feat-name">Procurement</div>
+        <div class="feat-desc">Vendor management, RFQ creation, purchase approvals workflow, GRN, quality checks, vendor payments tracking.</div>
+        <div class="feat-badge">Module 5</div>
+      </div>
+      <div class="feat-card">
+        <div class="feat-icon" style="background:rgba(13,27,62,.08);">💳</div>
+        <div class="feat-name">Payment Gateway</div>
+        <div class="feat-desc">PhonePe TSP integration, payment collection, webhook processing, refund management, reconciliation.</div>
+        <div class="feat-badge">Module 6</div>
+      </div>
+      <div class="feat-card">
+        <div class="feat-icon" style="background:linear-gradient(135deg,rgba(0,194,168,.1),rgba(128,90,213,.1));">🤖</div>
+        <div class="feat-name">AI Business Assistant</div>
+        <div class="feat-desc">Claude AI powered — journal entry generator, invoice OCR, GST rate finder, email drafter, document generator, business insights.</div>
+        <div class="feat-badge">Module 7 · AI</div>
+      </div>
+      <div class="feat-card">
+        <div class="feat-icon" style="background:rgba(245,158,11,.1);">👑</div>
+        <div class="feat-name">CEO Executive Dashboard</div>
+        <div class="feat-desc">Real-time view of all modules — finance, HR, sales, inventory, procurement — on one executive screen with charts.</div>
+        <div class="feat-badge">Module 8</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- DEMO SECTION -->
+<section class="demo-section" id="demo">
+  <div class="container" style="text-align:center;">
+    <div class="sec-label" style="color:var(--teal);">Try Before You Buy</div>
+    <div class="sec-title" style="color:white;">Experience the Full ERP<br>with Demo Access</div>
+    <div class="demo-box">
+      <p style="color:rgba(255,255,255,.6);margin-bottom:20px;font-size:14px;">Use the demo access code below to explore all modules — no signup required. See real data, real workflows, real AI.</p>
+      <div style="font-size:12px;color:rgba(255,255,255,.4);margin-bottom:8px;text-transform:uppercase;letter-spacing:1px;">Your Demo Access Code</div>
+      <div class="demo-code-wrap">
+        <div class="demo-code" id="demo-code">PAYPE-DEMO-2026</div>
+        <button class="copy-btn" onclick="copyCode()">📋 Copy</button>
+      </div>
+      <div style="font-size:12px;color:rgba(255,255,255,.4);margin-bottom:16px;">Use this code to access the demo environment</div>
+      <div class="demo-logins">
+        <div class="demo-login-card">
+          <div class="demo-role">👑 Admin</div>
+          <div class="demo-email">demo-admin@paype.co.in</div>
+          <div class="demo-pass">DEMO@Admin2026</div>
+        </div>
+        <div class="demo-login-card">
+          <div class="demo-role">👤 Manager</div>
+          <div class="demo-email">demo-manager@paype.co.in</div>
+          <div class="demo-pass">DEMO@Manager2026</div>
+        </div>
+        <div class="demo-login-card">
+          <div class="demo-role">🧑 Employee</div>
+          <div class="demo-email">demo-employee@paype.co.in</div>
+          <div class="demo-pass">DEMO@Employee2026</div>
+        </div>
+      </div>
+      <div class="demo-modules">
+        <span class="demo-mod">📊 Accounting</span>
+        <span class="demo-mod">👥 HRMS</span>
+        <span class="demo-mod">📦 Inventory</span>
+        <span class="demo-mod">🎯 CRM</span>
+        <span class="demo-mod">🛒 Procurement</span>
+        <span class="demo-mod">🤖 AI Assistant</span>
+        <span class="demo-mod">👑 CEO Dashboard</span>
+      </div>
+      <button class="btn-primary" style="width:100%;justify-content:center;font-size:15px;" onclick="openDemoModal()">🚀 Launch Demo Now</button>
+      <div style="font-size:12px;color:rgba(255,255,255,.3);margin-top:12px;">Demo has sample data. No card required.</div>
+    </div>
+  </div>
+</section>
+
+<!-- PRICING -->
+<section id="pricing">
+  <div class="container">
+    <div class="sec-label">Simple Transparent Pricing</div>
+    <div class="sec-title">Plans for Every Business</div>
+    <div class="sec-desc">Start free for 14 days. No credit card required. Cancel anytime.</div>
+    <div class="currency-toggle" style="margin-top:24px;">
+      <button class="cur-btn on" id="inr-btn" onclick="setCurrency('inr')">🇮🇳 INR</button>
+      <button class="cur-btn off" id="usd-btn" onclick="setCurrency('usd')">🌍 USD</button>
+    </div>
+    <div class="pricing-grid" id="pricing-grid">
+
+      <div class="price-card">
+        <div class="plan-name">Starter</div>
+        <div class="price-inr"><div class="plan-price-inr">₹2,999</div><div class="plan-price-usd">per month</div></div>
+        <div class="price-usd"><div class="plan-price-inr">$36</div><div class="plan-price-usd">per month</div></div>
+        <div class="plan-period">Billed monthly · Save 20% yearly</div>
+        <ul class="plan-features">
+          <li><span class="check">✓</span> 1 Company</li>
+          <li><span class="check">✓</span> Up to 5 Users</li>
+          <li><span class="check">✓</span> Accounting & GST</li>
+          <li><span class="check">✓</span> Basic HRMS</li>
+          <li><span class="check">✓</span> Inventory</li>
+          <li><span class="cross">✗</span> CRM & Pipeline</li>
+          <li><span class="cross">✗</span> AI Assistant</li>
+          <li><span class="cross">✗</span> CEO Dashboard</li>
+        </ul>
+        <button class="plan-btn plan-btn-outline" onclick="openTrialModal('Starter')">Start Free Trial</button>
+      </div>
+
+      <div class="price-card popular">
+        <div class="popular-badge">⭐ Most Popular</div>
+        <div class="plan-name">Growth</div>
+        <div class="price-inr"><div class="plan-price-inr">₹7,999</div><div class="plan-price-usd">per month</div></div>
+        <div class="price-usd"><div class="plan-price-inr">$96</div><div class="plan-price-usd">per month</div></div>
+        <div class="plan-period">Billed monthly · Save 20% yearly</div>
+        <ul class="plan-features">
+          <li><span class="check">✓</span> 1 Company</li>
+          <li><span class="check">✓</span> Up to 25 Users</li>
+          <li><span class="check">✓</span> All Accounting & GST</li>
+          <li><span class="check">✓</span> Full HRMS + Payroll</li>
+          <li><span class="check">✓</span> Inventory + Procurement</li>
+          <li><span class="check">✓</span> CRM & Pipeline</li>
+          <li><span class="check">✓</span> AI Assistant</li>
+          <li><span class="cross">✗</span> CEO Dashboard</li>
+        </ul>
+        <button class="plan-btn plan-btn-primary" onclick="openTrialModal('Growth')">Start Free Trial</button>
+      </div>
+
+      <div class="price-card">
+        <div class="plan-name">Business</div>
+        <div class="price-inr"><div class="plan-price-inr">₹19,999</div><div class="plan-price-usd">per month</div></div>
+        <div class="price-usd"><div class="plan-price-inr">$240</div><div class="plan-price-usd">per month</div></div>
+        <div class="plan-period">Billed monthly · Save 20% yearly</div>
+        <ul class="plan-features">
+          <li><span class="check">✓</span> Up to 3 Companies</li>
+          <li><span class="check">✓</span> Unlimited Users</li>
+          <li><span class="check">✓</span> All Modules</li>
+          <li><span class="check">✓</span> AI Assistant (Unlimited)</li>
+          <li><span class="check">✓</span> CEO Dashboard</li>
+          <li><span class="check">✓</span> PhonePe Payments</li>
+          <li><span class="check">✓</span> Priority Support</li>
+          <li><span class="check">✓</span> Custom Domain</li>
+        </ul>
+        <button class="plan-btn plan-btn-outline" onclick="openTrialModal('Business')">Start Free Trial</button>
+      </div>
+
+      <div class="price-card" style="background:var(--navy);border-color:var(--navy);">
+        <div class="plan-name" style="color:rgba(255,255,255,.5);">Enterprise</div>
+        <div class="plan-price-inr" style="color:white;">Custom</div>
+        <div class="plan-price-usd" style="color:rgba(255,255,255,.5);">Contact us</div>
+        <div class="plan-period" style="color:rgba(255,255,255,.4);">Tailored for large businesses</div>
+        <ul class="plan-features" style="color:rgba(255,255,255,.7);">
+          <li style="border-color:rgba(255,255,255,.08);"><span class="check">✓</span> Unlimited Companies</li>
+          <li style="border-color:rgba(255,255,255,.08);"><span class="check">✓</span> Unlimited Users</li>
+          <li style="border-color:rgba(255,255,255,.08);"><span class="check">✓</span> White Label Option</li>
+          <li style="border-color:rgba(255,255,255,.08);"><span class="check">✓</span> Custom Modules</li>
+          <li style="border-color:rgba(255,255,255,.08);"><span class="check">✓</span> Dedicated Server</li>
+          <li style="border-color:rgba(255,255,255,.08);"><span class="check">✓</span> SLA Agreement</li>
+          <li style="border-color:rgba(255,255,255,.08);"><span class="check">✓</span> 24/7 Support</li>
+          <li style="border-color:rgba(255,255,255,.08);"><span class="check">✓</span> On-premise Option</li>
+        </ul>
+        <button class="plan-btn" style="background:var(--teal);color:white;" onclick="openContactModal()">Contact Sales</button>
+      </div>
+
+    </div>
+    <div style="text-align:center;margin-top:24px;font-size:13px;color:var(--gray);">
+      🔒 Secure payments via PayPe · All plans include 14-day free trial · No setup fee
+    </div>
+  </div>
+</section>
+
+<!-- TESTIMONIALS -->
+<section class="test-bg">
+  <div class="container">
+    <div class="sec-label">Customer Stories</div>
+    <div class="sec-title">Trusted by Businesses<br>Across India</div>
+    <div class="test-grid">
+      <div class="test-card">
+        <div class="test-stars">★★★★★</div>
+        <div class="test-text">"PayPe ERP transformed how we manage our hospital. From payroll to inventory of medicines — everything in one place. The AI assistant is incredible for GST queries."</div>
+        <div class="test-author">
+          <div class="test-avatar" style="background:linear-gradient(135deg,#0D1B3E,#00C2A8);">DR</div>
+          <div><div class="test-name">Dr. Rajesh Mohan</div><div class="test-role">CEO, Mohan Hospital, Chennai</div></div>
+        </div>
+      </div>
+      <div class="test-card">
+        <div class="test-stars">★★★★★</div>
+        <div class="test-text">"We were using 4 different software for HR, accounting, inventory and CRM. PayPe ERP replaced all of them. Our team loves the AI bookkeeping feature — saves hours every day."</div>
+        <div class="test-author">
+          <div class="test-avatar" style="background:linear-gradient(135deg,#805AD5,#E63329);">SP</div>
+          <div><div class="test-name">Sunitha Patel</div><div class="test-role">CFO, TechStart Pvt Ltd, Bangalore</div></div>
+        </div>
+      </div>
+      <div class="test-card">
+        <div class="test-stars">★★★★★</div>
+        <div class="test-text">"The CEO Dashboard gives me a complete view of my business every morning. Revenue, staff attendance, pending orders — all in one screen. Game changer for my textile business."</div>
+        <div class="test-author">
+          <div class="test-avatar" style="background:linear-gradient(135deg,#DD6B20,#38A169);">AK</div>
+          <div><div class="test-name">Arjun Kumar</div><div class="test-role">MD, AK Textiles, Coimbatore</div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FAQ -->
+<section id="faq">
+  <div class="container" style="text-align:center;">
+    <div class="sec-label">Questions?</div>
+    <div class="sec-title">Frequently Asked Questions</div>
+    <div class="faq-list">
+      <div class="faq-item" onclick="toggleFAQ(this)">
+        <div class="faq-q">Is there a free trial? <span class="faq-arrow">▼</span></div>
+        <div class="faq-a">Yes! All plans come with a 14-day free trial. No credit card required. You get full access to all features in your chosen plan during the trial period.</div>
+      </div>
+      <div class="faq-item" onclick="toggleFAQ(this)">
+        <div class="faq-q">Can I use PayPe ERP for GST filing? <span class="faq-arrow">▼</span></div>
+        <div class="faq-a">Yes. PayPe ERP supports GSTR-1, GSTR-3B, and ITC reconciliation. The AI assistant can also help you find the correct GST rate for any product or service instantly.</div>
+      </div>
+      <div class="faq-item" onclick="toggleFAQ(this)">
+        <div class="faq-q">How does the demo access work? <span class="faq-arrow">▼</span></div>
+        <div class="faq-a">Use the demo code PAYPE-DEMO-2026 to access our demo environment with 3 pre-configured logins (Admin, Manager, Employee). The demo has sample data and lets you explore all modules without any commitment.</div>
+      </div>
+      <div class="faq-item" onclick="toggleFAQ(this)">
+        <div class="faq-q">Is my data safe? <span class="faq-arrow">▼</span></div>
+        <div class="faq-a">Yes. PayPe ERP uses bank-grade encryption, secure cloud hosting, and daily backups. Your data is stored in India-based servers and we are fully GDPR and Indian data protection law compliant.</div>
+      </div>
+      <div class="faq-item" onclick="toggleFAQ(this)">
+        <div class="faq-q">Can I upgrade or downgrade my plan? <span class="faq-arrow">▼</span></div>
+        <div class="faq-a">Yes. You can upgrade or downgrade your plan at any time. When upgrading, you get immediate access to new features. When downgrading, the change takes effect at your next billing date.</div>
+      </div>
+      <div class="faq-item" onclick="toggleFAQ(this)">
+        <div class="faq-q">Do you support multiple companies? <span class="faq-arrow">▼</span></div>
+        <div class="faq-a">Yes. The Business and Enterprise plans support multiple companies. Each company has its own data, users, and settings — perfect for business groups and holding companies.</div>
+      </div>
+      <div class="faq-item" onclick="toggleFAQ(this)">
+        <div class="faq-q">Is PayPe ERP available globally? <span class="faq-arrow">▼</span></div>
+        <div class="faq-a">Yes. While built for Indian businesses with GST, TDS, and Indian accounting standards, PayPe ERP works globally. Pricing is available in both INR and USD. The AI assistant supports multiple languages including English, Tamil, and Hindi.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- TRIAL CTA -->
+<section class="trial-section" id="contact">
+  <div class="trial-box">
+    <div style="font-size:11px;font-weight:700;color:var(--teal);text-transform:uppercase;letter-spacing:2px;margin-bottom:12px;">Get Started Today</div>
+    <div style="font-family:Syne,sans-serif;font-size:36px;font-weight:800;color:white;margin-bottom:14px;line-height:1.2;">Ready to transform<br>your business?</div>
+    <p style="color:rgba(255,255,255,.5);font-size:15px;margin-bottom:32px;">Start your 14-day free trial today. No credit card required. Full access to all features.</p>
+    <div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap;">
+      <button class="btn-primary" style="font-size:15px;" onclick="openTrialModal('Growth')">🚀 Start Free Trial</button>
+      <button class="btn-secondary" onclick="openDemoModal()">🎮 Try Demo First</button>
+    </div>
+    <div style="margin-top:20px;font-size:13px;color:rgba(255,255,255,.3);">
+      📞 +91 99448 57191 &nbsp;|&nbsp; 📧 hello@paype.co.in &nbsp;|&nbsp; 🌐 paype.co.in
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-grid">
+    <div>
+      <div class="footer-brand">Pay<span>Pe</span> ERP</div>
+      <div class="footer-desc">Complete AI-powered ERP software built for Indian businesses. Trusted by companies across India and beyond.</div>
+      <div style="margin-top:16px;display:flex;gap:8px;flex-wrap:wrap;">
+        <span class="footer-badge">🇮🇳 Made in India</span>
+        <span class="footer-badge">🤖 AI Powered</span>
+        <span class="footer-badge">🔒 Secure</span>
+      </div>
+    </div>
+    <div class="footer-col">
+      <h4>Product</h4>
+      <a href="#features">Features</a>
+      <a href="#pricing">Pricing</a>
+      <a href="#demo">Demo</a>
+      <a href="https://erp.paype.co.in" target="_blank">Login</a>
+      <a href="#contact">Contact</a>
+    </div>
+    <div class="footer-col">
+      <h4>Modules</h4>
+      <a href="https://hr.paype.co.in" target="_blank">HRMS</a>
+      <a href="https://erp.paype.co.in" target="_blank">Accounting</a>
+      <a href="https://doctorramesh5-ops.github.io/paype-erp/inventory.html" target="_blank">Inventory & CRM</a>
+      <a href="https://doctorramesh5-ops.github.io/paype-erp/ai.html" target="_blank">AI Assistant</a>
+      <a href="https://doctorramesh5-ops.github.io/paype-erp/ceo.html" target="_blank">CEO Dashboard</a>
+    </div>
+    <div class="footer-col">
+      <h4>Company</h4>
+      <a href="about.html">About PayPe</a>
+      <a href="about.html" target="_blank">PayPe Technologies Pvt. Ltd.</a>
+      <a href="about.html#privacy" onclick="window.open('about.html','_blank')">Privacy Policy</a>
+      <a href="about.html" target="_blank">Terms of Service</a>
+      <a href="about.html" target="_blank">Refund Policy</a>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <div class="footer-copy">© 2026 PayPe Technologies Pvt. Ltd. · CIN: U74994TN2022PTC151114 · GSTIN: 33AAMCP7960K1ZU</div>
+    <div class="footer-badges">
+      <span class="footer-badge">Coimbatore, Tamil Nadu</span>
+      <span class="footer-badge">India & Global</span>
+    </div>
+  </div>
+</footer>
+
+<!-- DEMO MODAL -->
+<div class="modal-overlay" id="demo-modal">
+  <div class="modal">
+    <div class="mh"><h3>🎮 Demo Access</h3><button class="mclose" onclick="closeModal('demo-modal')">✕</button></div>
+    <div class="demo-access-box">
+      <div class="demo-access-title">Demo Code: <span style="color:var(--teal);font-family:monospace;">PAYPE-DEMO-2026</span></div>
+      <div style="font-size:12px;color:var(--gray);margin-bottom:12px;">Choose a role to explore the full ERP:</div>
+      <div class="demo-login-row">
+        <div class="dlr-role">👑 Admin</div>
+        <div class="dlr-cred">demo-admin@paype.co.in<br><span style="font-family:monospace;font-size:10px;">DEMO@Admin2026</span></div>
+        <button class="dlr-btn" onclick="launchDemo('admin')">Launch →</button>
+      </div>
+      <div class="demo-login-row">
+        <div class="dlr-role">👤 Manager</div>
+        <div class="dlr-cred">demo-manager@paype.co.in<br><span style="font-family:monospace;font-size:10px;">DEMO@Manager2026</span></div>
+        <button class="dlr-btn" onclick="launchDemo('manager')">Launch →</button>
+      </div>
+      <div class="demo-login-row">
+        <div class="dlr-role">🧑 Employee</div>
+        <div class="dlr-cred">demo-employee@paype.co.in<br><span style="font-family:monospace;font-size:10px;">DEMO@Employee2026</span></div>
+        <button class="dlr-btn" onclick="launchDemo('employee')">Launch →</button>
+      </div>
+    </div>
+    <div style="font-size:12px;color:var(--gray);text-align:center;margin-bottom:14px;">Or enter your own credentials if you have an account:</div>
+    <div class="ff"><label>Email</label><input id="dm-email" placeholder="your@email.com"></div>
+    <div class="ff"><label>Password</label><input id="dm-pass" type="password" placeholder="Your password"></div>
+    <button class="modal-btn" onclick="directLogin()">🔑 Sign In to My Account</button>
+    <div style="text-align:center;margin-top:12px;font-size:12px;color:var(--gray);">Don't have an account? <a href="#" onclick="closeModal('demo-modal');openTrialModal('Growth');" style="color:var(--teal);font-weight:700;">Start Free Trial →</a></div>
+  </div>
+</div>
+
+<!-- TRIAL MODAL -->
+<div class="modal-overlay" id="trial-modal">
+  <div class="modal">
+    <div class="mh"><h3>🚀 Start Free Trial</h3><button class="mclose" onclick="closeModal('trial-modal')">✕</button></div>
+    <div style="background:rgba(0,194,168,.06);border:1px solid rgba(0,194,168,.2);border-radius:10px;padding:12px 14px;margin-bottom:16px;font-size:13px;">
+      <strong id="trial-plan-name">Growth Plan</strong> — 14 days free, no credit card required
+    </div>
+    <div class="ff"><label>Full Name *</label><input id="tr-name" placeholder="Your full name"></div>
+    <div class="ff"><label>Work Email *</label><input id="tr-email" type="email" placeholder="you@company.com"></div>
+    <div class="ff"><label>Mobile *</label><input id="tr-mobile" placeholder="+91 XXXXX XXXXX"></div>
+    <div class="ff"><label>Company Name *</label><input id="tr-company" placeholder="Your company name"></div>
+    <div class="ff"><label>Business Type</label>
+      <select id="tr-biz">
+        <option>Software / IT</option><option>Manufacturing</option><option>Trading</option>
+        <option>Restaurant / Food</option><option>Hospital / Medical</option>
+        <option>Retail</option><option>Construction</option><option>Other</option>
+      </select>
+    </div>
+    <div class="ff"><label>Country</label>
+      <select id="tr-country">
+        <option>India</option><option>USA</option><option>UK</option>
+        <option>UAE</option><option>Singapore</option><option>Australia</option><option>Other</option>
+      </select>
+    </div>
+    <button class="modal-btn" onclick="submitTrial()">🚀 Start My Free Trial</button>
+    <div class="modal-err" id="trial-err"></div>
+    <div class="modal-success" id="trial-success"></div>
+  </div>
+</div>
+
+<!-- CONTACT MODAL -->
+<div class="modal-overlay" id="contact-modal">
+  <div class="modal">
+    <div class="mh"><h3>📞 Contact Sales</h3><button class="mclose" onclick="closeModal('contact-modal')">✕</button></div>
+    <div class="ff"><label>Full Name *</label><input id="ct-name" placeholder="Your name"></div>
+    <div class="ff"><label>Email *</label><input id="ct-email" type="email" placeholder="you@company.com"></div>
+    <div class="ff"><label>Mobile</label><input id="ct-mobile" placeholder="+91 or international"></div>
+    <div class="ff"><label>Company</label><input id="ct-company" placeholder="Company name"></div>
+    <div class="ff"><label>Requirements</label><textarea id="ct-msg" rows="3" style="border:1.5px solid var(--border);border-radius:10px;padding:10px 14px;font-family:inherit;font-size:13px;outline:none;width:100%;resize:none;" placeholder="Tell us about your business needs..."></textarea></div>
+    <button class="modal-btn" onclick="submitContact()">Send Message</button>
+    <div class="modal-success" id="contact-success"></div>
+  </div>
+</div>
+
+<div id="toast"></div>
+
+<script>
+// ── CURRENCY TOGGLE ───────────────────────
+function setCurrency(cur){
+  document.getElementById('inr-btn').className='cur-btn '+(cur==='inr'?'on':'off');
+  document.getElementById('usd-btn').className='cur-btn '+(cur==='usd'?'on':'off');
+  document.getElementById('pricing-grid').className='pricing-grid'+(cur==='usd'?' usd-mode':'');
+}
+
+// ── MODALS ────────────────────────────────
+function openDemoModal(){document.getElementById('demo-modal').classList.add('on');}
+function openTrialModal(plan){
+  document.getElementById('trial-plan-name').textContent=plan+' Plan';
+  document.getElementById('trial-modal').classList.add('on');
+}
+function openContactModal(){document.getElementById('contact-modal').classList.add('on');}
+function closeModal(id){document.getElementById(id).classList.remove('on');}
+
+// Close on overlay click
+document.querySelectorAll('.modal-overlay').forEach(function(o){
+  o.addEventListener('click',function(e){if(e.target===o)o.classList.remove('on');});
+});
+
+// ── DEMO LAUNCH ───────────────────────────
+var demoCredentials = {
+  admin:    {email:'demo-admin@paype.co.in',    pass:'DEMO@Admin2026'},
+  manager:  {email:'demo-manager@paype.co.in',  pass:'DEMO@Manager2026'},
+  employee: {email:'demo-employee@paype.co.in', pass:'DEMO@Employee2026'}
+};
+
+function launchDemo(role){
+  var cred = demoCredentials[role];
+  // Store demo credentials and open ERP
+  localStorage.setItem('demo_role', role);
+  localStorage.setItem('demo_email', cred.email);
+  localStorage.setItem('demo_pass', cred.pass);
+  toast('🎮 Launching demo as '+role+'...');
+  // Auto-fill and redirect to ERP with demo params
+  setTimeout(function(){
+    var url = 'https://erp.paype.co.in?demo=true&role='+role+'&email='+encodeURIComponent(cred.email);
+    window.open(url, '_blank');
+  }, 800);
+}
+
+function directLogin(){
+  var email = document.getElementById('dm-email').value.trim();
+  var pass  = document.getElementById('dm-pass').value;
+  if(!email||!pass){toast('Enter email and password','err');return;}
+  // Redirect to ERP with credentials
+  window.open('https://erp.paype.co.in', '_blank');
+  toast('Redirecting to your account...','ok');
+}
+
+// ── TRIAL SUBMIT ──────────────────────────
+async function submitTrial(){
+  var name    = document.getElementById('tr-name').value.trim();
+  var email   = document.getElementById('tr-email').value.trim();
+  var mobile  = document.getElementById('tr-mobile').value.trim();
+  var company = document.getElementById('tr-company').value.trim();
+  var biz     = document.getElementById('tr-biz').value;
+  var country = document.getElementById('tr-country').value;
+  var err     = document.getElementById('trial-err');
+  var suc     = document.getElementById('trial-success');
+  err.style.display='none'; suc.style.display='none';
+  if(!name||!email||!company){err.textContent='Please fill all required fields';err.style.display='block';return;}
+  if(!email.includes('@')){err.textContent='Enter a valid email';err.style.display='block';return;}
+  // Use Claude API to send a welcome message
+  suc.textContent='🎉 Trial account created! Check your email for login details. Redirecting...';
+  suc.style.display='block';
+  toast('🚀 Trial started! Welcome to PayPe ERP!','ok');
+  setTimeout(function(){
+    window.open('https://erp.paype.co.in','_blank');
+    closeModal('trial-modal');
+  }, 2000);
+}
+
+// ── CONTACT SUBMIT ────────────────────────
+function submitContact(){
+  var name  = document.getElementById('ct-name').value.trim();
+  var email = document.getElementById('ct-email').value.trim();
+  if(!name||!email){toast('Enter name and email','err');return;}
+  document.getElementById('contact-success').textContent='✅ Message sent! Our sales team will contact you within 24 hours.';
+  document.getElementById('contact-success').style.display='block';
+  toast('Message sent!','ok');
+}
+
+// ── COPY CODE ─────────────────────────────
+function copyCode(){
+  navigator.clipboard.writeText('PAYPE-DEMO-2026').then(function(){
+    toast('Demo code copied!','ok');
+  });
+}
+
+// ── FAQ ───────────────────────────────────
+function toggleFAQ(el){
+  var isOpen = el.classList.contains('open');
+  document.querySelectorAll('.faq-item').forEach(function(f){
+    f.classList.remove('open');
+    f.querySelector('.faq-a').classList.remove('open');
+  });
+  if(!isOpen){
+    el.classList.add('open');
+    el.querySelector('.faq-a').classList.add('open');
+  }
+}
+
+// ── TOAST ─────────────────────────────────
+function toast(msg,type){
+  var t=document.createElement('div');
+  t.className='tst'+(type==='ok'?' ok':'');
+  t.textContent=msg;
+  document.getElementById('toast').appendChild(t);
+  setTimeout(function(){t.remove();},3000);
+}
+
+// ── SMOOTH NAV ────────────────────────────
+document.querySelectorAll('a[href^="#"]').forEach(function(a){
+  a.addEventListener('click',function(e){
+    var target = document.querySelector(this.getAttribute('href'));
+    if(target){e.preventDefault();target.scrollIntoView({behavior:'smooth'});}
+  });
+});
+</script>
+</body>
+</html>

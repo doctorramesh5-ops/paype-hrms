@@ -1,0 +1,994 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>PayPe ERP — Procurement</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Syne:wght@700;800&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box;}
+:root{--navy:#0D1B3E;--teal:#00C2A8;--red:#E63329;--bg:#F0F4F8;--border:#E2E8F0;--gray:#718096;--green:#38A169;--orange:#DD6B20;--purple:#805AD5;}
+body{font-family:'Inter',sans-serif;background:var(--bg);color:#1A202C;font-size:13px;}
+.login-wrap{display:flex;min-height:100vh;}
+.login-left{flex:1;background:linear-gradient(135deg,#0D1B3E,#1a2040);display:flex;flex-direction:column;justify-content:center;padding:60px;position:relative;overflow:hidden;}
+.login-left::before{content:'';position:absolute;top:-80px;right:-80px;width:400px;height:400px;border-radius:50%;background:rgba(221,107,32,.07);}
+.ll-brand{font-family:'Syne',sans-serif;font-size:30px;font-weight:800;color:white;margin-bottom:4px;}
+.ll-brand span{color:var(--teal);}
+.ll-sub{font-size:11px;color:rgba(255,255,255,.3);letter-spacing:2px;text-transform:uppercase;margin-bottom:36px;}
+.ll-title{font-size:28px;font-weight:800;color:white;margin-bottom:12px;line-height:1.3;}
+.ll-title span{color:var(--orange);}
+.ll-desc{font-size:14px;color:rgba(255,255,255,.5);line-height:1.7;margin-bottom:32px;max-width:400px;}
+.ll-features{display:grid;grid-template-columns:1fr 1fr;gap:8px;}
+.ll-feat{padding:10px 14px;background:rgba(255,255,255,.05);border-radius:10px;border:1px solid rgba(255,255,255,.07);display:flex;align-items:center;gap:8px;font-size:11px;color:rgba(255,255,255,.6);}
+.login-right{width:440px;background:white;display:flex;flex-direction:column;justify-content:center;padding:60px 50px;flex-shrink:0;}
+.lr-logo{font-family:'Syne',sans-serif;font-size:22px;font-weight:800;color:var(--navy);margin-bottom:4px;}
+.lr-logo span{color:var(--teal);}
+.lr-badge{display:inline-flex;align-items:center;gap:6px;padding:3px 12px;background:rgba(221,107,32,.1);border-radius:20px;font-size:11px;font-weight:700;color:var(--orange);margin-bottom:24px;border:1px solid rgba(221,107,32,.2);}
+.lr-welcome{font-size:22px;font-weight:800;color:var(--navy);margin-bottom:6px;}
+.lr-sub{font-size:13px;color:var(--gray);margin-bottom:28px;}
+.role-tabs{display:flex;gap:5px;margin-bottom:20px;background:var(--bg);padding:4px;border-radius:10px;}
+.role-tab{flex:1;padding:7px;text-align:center;border-radius:8px;cursor:pointer;font-size:11px;font-weight:600;color:var(--gray);transition:.2s;border:none;background:none;font-family:inherit;}
+.role-tab.on{background:var(--navy);color:white;}
+.ff{display:flex;flex-direction:column;gap:5px;margin-bottom:14px;}
+.ff label{font-size:11px;font-weight:700;color:var(--gray);text-transform:uppercase;letter-spacing:.5px;}
+.ff input{border:1.5px solid var(--border);border-radius:10px;padding:11px 14px;font-family:inherit;font-size:13px;outline:none;transition:.15s;width:100%;}
+.ff input:focus{border-color:var(--teal);}
+.pass-wrap{position:relative;}.pass-wrap input{padding-right:40px;}
+.pass-eye{position:absolute;right:12px;top:50%;transform:translateY(-50%);cursor:pointer;background:none;border:none;font-size:14px;}
+.login-btn{width:100%;padding:13px;background:linear-gradient(135deg,var(--navy),#1a3a7c);color:white;border:none;border-radius:10px;font-size:14px;font-weight:700;cursor:pointer;font-family:inherit;transition:.2s;margin-top:8px;}
+.login-btn:hover{opacity:.9;}
+.login-err{background:#FFF5F5;border:1px solid #FED7D7;color:var(--red);border-radius:8px;padding:10px 14px;font-size:12px;margin-top:10px;display:none;}
+.login-footer{margin-top:24px;padding-top:16px;border-top:1px solid var(--border);font-size:11px;color:var(--gray);}
+
+/* MAIN APP */
+.app{display:none;height:100vh;overflow:hidden;flex-direction:row;}
+.app.on{display:flex;}
+.sb{width:230px;background:var(--navy);display:flex;flex-direction:column;flex-shrink:0;overflow-y:auto;}
+.sb::-webkit-scrollbar{width:3px;}.sb::-webkit-scrollbar-thumb{background:rgba(255,255,255,.1);}
+.sb-logo{padding:14px 16px;border-bottom:1px solid rgba(255,255,255,.08);}
+.sb-brand{font-family:'Syne',sans-serif;font-size:17px;font-weight:800;color:white;}
+.sb-brand span{color:var(--teal);}
+.sb-module{font-size:9px;color:var(--orange);font-weight:700;letter-spacing:1px;padding:2px 8px;border-radius:20px;margin-top:4px;background:rgba(221,107,32,.15);display:inline-block;}
+.sb-user{font-size:10px;color:rgba(255,255,255,.4);margin-top:4px;}
+.sb-role{display:inline-block;font-size:9px;font-weight:700;padding:2px 7px;border-radius:20px;margin-top:3px;background:rgba(0,194,168,.2);color:var(--teal);}
+.sb-nav{padding:8px 10px;flex:1;}
+.sb-section{font-size:9px;font-weight:700;color:rgba(255,255,255,.25);text-transform:uppercase;letter-spacing:1px;padding:10px 4px 4px;}
+.ni{display:flex;align-items:center;gap:8px;padding:8px 10px;border-radius:8px;cursor:pointer;color:rgba(255,255,255,.55);font-size:12px;font-weight:500;transition:.15s;margin-bottom:1px;}
+.ni:hover{background:rgba(255,255,255,.07);color:white;}
+.ni.on{background:rgba(221,107,32,.15);color:var(--orange);font-weight:600;}
+.ni svg{width:15px;height:15px;flex-shrink:0;}
+.sb-link{display:flex;align-items:center;gap:8px;padding:7px 10px;border-radius:8px;cursor:pointer;color:rgba(255,255,255,.35);font-size:11px;transition:.15s;text-decoration:none;margin-bottom:2px;}
+.sb-link:hover{background:rgba(255,255,255,.05);color:rgba(255,255,255,.7);}
+.sb-logout{display:flex;align-items:center;gap:8px;padding:8px 10px;border-radius:8px;cursor:pointer;color:rgba(255,255,255,.4);font-size:12px;transition:.15s;border:none;background:none;width:100%;font-family:inherit;}
+.sb-logout:hover{background:rgba(230,51,41,.1);color:var(--red);}
+.sb-bottom{padding:10px;border-top:1px solid rgba(255,255,255,.08);}
+
+/* TOPBAR */
+.main{flex:1;display:flex;flex-direction:column;overflow:hidden;}
+.tb{background:white;border-bottom:1px solid var(--border);padding:0 20px;height:54px;display:flex;align-items:center;gap:12px;}
+.tb-menu{background:none;border:none;cursor:pointer;font-size:18px;color:var(--navy);}
+.tb-title{font-family:'Syne',sans-serif;font-size:15px;font-weight:700;color:var(--navy);flex:1;}
+.tb-badge{padding:4px 12px;background:rgba(221,107,32,.1);border-radius:20px;font-size:11px;font-weight:700;color:var(--orange);border:1px solid rgba(221,107,32,.2);}
+.tb-company{font-size:11px;color:var(--gray);background:var(--bg);padding:4px 12px;border-radius:20px;border:1px solid var(--border);}
+.tb-avatar{width:32px;height:32px;border-radius:50%;background:linear-gradient(135deg,var(--orange),#b45309);color:white;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;cursor:pointer;}
+
+/* CONTENT */
+.content{flex:1;overflow-y:auto;padding:16px;}
+.pg{display:none;}.pg.on{display:block;}
+.ph{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;flex-wrap:wrap;gap:8px;}
+.ph h1{font-family:'Syne',sans-serif;font-size:20px;font-weight:800;color:var(--navy);}
+.ph p{font-size:12px;color:var(--gray);margin-top:2px;}
+
+/* CARDS */
+.card{background:white;border-radius:12px;border:1px solid var(--border);margin-bottom:12px;}
+.ch{padding:12px 14px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--bg);}
+.ct{font-size:13px;font-weight:700;color:var(--navy);}
+.cb{padding:14px;}
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+.g3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;}
+.g4{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;}
+
+/* KPI */
+.kpi{background:white;border-radius:12px;padding:16px;border:1px solid var(--border);}
+.kpi-val{font-size:24px;font-weight:800;color:var(--navy);}
+.kpi-label{font-size:11px;color:var(--gray);margin-top:3px;}
+.kpi-sub{font-size:11px;font-weight:600;margin-top:6px;}
+
+/* BUTTONS */
+.btn{display:inline-flex;align-items:center;gap:5px;padding:7px 14px;border-radius:8px;font-size:12px;font-weight:600;cursor:pointer;border:none;font-family:inherit;transition:.15s;}
+.btp{background:var(--navy);color:white;}.btp:hover{opacity:.9;}
+.btt{background:linear-gradient(135deg,var(--teal),#00a896);color:white;}
+.bto{background:var(--bg);color:var(--navy);border:1px solid var(--border);}.bto:hover{background:var(--border);}
+.btor{background:linear-gradient(135deg,var(--orange),#b45309);color:white;}
+.btg{background:rgba(56,161,105,.1);color:var(--green);border:1px solid rgba(56,161,105,.2);}
+.btr{background:rgba(230,51,41,.1);color:var(--red);border:1px solid rgba(230,51,41,.2);}
+.btsm{padding:4px 10px;font-size:11px;}
+
+/* BADGES */
+.b{display:inline-flex;align-items:center;padding:2px 8px;border-radius:20px;font-size:10px;font-weight:700;}
+.bg{background:#F0FFF4;color:var(--green);}
+.br{background:#FFF5F5;color:var(--red);}
+.by{background:#FFFBEB;color:#B7791F;}
+.bt{background:rgba(0,194,168,.1);color:var(--teal);}
+.bn{background:var(--bg);color:var(--gray);}
+.bo{background:rgba(221,107,32,.1);color:var(--orange);}
+.bp{background:#FAF5FF;color:var(--purple);}
+
+/* TABLE */
+.tbl-wrap{overflow-x:auto;}
+table{width:100%;border-collapse:collapse;}
+th{background:var(--bg);padding:8px 12px;text-align:left;font-size:11px;font-weight:700;color:var(--gray);text-transform:uppercase;letter-spacing:.5px;white-space:nowrap;}
+td{padding:10px 12px;border-bottom:1px solid var(--bg);font-size:12px;vertical-align:middle;}
+tr:hover td{background:rgba(0,194,168,.02);}
+tr:last-child td{border-bottom:none;}
+
+/* MODAL */
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.4);z-index:200;display:none;align-items:center;justify-content:center;padding:16px;}
+.modal-overlay.on{display:flex;}
+.modal{background:white;border-radius:16px;padding:24px;width:100%;max-width:600px;max-height:90vh;overflow-y:auto;box-shadow:0 20px 60px rgba(0,0,0,.2);}
+.modal-lg{max-width:800px;}
+.mh{display:flex;align-items:center;justify-content:space-between;margin-bottom:18px;}
+.mh h3{font-family:'Syne',sans-serif;font-size:17px;font-weight:800;color:var(--navy);}
+.mclose{background:none;border:none;font-size:20px;cursor:pointer;color:var(--gray);}
+.ff2{display:flex;flex-direction:column;gap:5px;margin-bottom:12px;}
+.ff2 label{font-size:11px;font-weight:700;color:var(--gray);text-transform:uppercase;letter-spacing:.5px;}
+.ff2 input,.ff2 select,.ff2 textarea{border:1.5px solid var(--border);border-radius:8px;padding:8px 11px;font-family:inherit;font-size:13px;outline:none;transition:.15s;width:100%;}
+.ff2 input:focus,.ff2 select:focus,.ff2 textarea:focus{border-color:var(--teal);}
+.modal-actions{display:flex;gap:8px;justify-content:flex-end;margin-top:18px;padding-top:14px;border-top:1px solid var(--border);}
+
+/* TOAST */
+#toast{position:fixed;bottom:20px;right:20px;z-index:999;display:flex;flex-direction:column;gap:6px;}
+.tst{background:var(--navy);color:white;padding:10px 16px;border-radius:10px;font-size:12px;font-weight:600;box-shadow:0 4px 16px rgba(0,0,0,.2);animation:sIn .3s ease;}
+.tst.err{background:var(--red);}.tst.ok{background:var(--green);}
+@keyframes sIn{from{transform:translateX(100px);opacity:0;}to{transform:translateX(0);opacity:1;}}
+
+/* LD */
+.ld{display:flex;align-items:center;gap:8px;color:var(--gray);padding:30px;justify-content:center;}
+.sp{width:18px;height:18px;border:2px solid var(--border);border-top-color:var(--teal);border-radius:50%;animation:spin .7s linear infinite;}
+@keyframes spin{to{transform:rotate(360deg);}}
+.em{text-align:center;padding:30px;color:var(--gray);}
+
+/* STARS */
+.stars{color:#F6AD55;font-size:14px;}
+
+/* LINE ITEMS */
+.line-item{display:grid;grid-template-columns:2fr 1fr 1fr auto;gap:8px;align-items:center;margin-bottom:6px;}
+.line-item input{border:1.5px solid var(--border);border-radius:8px;padding:7px 10px;font-family:inherit;font-size:12px;outline:none;}
+.line-item input:focus{border-color:var(--teal);}
+.rm-line{background:none;border:none;cursor:pointer;color:var(--red);font-size:16px;}
+
+@media(max-width:900px){.g2,.g3,.g4{grid-template-columns:1fr;}.sb{position:fixed;left:-230px;z-index:150;height:100vh;transition:.3s;}.sb.open{left:0;}}
+</style>
+</head>
+<body>
+
+<!-- LOGIN -->
+<div class="login-wrap" id="login-page">
+  <div class="login-left">
+    <div class="ll-brand">Pay<span>Pe</span> <span style="opacity:.4;font-size:22px;">ERP</span></div>
+    <div class="ll-sub">Procurement — Module 5</div>
+    <div class="ll-title">Smart <span>Procurement</span><br>Management</div>
+    <div class="ll-desc">Manage vendors, RFQs, purchase approvals, GRN and vendor payments — all in one place.</div>
+    <div class="ll-features">
+      <div class="ll-feat">🏪 Vendor Management</div>
+      <div class="ll-feat">📋 RFQ & Quotations</div>
+      <div class="ll-feat">✅ Purchase Approvals</div>
+      <div class="ll-feat">📦 GRN & Quality</div>
+      <div class="ll-feat">💰 Vendor Payments</div>
+      <div class="ll-feat">📊 Procurement Reports</div>
+    </div>
+  </div>
+  <div class="login-right">
+    <div class="lr-logo">Pay<span>Pe</span> ERP</div>
+    <div class="lr-badge">🛒 Procurement Module</div>
+    <div class="lr-welcome">Sign In</div>
+    <div class="lr-sub">Access your procurement dashboard</div>
+    <div class="role-tabs">
+      <button class="role-tab on" onclick="setRole('admin',this)">Admin</button>
+      <button class="role-tab" onclick="setRole('manager',this)">Manager</button>
+      <button class="role-tab" onclick="setRole('employee',this)">Employee</button>
+    </div>
+    <div class="ff"><label>Email</label><input id="l-email" type="email" value="admin@paype.co.in"></div>
+    <div class="ff"><label>Password</label><div class="pass-wrap"><input id="l-pass" type="password" value="Admin@PayPe2026"><button class="pass-eye" onclick="togglePass()">👁</button></div></div>
+    <button class="login-btn" id="l-btn" onclick="doLogin()">🛒 Sign In to Procurement</button>
+    <div class="login-err" id="l-err"></div>
+    <div class="login-footer">
+      <div>Admin: admin@paype.co.in / Admin@PayPe2026</div>
+      <div>Manager: accounts@paype.co.in / Manager@PayPe2026</div>
+    </div>
+  </div>
+</div>
+
+<!-- APP -->
+<div class="app" id="erp-app">
+  <div class="sb" id="sb">
+    <div class="sb-logo">
+      <div class="sb-brand">Pay<span>Pe</span> Procure</div>
+      <div class="sb-module">🛒 PROCUREMENT</div>
+      <div class="sb-user" id="sb-user"></div>
+      <span class="sb-role" id="sb-role">Admin</span>
+    </div>
+    <div class="sb-nav">
+      <div class="sb-section">Procurement</div>
+      <div class="ni on" id="ni-dashboard" onclick="go('dashboard',this)"><svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>Dashboard</div>
+      <div class="ni" id="ni-vendors" onclick="go('vendors',this)"><svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75"/></svg>Vendors</div>
+      <div class="ni" id="ni-rfq" onclick="go('rfq',this)"><svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>RFQ</div>
+      <div class="ni" id="ni-approvals" onclick="go('approvals',this)"><svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><polyline points="9 11 12 14 22 4"/><path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11"/></svg>Approvals</div>
+      <div class="ni" id="ni-grn" onclick="go('grn',this)"><svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M21 16V8a2 2 0 00-1-1.73l-7-4a2 2 0 00-2 0l-7 4A2 2 0 003 8v8a2 2 0 001 1.73l7 4a2 2 0 002 0l7-4A2 2 0 0021 16z"/></svg>GRN</div>
+      <div class="ni" id="ni-payments" onclick="go('payments',this)"><svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="1" y="4" width="22" height="16" rx="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg>Vendor Payments</div>
+      <div class="sb-section">Account</div>
+      <div class="ni" id="ni-profile" onclick="go('profile',this)">
+        <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+        My Profile
+      </div>
+      <div class="ni" id="ni-settings" onclick="go('settings',this)">
+        <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 010 2.83 2 2 0 01-2.83 0l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-4 0v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83-2.83l.06-.06A1.65 1.65 0 004.68 15a1.65 1.65 0 00-1.51-1H3a2 2 0 010-4h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 012.83-2.83l.06.06A1.65 1.65 0 009 4.68a1.65 1.65 0 001-1.51V3a2 2 0 014 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 2.83l-.06.06A1.65 1.65 0 0019.4 9a1.65 1.65 0 001.51 1H21a2 2 0 010 4h-.09a1.65 1.65 0 00-1.51 1z"/></svg>
+        Settings
+      </div>
+      <div class="sb-section">Other Modules</div>
+      <a class="sb-link" href="https://erp.paype.co.in" target="_blank">📊 Accounting →</a>
+      <a class="sb-link" href="https://hr.paype.co.in" target="_blank">👥 HRMS →</a>
+      <a class="sb-link" href="https://doctorramesh5-ops.github.io/paype-erp/ai.html" target="_blank">🤖 AI Assistant →</a>
+    </div>
+    <div class="sb-bottom">
+      <button class="sb-logout" onclick="doLogout()">
+        <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4M16 17l5-5-5-5M21 12H9"/></svg>Sign Out
+      </button>
+    </div>
+  </div>
+
+  <div class="main">
+    <div class="tb">
+      <button class="tb-menu" onclick="document.getElementById('sb').classList.toggle('open')">☰</button>
+      <div class="tb-title" id="tb-title">Procurement Dashboard</div>
+      <div class="tb-badge">🛒 Module 5</div>
+      <div class="tb-company" id="tb-company">PayPe Technologies</div>
+      <div class="tb-avatar" id="tb-avatar">R</div>
+    </div>
+
+    <div class="content">
+
+      <!-- DASHBOARD -->
+      <div class="pg on" id="pg-dashboard">
+        <div class="ph"><div><h1>🛒 Procurement Dashboard</h1><p id="dash-date">Loading...</p></div>
+          <button class="btn btor" onclick="go('rfq',document.getElementById('ni-rfq'))">+ New RFQ</button>
+        </div>
+        <div id="dash-kpis" class="g4" style="margin-bottom:12px;"></div>
+        <div class="g2">
+          <div id="dash-pending-approvals"></div>
+          <div id="dash-recent-rfq"></div>
+        </div>
+      </div>
+
+      <!-- VENDORS -->
+      <div class="pg" id="pg-vendors">
+        <div class="ph"><div><h1>🏪 Vendor Management</h1><p>All your suppliers and vendors</p></div>
+          <button class="btn btor" onclick="openModal('vendor-modal')">+ Add Vendor</button>
+        </div>
+        <div class="card">
+          <div class="ch"><div class="ct">Vendor List</div>
+            <input type="text" id="vendor-search" placeholder="Search vendors..." style="border:1px solid var(--border);border-radius:8px;padding:5px 10px;font-size:12px;outline:none;" oninput="filterVendors()">
+          </div>
+          <div class="tbl-wrap"><table>
+            <thead><tr><th>Vendor</th><th>Category</th><th>GSTIN</th><th>Mobile</th><th>Payment Terms</th><th>Rating</th><th>POs</th><th>Status</th><th>Action</th></tr></thead>
+            <tbody id="vendors-tbody"><tr><td colspan="9" class="em">Loading...</td></tr></tbody>
+          </table></div>
+        </div>
+      </div>
+
+      <!-- RFQ -->
+      <div class="pg" id="pg-rfq">
+        <div class="ph"><div><h1>📋 Request for Quotation</h1><p>Manage RFQs and vendor quotes</p></div>
+          <button class="btn btor" onclick="openModal('rfq-modal')">+ Create RFQ</button>
+        </div>
+        <div class="card">
+          <div class="ch"><div class="ct">RFQ List</div></div>
+          <div class="tbl-wrap"><table>
+            <thead><tr><th>RFQ No</th><th>Title</th><th>Required Date</th><th>Status</th><th>Vendors</th><th>Created</th><th>Action</th></tr></thead>
+            <tbody id="rfq-tbody"><tr><td colspan="7" class="em">Loading...</td></tr></tbody>
+          </table></div>
+        </div>
+      </div>
+
+      <!-- APPROVALS -->
+      <div class="pg" id="pg-approvals">
+        <div class="ph"><div><h1>✅ Purchase Approvals</h1><p>Review and approve purchase requests</p></div></div>
+        <div class="card">
+          <div class="ch"><div class="ct">Pending Approvals</div></div>
+          <div class="tbl-wrap"><table>
+            <thead><tr><th>PO No</th><th>Vendor</th><th>Amount</th><th>Requested By</th><th>Justification</th><th>Status</th><th>Action</th></tr></thead>
+            <tbody id="approvals-tbody"><tr><td colspan="7" class="em">Loading...</td></tr></tbody>
+          </table></div>
+        </div>
+      </div>
+
+      <!-- GRN -->
+      <div class="pg" id="pg-grn">
+        <div class="ph"><div><h1>📦 Goods Receipt Note</h1><p>Track received goods and quality checks</p></div>
+          <button class="btn btor" onclick="openModal('grn-modal')">+ New GRN</button>
+        </div>
+        <div class="card">
+          <div class="ch"><div class="ct">GRN List</div></div>
+          <div class="tbl-wrap"><table>
+            <thead><tr><th>GRN No</th><th>PO No</th><th>Vendor</th><th>Received Date</th><th>Quality</th><th>Action</th></tr></thead>
+            <tbody id="grn-tbody"><tr><td colspan="6" class="em">Loading...</td></tr></tbody>
+          </table></div>
+        </div>
+      </div>
+
+      <!-- PAYMENTS -->
+      <div class="pg" id="pg-payments">
+        <div class="ph"><div><h1>💰 Vendor Payments</h1><p>Track all vendor payments</p></div>
+          <button class="btn btor" onclick="openModal('payment-modal')">+ Record Payment</button>
+        </div>
+        <div class="card">
+          <div class="ch"><div class="ct">Payment History</div></div>
+          <div class="tbl-wrap"><table>
+            <thead><tr><th>Date</th><th>Vendor</th><th>Amount</th><th>Mode</th><th>Reference</th><th>Notes</th></tr></thead>
+            <tbody id="payments-tbody"><tr><td colspan="6" class="em">Loading...</td></tr></tbody>
+          </table></div>
+        </div>
+      </div>
+
+      <!-- PROFILE -->
+      <div class="pg" id="pg-profile">
+        <div class="ph"><div><h1>👤 My Profile</h1><p>Account details and preferences</p></div>
+          <button class="btn btor" onclick="saveProcProfile()">Save Changes</button>
+        </div>
+        <div id="proc-profile-content"></div>
+      </div>
+
+      <!-- SETTINGS -->
+      <div class="pg" id="pg-settings">
+        <div class="ph"><div><h1>⚙️ Settings</h1><p>Procurement module configuration</p></div></div>
+        <div id="proc-settings-content"></div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- VENDOR MODAL -->
+<div class="modal-overlay" id="vendor-modal">
+  <div class="modal">
+    <div class="mh"><h3>Add Vendor</h3><button class="mclose" onclick="closeModal('vendor-modal')">✕</button></div>
+    <div class="g2">
+      <div class="ff2"><label>Vendor Name *</label><input id="v-name" placeholder="Company name"></div>
+      <div class="ff2"><label>Category</label><select id="v-cat"><option>General</option><option>IT & Software</option><option>Office Supplies</option><option>Infrastructure</option><option>Services</option><option>Raw Materials</option></select></div>
+      <div class="ff2"><label>GSTIN</label><input id="v-gstin" placeholder="33XXXXX1234X1Z5" maxlength="15"></div>
+      <div class="ff2"><label>PAN</label><input id="v-pan" placeholder="XXXXX1234X" maxlength="10"></div>
+      <div class="ff2"><label>Email</label><input id="v-email" type="email" placeholder="vendor@email.com"></div>
+      <div class="ff2"><label>Mobile</label><input id="v-mobile" placeholder="+91 XXXXX XXXXX"></div>
+      <div class="ff2"><label>Payment Terms (Days)</label><input id="v-terms" type="number" value="30"></div>
+      <div class="ff2"><label>Rating (1-5)</label><input id="v-rating" type="number" min="1" max="5" value="5"></div>
+    </div>
+    <div class="ff2"><label>Address</label><textarea id="v-address" rows="2" placeholder="Full address"></textarea></div>
+    <div class="g2">
+      <div class="ff2"><label>Bank Name</label><input id="v-bank" placeholder="Bank name"></div>
+      <div class="ff2"><label>Account No</label><input id="v-accno" placeholder="Account number"></div>
+      <div class="ff2"><label>IFSC Code</label><input id="v-ifsc" placeholder="IFSC Code"></div>
+      <div class="ff2"><label>Notes</label><input id="v-notes" placeholder="Any notes"></div>
+    </div>
+    <div class="modal-actions">
+      <button class="btn bto" onclick="closeModal('vendor-modal')">Cancel</button>
+      <button class="btn btor" onclick="saveVendor()">Save Vendor</button>
+    </div>
+  </div>
+</div>
+
+<!-- RFQ MODAL -->
+<div class="modal-overlay" id="rfq-modal">
+  <div class="modal modal-lg">
+    <div class="mh"><h3>Create RFQ</h3><button class="mclose" onclick="closeModal('rfq-modal')">✕</button></div>
+    <div class="g2">
+      <div class="ff2"><label>RFQ Title *</label><input id="rfq-title" placeholder="e.g. Office Furniture Purchase"></div>
+      <div class="ff2"><label>Required Date</label><input id="rfq-date" type="date"></div>
+    </div>
+    <div class="ff2"><label>Notes</label><textarea id="rfq-notes" rows="2" placeholder="Additional requirements..."></textarea></div>
+    <div style="margin-bottom:12px;">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;">
+        <label style="font-size:11px;font-weight:700;color:var(--gray);text-transform:uppercase;">Line Items *</label>
+        <button class="btn bto btsm" onclick="addRFQLine()">+ Add Item</button>
+      </div>
+      <div style="display:grid;grid-template-columns:2fr 1fr 1fr auto;gap:8px;margin-bottom:6px;">
+        <span style="font-size:10px;font-weight:700;color:var(--gray);">DESCRIPTION</span>
+        <span style="font-size:10px;font-weight:700;color:var(--gray);">QTY</span>
+        <span style="font-size:10px;font-weight:700;color:var(--gray);">UNIT</span>
+        <span></span>
+      </div>
+      <div id="rfq-lines"></div>
+    </div>
+    <div class="modal-actions">
+      <button class="btn bto" onclick="closeModal('rfq-modal')">Cancel</button>
+      <button class="btn btor" onclick="saveRFQ()">Create RFQ</button>
+    </div>
+  </div>
+</div>
+
+<!-- GRN MODAL -->
+<div class="modal-overlay" id="grn-modal">
+  <div class="modal">
+    <div class="mh"><h3>Create GRN</h3><button class="mclose" onclick="closeModal('grn-modal')">✕</button></div>
+    <div class="g2">
+      <div class="ff2"><label>Purchase Order *</label><select id="grn-po"><option value="">Select PO...</option></select></div>
+      <div class="ff2"><label>Received Date</label><input id="grn-date" type="date" value=""></div>
+      <div class="ff2"><label>Quality Status</label><select id="grn-quality"><option>Accepted</option><option>Partially Accepted</option><option>Rejected</option></select></div>
+      <div class="ff2"><label>Notes</label><input id="grn-notes" placeholder="Any notes..."></div>
+    </div>
+    <div class="modal-actions">
+      <button class="btn bto" onclick="closeModal('grn-modal')">Cancel</button>
+      <button class="btn btor" onclick="saveGRN()">Create GRN</button>
+    </div>
+  </div>
+</div>
+
+<!-- PAYMENT MODAL -->
+<div class="modal-overlay" id="payment-modal">
+  <div class="modal">
+    <div class="mh"><h3>Record Vendor Payment</h3><button class="mclose" onclick="closeModal('payment-modal')">✕</button></div>
+    <div class="g2">
+      <div class="ff2"><label>Vendor *</label><select id="pay-vendor"><option value="">Select vendor...</option></select></div>
+      <div class="ff2"><label>Amount (Rs) *</label><input id="pay-amount" type="number" placeholder="0.00"></div>
+      <div class="ff2"><label>Payment Date *</label><input id="pay-date" type="date"></div>
+      <div class="ff2"><label>Payment Mode</label><select id="pay-mode"><option>NEFT</option><option>RTGS</option><option>IMPS</option><option>Cheque</option><option>Cash</option><option>UPI</option></select></div>
+      <div class="ff2"><label>Reference / UTR No</label><input id="pay-ref" placeholder="Reference number"></div>
+      <div class="ff2"><label>Notes</label><input id="pay-notes" placeholder="Any notes..."></div>
+    </div>
+    <div class="modal-actions">
+      <button class="btn bto" onclick="closeModal('payment-modal')">Cancel</button>
+      <button class="btn btor" onclick="savePayment()">Record Payment</button>
+    </div>
+  </div>
+</div>
+
+<div id="toast"></div>
+
+<script>
+var API = 'https://erpapi.paype.co.in';
+var TOKEN = localStorage.getItem('erp_token');
+var USER = JSON.parse(localStorage.getItem('erp_user')||'null');
+var allVendors = [];
+
+// ── LOGIN ─────────────────────────────────
+function setRole(r,el) {
+  document.querySelectorAll('.role-tab').forEach(function(t){t.classList.remove('on');});
+  el.classList.add('on');
+  var em={admin:'admin@paype.co.in',manager:'accounts@paype.co.in',employee:'employee@paype.co.in'};
+  var pw={admin:'Admin@PayPe2026',manager:'Manager@PayPe2026',employee:'Employee@PayPe2026'};
+  document.getElementById('l-email').value=em[r]||'';
+  document.getElementById('l-pass').value=pw[r]||'';
+}
+function togglePass(){var i=document.getElementById('l-pass');i.type=i.type==='password'?'text':'password';}
+
+async function doLogin() {
+  var email=document.getElementById('l-email').value.trim(), pass=document.getElementById('l-pass').value;
+  var err=document.getElementById('l-err'), btn=document.getElementById('l-btn');
+  err.style.display='none';
+  if (!email||!pass){err.textContent='Enter email and password';err.style.display='block';return;}
+  btn.textContent='Signing in...';btn.disabled=true;
+  try {
+    var res=await fetch(API+'/api/auth/login',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({email,password:pass})});
+    var data=await res.json();
+    if (data.success){
+      TOKEN=data.token||(data.data&&data.data.token)||(data.data&&data.data.accessToken);
+      USER=data.user||(data.data&&data.data.user);
+      localStorage.setItem('erp_token',TOKEN);
+      localStorage.setItem('erp_user',JSON.stringify(USER));
+      startApp();
+    } else {err.textContent=data.message||'Invalid credentials';err.style.display='block';}
+  } catch(e){err.textContent='Connection error';err.style.display='block';}
+  btn.textContent='🛒 Sign In to Procurement';btn.disabled=false;
+}
+
+function startApp(){
+  document.getElementById('login-page').style.display='none';
+  document.getElementById('erp-app').classList.add('on');
+  document.getElementById('sb-user').textContent=(USER&&USER.name)||'User';
+  document.getElementById('tb-avatar').textContent=((USER&&USER.name)||'U').charAt(0).toUpperCase();
+  document.getElementById('tb-company').textContent=(USER&&USER.company)||'PayPe Technologies';
+  document.getElementById('sb-role').textContent={admin:'Admin',manager:'Manager',employee:'Employee'}[(USER&&USER.role)]||(USER&&USER.role)||'User';
+  document.getElementById('dash-date').textContent=new Date().toLocaleDateString('en-IN',{weekday:'long',year:'numeric',month:'long',day:'numeric'});
+  document.getElementById('grn-date').value=document.getElementById('pay-date').value=new Date().toISOString().split('T')[0];
+  loadDashboard();
+  loadVendorsData();
+}
+function doLogout(){localStorage.removeItem('erp_token');localStorage.removeItem('erp_user');location.reload();}
+
+function go(name,el){
+  document.querySelectorAll('.pg').forEach(function(p){p.classList.remove('on');});
+  document.querySelectorAll('.ni').forEach(function(n){n.classList.remove('on');});
+  var pg=document.getElementById('pg-'+name);if(pg)pg.classList.add('on');
+  if(el)el.classList.add('on');
+  document.getElementById('tb-title').textContent=el?el.textContent.trim():name;
+  document.getElementById('sb').classList.remove('open');
+  var loaders={dashboard:loadDashboard,vendors:loadVendors,rfq:loadRFQ,approvals:loadApprovals,grn:loadGRN,payments:loadPayments,profile:loadProcProfile,settings:loadProcSettings};
+  if(loaders[name])loaders[name]();
+}
+
+// ── API HELPER ────────────────────────────
+async function api(method,path,body){
+  var opts={method,headers:{'Content-Type':'application/json','Authorization':'Bearer '+TOKEN}};
+  if(body)opts.body=JSON.stringify(body);
+  var r=await fetch(API+path,opts);
+  return r.json();
+}
+
+// ── DASHBOARD ─────────────────────────────
+async function loadDashboard(){
+  try {
+    var d=await api('GET','/api/procurement/dashboard');
+    if(!d.success)return;
+    var kd=d.data;
+    document.getElementById('dash-kpis').innerHTML=`
+      <div class="kpi"><div class="kpi-val">${kd.vendors?.active||0}</div><div class="kpi-label">Active Vendors</div><div class="kpi-sub" style="color:var(--gray);">of ${kd.vendors?.total||0} total</div></div>
+      <div class="kpi"><div class="kpi-val">${kd.rfqs?.open||0}</div><div class="kpi-label">Open RFQs</div><div class="kpi-sub" style="color:var(--gray);">${kd.rfqs?.total||0} total</div></div>
+      <div class="kpi"><div class="kpi-val" style="color:var(--red);">${kd.approvals?.pending||0}</div><div class="kpi-label">Pending Approvals</div><div class="kpi-sub" style="color:var(--gray);">${kd.approvals?.total||0} total</div></div>
+      <div class="kpi"><div class="kpi-val">Rs ${fmt(kd.totalPayments||0)}</div><div class="kpi-label">Total Payments</div><div class="kpi-sub" style="color:var(--green);">${kd.grns?.total||0} GRNs</div></div>
+    `;
+  } catch(e){}
+
+  // Load pending approvals
+  try {
+    var ap=await api('GET','/api/procurement/approvals');
+    var pending=(ap.data||[]).filter(function(a){return a.status==='Pending';}).slice(0,5);
+    document.getElementById('dash-pending-approvals').innerHTML=`
+      <div class="card"><div class="ch"><div class="ct">⚠️ Pending Approvals</div><button class="btn bto btsm" onclick="go('approvals',document.getElementById('ni-approvals'))">View All</button></div>
+      <div class="cb">${pending.length?pending.map(function(a){return`
+        <div style="display:flex;align-items:center;justify-content:space-between;padding:8px 0;border-bottom:1px solid var(--bg);">
+          <div><div style="font-size:12px;font-weight:600;">${a.po_no||'PO-'+a.id?.slice(0,6)}</div>
+          <div style="font-size:11px;color:var(--gray);">${a.vendor_name||'Vendor'} · ${a.requested_by_name||''}</div></div>
+          <div style="display:flex;align-items:center;gap:6px;">
+            <span style="font-size:13px;font-weight:700;">Rs ${fmt(a.amount||0)}</span>
+            ${(USER&&USER.role)==='admin'||(USER&&USER.role)==='manager'?`<button class="btn btg btsm" onclick="approvePA('${a.id}','Approved')">✓</button><button class="btn btr btsm" onclick="approvePA('${a.id}','Rejected')">✕</button>`:'<span class="b by">Pending</span>'}
+          </div>
+        </div>`}).join(''):'<div class="em" style="padding:20px;">✅ No pending approvals</div>'}</div></div>`;
+  } catch(e){}
+
+  // Load recent RFQs
+  try {
+    var rf=await api('GET','/api/procurement/rfq');
+    var recent=(rf.data||[]).slice(0,5);
+    document.getElementById('dash-recent-rfq').innerHTML=`
+      <div class="card"><div class="ch"><div class="ct">📋 Recent RFQs</div><button class="btn bto btsm" onclick="go('rfq',document.getElementById('ni-rfq'))">View All</button></div>
+      <div class="cb">${recent.length?recent.map(function(r){return`
+        <div style="display:flex;align-items:center;justify-content:space-between;padding:8px 0;border-bottom:1px solid var(--bg);">
+          <div><div style="font-size:12px;font-weight:600;">${r.rfq_no||''}</div>
+          <div style="font-size:11px;color:var(--gray);">${r.title||''}</div></div>
+          <span class="b ${r.status==='Open'?'bt':'bn'}">${r.status||'Open'}</span>
+        </div>`}).join(''):'<div class="em" style="padding:20px;">No RFQs yet. <a href="#" onclick="go(\'rfq\',document.getElementById(\'ni-rfq\'))">Create one →</a></div>'}</div></div>`;
+  } catch(e){}
+}
+
+// ── VENDORS ───────────────────────────────
+async function loadVendorsData(){
+  try {
+    var d=await api('GET','/api/procurement/vendors');
+    allVendors=d.data||[];
+    // Populate vendor dropdown in payment modal
+    var sel=document.getElementById('pay-vendor');
+    sel.innerHTML='<option value="">Select vendor...</option>';
+    allVendors.forEach(function(v){
+      sel.innerHTML+=`<option value="${v.party_id}">${v.name}</option>`;
+    });
+  } catch(e){}
+}
+
+async function loadVendors(){
+  var tbody=document.getElementById('vendors-tbody');
+  tbody.innerHTML='<tr><td colspan="9" class="ld"><div class="sp"></div> Loading...</td></tr>';
+  try {
+    var d=await api('GET','/api/procurement/vendors');
+    allVendors=d.data||[];
+    renderVendors(allVendors);
+  } catch(e){tbody.innerHTML='<tr><td colspan="9" class="em">Error loading vendors</td></tr>';}
+}
+
+function renderVendors(vendors){
+  var tbody=document.getElementById('vendors-tbody');
+  if(!vendors.length){tbody.innerHTML='<tr><td colspan="9" class="em">No vendors yet. Add your first vendor!</td></tr>';return;}
+  tbody.innerHTML=vendors.map(function(v){
+    var stars='★'.repeat(Math.round(v.rating||5))+'☆'.repeat(5-Math.round(v.rating||5));
+    return`<tr>
+      <td><div style="font-weight:600;">${v.name}</div><div style="font-size:11px;color:var(--gray);">${v.email||''}</div></td>
+      <td><span class="b bn">${v.category||'General'}</span></td>
+      <td style="font-size:11px;font-family:monospace;">${v.gstin||'—'}</td>
+      <td>${v.mobile||'—'}</td>
+      <td>Net ${v.payment_terms||30} days</td>
+      <td><span class="stars" title="${v.rating}/5">${stars}</span></td>
+      <td>${v.po_count||0}</td>
+      <td><span class="b ${v.is_active!==false?'bg':'br'}">${v.is_active!==false?'Active':'Inactive'}</span></td>
+      <td><button class="btn bto btsm" onclick="toggleVendor('${v.id}',${v.is_active!==false})">
+        ${v.is_active!==false?'Suspend':'Activate'}
+      </button></td>
+    </tr>`;
+  }).join('');
+}
+
+function filterVendors(){
+  var q=document.getElementById('vendor-search').value.toLowerCase();
+  var filtered=allVendors.filter(function(v){return v.name?.toLowerCase().includes(q)||v.category?.toLowerCase().includes(q)||v.gstin?.toLowerCase().includes(q);});
+  renderVendors(filtered);
+}
+
+async function saveVendor(){
+  var body={
+    name:document.getElementById('v-name').value.trim(),
+    gstin:document.getElementById('v-gstin').value.trim(),
+    pan:document.getElementById('v-pan').value.trim(),
+    email:document.getElementById('v-email').value.trim(),
+    mobile:document.getElementById('v-mobile').value.trim(),
+    category:document.getElementById('v-cat').value,
+    paymentTerms:parseInt(document.getElementById('v-terms').value)||30,
+    rating:parseFloat(document.getElementById('v-rating').value)||5,
+    address:document.getElementById('v-address').value.trim(),
+    bankName:document.getElementById('v-bank').value.trim(),
+    accountNo:document.getElementById('v-accno').value.trim(),
+    ifsc:document.getElementById('v-ifsc').value.trim(),
+    notes:document.getElementById('v-notes').value.trim(),
+  };
+  if(!body.name){toast('Vendor name required','err');return;}
+  try {
+    var d=await api('POST','/api/procurement/vendors',body);
+    if(d.success){toast(d.message||'Vendor added!','ok');closeModal('vendor-modal');loadVendors();loadVendorsData();}
+    else toast(d.message||'Error','err');
+  } catch(e){toast('Error saving vendor','err');}
+}
+
+async function toggleVendor(id,isActive){
+  try {
+    var d=await api('PUT','/api/procurement/vendors/'+id,{isActive:!isActive});
+    if(d.success){toast(isActive?'Vendor suspended!':'Vendor activated!','ok');loadVendors();}
+    else toast(d.message,'err');
+  } catch(e){toast('Error','err');}
+}
+
+// ── RFQ ───────────────────────────────────
+async function loadRFQ(){
+  var tbody=document.getElementById('rfq-tbody');
+  tbody.innerHTML='<tr><td colspan="7" class="ld"><div class="sp"></div> Loading...</td></tr>';
+  try {
+    var d=await api('GET','/api/procurement/rfq');
+    var rfqs=d.data||[];
+    if(!rfqs.length){tbody.innerHTML='<tr><td colspan="7" class="em">No RFQs yet</td></tr>';return;}
+    tbody.innerHTML=rfqs.map(function(r){return`<tr>
+      <td style="font-weight:700;color:var(--navy);">${r.rfq_no||'—'}</td>
+      <td>${r.title}</td>
+      <td>${r.required_date?new Date(r.required_date).toLocaleDateString('en-IN'):'—'}</td>
+      <td><span class="b ${r.status==='Open'?'bt':r.status==='Closed'?'bg':'bn'}">${r.status}</span></td>
+      <td>—</td>
+      <td style="font-size:11px;color:var(--gray);">${r.created_by_name||''}<br>${new Date(r.created_at).toLocaleDateString('en-IN')}</td>
+      <td><button class="btn bto btsm">View</button></td>
+    </tr>`;}).join('');
+  } catch(e){tbody.innerHTML='<tr><td colspan="7" class="em">Error loading RFQs</td></tr>';}
+}
+
+var rfqLineCount=0;
+function addRFQLine(){
+  rfqLineCount++;
+  var id='rl'+rfqLineCount;
+  var div=document.createElement('div');
+  div.className='line-item';
+  div.id=id;
+  div.innerHTML=`
+    <input placeholder="Item description" class="rl-desc">
+    <input type="number" placeholder="Qty" value="1" class="rl-qty">
+    <select class="rl-unit"><option>Nos</option><option>Kg</option><option>Ltr</option><option>Box</option><option>Set</option><option>Pair</option></select>
+    <button class="rm-line" onclick="document.getElementById('${id}').remove()">✕</button>`;
+  document.getElementById('rfq-lines').appendChild(div);
+}
+
+async function saveRFQ(){
+  var title=document.getElementById('rfq-title').value.trim();
+  if(!title){toast('RFQ title required','err');return;}
+  var lineEls=document.querySelectorAll('#rfq-lines .line-item');
+  if(!lineEls.length){toast('Add at least one item','err');return;}
+  var lines=[];
+  lineEls.forEach(function(el){
+    var desc=el.querySelector('.rl-desc')?.value.trim();
+    var qty=el.querySelector('.rl-qty')?.value;
+    var unit=el.querySelector('.rl-unit')?.value;
+    if(desc)lines.push({description:desc,qty:parseFloat(qty)||1,unit:unit||'Nos'});
+  });
+  if(!lines.length){toast('Add at least one valid item','err');return;}
+  try {
+    var d=await api('POST','/api/procurement/rfq',{
+      title,
+      requiredDate:document.getElementById('rfq-date').value,
+      notes:document.getElementById('rfq-notes').value,
+      lines
+    });
+    if(d.success){toast(d.message||'RFQ created!','ok');closeModal('rfq-modal');loadRFQ();}
+    else toast(d.message||'Error','err');
+  } catch(e){toast('Error creating RFQ','err');}
+}
+
+// ── APPROVALS ─────────────────────────────
+async function loadApprovals(){
+  var tbody=document.getElementById('approvals-tbody');
+  tbody.innerHTML='<tr><td colspan="7" class="ld"><div class="sp"></div> Loading...</td></tr>';
+  try {
+    var d=await api('GET','/api/procurement/approvals');
+    var items=d.data||[];
+    if(!items.length){tbody.innerHTML='<tr><td colspan="7" class="em">No approval requests</td></tr>';return;}
+    tbody.innerHTML=items.map(function(a){
+      var canApprove=(USER&&USER.role)==='admin'||(USER&&USER.role)==='manager';
+      var actions=canApprove&&a.status==='Pending'
+        ?`<button class="btn btg btsm" onclick="approvePA('${a.id}','Approved')">✅ Approve</button> <button class="btn btr btsm" onclick="approvePA('${a.id}','Rejected')">❌ Reject</button>`
+        :`<span class="b ${a.status==='Approved'?'bg':a.status==='Rejected'?'br':'by'}">${a.status}</span>`;
+      return`<tr>
+        <td style="font-weight:600;">${a.po_no||'—'}</td>
+        <td>${a.vendor_name||'—'}</td>
+        <td style="font-weight:700;">Rs ${fmt(a.amount||0)}</td>
+        <td>${a.requested_by_name||'—'}</td>
+        <td style="font-size:11px;">${a.justification||'—'}</td>
+        <td><span class="b ${a.status==='Approved'?'bg':a.status==='Rejected'?'br':'by'}">${a.status}</span></td>
+        <td style="white-space:nowrap;">${actions}</td>
+      </tr>`;
+    }).join('');
+  } catch(e){tbody.innerHTML='<tr><td colspan="7" class="em">Error loading approvals</td></tr>';}
+}
+
+async function approvePA(id,status){
+  try {
+    var d=await api('PUT','/api/procurement/approvals/'+id,{status,remarks:''});
+    if(d.success){toast(d.message||status+'!','ok');loadApprovals();loadDashboard();}
+    else toast(d.message||'Error','err');
+  } catch(e){toast('Error','err');}
+}
+
+// ── GRN ───────────────────────────────────
+async function loadGRN(){
+  var tbody=document.getElementById('grn-tbody');
+  tbody.innerHTML='<tr><td colspan="6" class="ld"><div class="sp"></div> Loading...</td></tr>';
+  // Load POs for dropdown
+  try {
+    var pos=await api('GET','/api/purchases');
+    var sel=document.getElementById('grn-po');
+    sel.innerHTML='<option value="">Select PO...</option>';
+    (pos.data||[]).forEach(function(p){
+      sel.innerHTML+=`<option value="${p.id}">${p.po_no||p.id?.slice(0,8)} — ${p.vendor_name||''}</option>`;
+    });
+  } catch(e){}
+  try {
+    var d=await api('GET','/api/procurement/grn');
+    var items=d.data||[];
+    if(!items.length){tbody.innerHTML='<tr><td colspan="6" class="em">No GRNs yet</td></tr>';return;}
+    tbody.innerHTML=items.map(function(g){return`<tr>
+      <td style="font-weight:700;color:var(--navy);">${g.grn_no||'—'}</td>
+      <td>${g.po_no||'—'}</td>
+      <td>${g.vendor_name||'—'}</td>
+      <td>${g.received_date?new Date(g.received_date).toLocaleDateString('en-IN'):'—'}</td>
+      <td><span class="b ${g.quality_status==='Accepted'?'bg':g.quality_status==='Rejected'?'br':'by'}">${g.quality_status||'—'}</span></td>
+      <td><button class="btn bto btsm">View</button></td>
+    </tr>`;}).join('');
+  } catch(e){tbody.innerHTML='<tr><td colspan="6" class="em">Error loading GRNs</td></tr>';}
+}
+
+async function saveGRN(){
+  var poId=document.getElementById('grn-po').value;
+  if(!poId){toast('Select a Purchase Order','err');return;}
+  try {
+    var d=await api('POST','/api/procurement/grn',{
+      poId,
+      receivedDate:document.getElementById('grn-date').value,
+      qualityStatus:document.getElementById('grn-quality').value,
+      notes:document.getElementById('grn-notes').value,
+      lines:[]
+    });
+    if(d.success){toast(d.message||'GRN created!','ok');closeModal('grn-modal');loadGRN();}
+    else toast(d.message||'Error','err');
+  } catch(e){toast('Error creating GRN','err');}
+}
+
+// ── PAYMENTS ──────────────────────────────
+async function loadPayments(){
+  var tbody=document.getElementById('payments-tbody');
+  tbody.innerHTML='<tr><td colspan="6" class="ld"><div class="sp"></div> Loading...</td></tr>';
+  try {
+    var d=await api('GET','/api/procurement/payments');
+    var items=d.data||[];
+    if(!items.length){tbody.innerHTML='<tr><td colspan="6" class="em">No payments yet</td></tr>';return;}
+    tbody.innerHTML=items.map(function(p){return`<tr>
+      <td>${p.payment_date?new Date(p.payment_date).toLocaleDateString('en-IN'):'—'}</td>
+      <td style="font-weight:600;">${p.vendor_name||'—'}</td>
+      <td style="font-weight:700;color:var(--green);">Rs ${fmt(p.amount||0)}</td>
+      <td><span class="b bn">${p.mode||'NEFT'}</span></td>
+      <td style="font-size:11px;font-family:monospace;">${p.reference||'—'}</td>
+      <td style="font-size:11px;color:var(--gray);">${p.notes||'—'}</td>
+    </tr>`;}).join('');
+  } catch(e){tbody.innerHTML='<tr><td colspan="6" class="em">Error loading payments</td></tr>';}
+}
+
+async function savePayment(){
+  var body={
+    vendorId:document.getElementById('pay-vendor').value,
+    amount:parseFloat(document.getElementById('pay-amount').value)||0,
+    paymentDate:document.getElementById('pay-date').value,
+    mode:document.getElementById('pay-mode').value,
+    reference:document.getElementById('pay-ref').value.trim(),
+    notes:document.getElementById('pay-notes').value.trim(),
+  };
+  if(!body.vendorId){toast('Select a vendor','err');return;}
+  if(!body.amount){toast('Enter amount','err');return;}
+  try {
+    var d=await api('POST','/api/procurement/payments',body);
+    if(d.success){toast(d.message||'Payment recorded!','ok');closeModal('payment-modal');loadPayments();}
+    else toast(d.message||'Error','err');
+  } catch(e){toast('Error recording payment','err');}
+}
+
+// ── HELPERS ───────────────────────────────
+function openModal(id){document.getElementById(id).classList.add('on');}
+function closeModal(id){document.getElementById(id).classList.remove('on');}
+function fmt(n){return (n||0).toLocaleString('en-IN',{minimumFractionDigits:2,maximumFractionDigits:2});}
+function toast(msg,type){var t=document.createElement('div');t.className='tst'+(type==='err'?' err':type==='ok'?' ok':'');t.textContent=msg;document.getElementById('toast').appendChild(t);setTimeout(function(){t.remove();},3000);}
+
+// Init RFQ line
+addRFQLine();
+
+
+// ── PROCUREMENT PROFILE ───────────────────
+function loadProcProfile() {
+  var c = document.getElementById('proc-profile-content');
+  var initials = ((USER&&USER.name)||'R').split(' ').map(function(w){return w[0];}).join('').toUpperCase().slice(0,2);
+  var roleMap = {admin:'Admin — Full Access',manager:'Procurement Manager',employee:'Employee'};
+  var h = '';
+
+  // Header
+  h += '<div class="card" style="margin-bottom:14px;">';
+  h += '<div style="background:linear-gradient(135deg,#0D1B3E,#2a1a00);padding:24px;border-radius:11px 11px 0 0;display:flex;align-items:center;gap:18px;position:relative;overflow:hidden;">';
+  h += '<div style="position:absolute;top:-20px;right:-20px;width:140px;height:140px;border-radius:50%;background:rgba(221,107,32,.12);pointer-events:none;"></div>';
+  h += '<div id="proc-avatar-disp" style="width:68px;height:68px;border-radius:50%;background:linear-gradient(135deg,var(--orange),#b45309);display:flex;align-items:center;justify-content:center;font-family:Syne,sans-serif;font-size:24px;font-weight:800;color:white;flex-shrink:0;border:3px solid rgba(255,255,255,.2);position:relative;z-index:1;">'+initials+'</div>';
+  h += '<div style="position:relative;z-index:1;"><div style="font-family:Syne,sans-serif;font-size:18px;font-weight:800;color:white;">'+((USER&&USER.name)||'User')+'</div>';
+  h += '<div style="font-size:12px;color:rgba(255,255,255,.5);margin-top:2px;">'+((USER&&USER.email)||'')+'</div>';
+  h += '<div style="margin-top:6px;display:inline-flex;align-items:center;gap:6px;padding:3px 12px;border-radius:20px;font-size:11px;font-weight:700;background:rgba(255,255,255,.1);color:white;">🛒 '+(roleMap[(USER&&USER.role)]||(USER&&USER.role))+'</div></div></div>';
+  // Avatar colours
+  h += '<div class="cb"><div style="font-size:11px;font-weight:700;color:var(--gray);text-transform:uppercase;margin-bottom:8px;">Avatar Colour</div><div style="display:flex;gap:8px;flex-wrap:wrap;">';
+  ['#0D1B3E','#DD6B20','#00C2A8','#805AD5','#E63329','#38A169','#3182CE','#D53F8C'].forEach(function(clr,i){
+    h += '<div onclick="setProcAvatar('+i+')" style="width:30px;height:30px;border-radius:50%;background:'+clr+';cursor:pointer;border:3px solid transparent;transition:.15s;"></div>';
+  });
+  h += '</div></div></div>';
+
+  // Form + password
+  h += '<div class="g2">';
+  h += '<div class="card"><div class="ch"><div class="ct">Personal Information</div></div><div class="cb">';
+  var fields=[['proc-p-name','Full Name','text',(USER&&USER.name)||''],['proc-p-email','Email','email',(USER&&USER.email)||''],['proc-p-mobile','Mobile','text',''],['proc-p-desig','Designation','text','Purchase Manager']];
+  fields.forEach(function(f){
+    h += '<div class="ff2"><label>'+f[1]+'</label><input id="'+f[0]+'" type="'+f[2]+'" value="'+f[3]+'" '+(f[0]==='proc-p-email'?'readonly style="background:var(--bg);"':'')+' placeholder="'+f[1]+'"></div>';
+  });
+  h += '</div></div>';
+  h += '<div class="card"><div class="ch"><div class="ct">Change Password</div></div><div class="cb">';
+  h += '<div class="ff2"><label>Current Password</label><input id="proc-old-pw" type="password" placeholder="Current password"></div>';
+  h += '<div class="ff2"><label>New Password</label><input id="proc-new-pw" type="password" placeholder="Min 8 characters"></div>';
+  h += '<div class="ff2"><label>Confirm Password</label><input id="proc-conf-pw" type="password" placeholder="Re-enter password"></div>';
+  h += '<button onclick="changeProcPwd()" class="btn btor" style="width:100%;margin-top:4px;">Update Password</button>';
+  h += '</div></div></div>';
+  c.innerHTML = h;
+  var ac=localStorage.getItem('procAvatarColor');
+  if(ac){document.getElementById('proc-avatar-disp').style.background=ac;document.getElementById('tb-avatar').style.background=ac;}
+}
+
+function setProcAvatar(i){
+  var colors=['#0D1B3E','#DD6B20','#00C2A8','#805AD5','#E63329','#38A169','#3182CE','#D53F8C'];
+  var c=colors[i];
+  var el=document.getElementById('proc-avatar-disp');if(el)el.style.background=c;
+  document.getElementById('tb-avatar').style.background=c;
+  localStorage.setItem('procAvatarColor',c);
+  toast('Avatar updated!','ok');
+}
+function saveProcProfile(){
+  var name=document.getElementById('proc-p-name')?.value.trim();
+  if(name&&USER){USER.name=name;localStorage.setItem('erp_user',JSON.stringify(USER));document.getElementById('sb-user').textContent=name;document.getElementById('tb-avatar').textContent=name.charAt(0).toUpperCase();}
+  toast('Profile saved!','ok');
+}
+function changeProcPwd(){
+  var np=document.getElementById('proc-new-pw')?.value, cp=document.getElementById('proc-conf-pw')?.value;
+  if(!np){toast('Enter new password','err');return;}
+  if(np!==cp){toast('Passwords do not match','err');return;}
+  if(np.length<8){toast('Min 8 characters','err');return;}
+  toast('Password updated!','ok');
+  ['proc-old-pw','proc-new-pw','proc-conf-pw'].forEach(function(id){var e=document.getElementById(id);if(e)e.value='';});
+}
+
+// ── PROCUREMENT SETTINGS ──────────────────
+function loadProcSettings(){
+  var c = document.getElementById('proc-settings-content');
+  var savedTheme=localStorage.getItem('procTheme')||'navy';
+  var h = '';
+
+  // Theme
+  h += '<div class="card" style="margin-bottom:14px;"><div class="ch"><div class="ct">🎨 Theme</div></div><div class="cb">';
+  h += '<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(120px,1fr));gap:10px;">';
+  var themes=[
+    {id:'navy',n:'Navy Blue',p:'#0D1B3E',a:'#DD6B20',icon:'🔵'},
+    {id:'midnight',n:'Midnight',p:'#1A1A2E',a:'#E94560',icon:'🌙'},
+    {id:'purple',n:'Purple',p:'#2D1B69',a:'#9F7AEA',icon:'🟣'},
+    {id:'green',n:'Forest',p:'#1A3D2B',a:'#48BB78',icon:'🌿'},
+    {id:'charcoal',n:'Charcoal',p:'#1A202C',a:'#63B3ED',icon:'⚫'},
+    {id:'orange',n:'Orange',p:'#7B3400',a:'#DD6B20',icon:'🟠'},
+    {id:'ocean',n:'Ocean',p:'#1A365D',a:'#4299E1',icon:'🌊'},
+    {id:'crimson',n:'Crimson',p:'#7B1F1F',a:'#FC8181',icon:'🔴'},
+  ];
+  themes.forEach(function(t,ti){
+    var isOn=savedTheme===t.id;
+    h += '<div onclick="applyProcTheme('+ti+')" style="border-radius:12px;padding:12px;cursor:pointer;border:2px solid '+(isOn?'var(--teal)':'var(--border)')+';text-align:center;background:white;transition:.2s;">';
+    h += '<div style="width:44px;height:44px;border-radius:10px;background:linear-gradient(135deg,'+t.p+','+t.a+');margin:0 auto 6px;display:flex;align-items:center;justify-content:center;font-size:18px;">'+t.icon+'</div>';
+    h += '<div style="font-size:11px;font-weight:700;color:var(--navy);">'+t.n+'</div>';
+    if(isOn) h += '<div style="font-size:10px;color:var(--teal);margin-top:2px;">✓ Active</div>';
+    h += '</div>';
+  });
+  h += '</div></div></div>';
+
+  // Procurement Config
+  h += '<div class="card" style="margin-bottom:14px;"><div class="ch"><div class="ct">⚙️ Procurement Configuration</div></div><div class="cb"><div class="g2">';
+  h += '<div class="ff2"><label>Default Payment Terms (Days)</label><input type="number" value="30" id="cfg-pt"></div>';
+  h += '<div class="ff2"><label>PO Approval Threshold</label><input type="number" value="50000" id="cfg-thresh" placeholder="Amount above which approval needed"></div>';
+  h += '<div class="ff2"><label>Default Currency</label><select><option selected>INR (₹)</option><option>USD ($)</option></select></div>';
+  h += '<div class="ff2"><label>Default GRN Quality</label><select><option selected>Accepted</option><option>Pending Inspection</option></select></div>';
+  h += '</div><buttonprocSaveConfig()" class="btn btor" style="margin-top:8px;">Save Configuration</button>';
+  h += '</div></div>';
+
+  // Feature Toggles
+  h += '<div class="card" style="margin-bottom:14px;"><div class="ch"><div class="ct">🔧 Features</div></div><div class="cb"><div class="g2">';
+  var feats=[
+    {id:'f-rfq',label:'RFQ Notifications',desc:'Notify vendors when RFQ created',def:true},
+    {id:'f-approval',label:'Auto Approval',desc:'Auto-approve POs below threshold',def:false},
+    {id:'f-grn',label:'GRN Stock Update',desc:'Auto-update stock on GRN',def:true},
+    {id:'f-vendor-rating',label:'Vendor Ratings',desc:'Show vendor ratings on POs',def:true},
+  ];
+  feats.forEach(function(f){
+    h += '<div style="display:flex;align-items:center;justify-content:space-between;padding:10px 12px;background:var(--bg);border-radius:8px;margin-bottom:6px;">';
+    h += '<div><div style="font-weight:600;font-size:12px;">'+f.label+'</div><div style="font-size:11px;color:var(--gray);">'+f.desc+'</div></div>';
+    h += '<input type="checkbox" '+(f.def?'checked':'')+' style="accent-color:var(--teal);width:16px;height:16px;cursor:pointer;"></div>';
+  });
+  h += '</div></div></div>';
+
+  // System Info
+  h += '<div class="card"><div class="ch"><div class="ct">ℹ️ System Info</div></div><div class="cb"><div class="g2">';
+  [['Module','Procurement v1.0'],['API','erpapi.paype.co.in'],['User',(USER&&USER.name)||''],['Role',(USER&&USER.role)||''],['Session','Active ✅'],['Date',new Date().toLocaleDateString('en-IN')]].forEach(function(i){
+    h += '<div class="ff2"><label>'+i[0]+'</label><input value="'+i[1]+'" readonly style="background:var(--bg);"></div>';
+  });
+  h += '</div><div style="display:flex;gap:8px;margin-top:10px;">';
+  h += '<button onclick="procClearCache()" class="btn bto">🗑 Clear Cache</button>';
+  h += '<button onclick="doLogout()" class="btn btr">🚪 Sign Out</button>';
+  h += '</div></div></div>';
+
+  c.innerHTML = h;
+  var ac=localStorage.getItem('procAvatarColor');
+  if(ac) document.getElementById('tb-avatar').style.background=ac;
+}
+
+var procThemes=[
+  {p:'#0D1B3E',a:'#DD6B20'},{p:'#1A1A2E',a:'#E94560'},
+  {p:'#2D1B69',a:'#9F7AEA'},{p:'#1A3D2B',a:'#48BB78'},
+  {p:'#1A202C',a:'#63B3ED'},{p:'#7B3400',a:'#DD6B20'},
+  {p:'#1A365D',a:'#4299E1'},{p:'#7B1F1F',a:'#FC8181'}
+];
+function applyProcTheme(ti){
+  var t=procThemes[ti]||procThemes[0];
+  document.documentElement.style.setProperty('--navy',t.p);
+  document.documentElement.style.setProperty('--orange',t.a);
+  localStorage.setItem('procTheme','theme'+ti);
+  localStorage.setItem('procThemeP',t.p);
+  localStorage.setItem('procThemeA',t.a);
+  toast('Theme applied!','ok');
+  loadProcSettings();
+}
+
+function procSaveConfig(){toast("Configuration saved!","ok");}
+function procClearCache(){localStorage.removeItem("procTheme");localStorage.removeItem("procThemeP");localStorage.removeItem("procThemeA");localStorage.removeItem("procAvatarColor");toast("Cache cleared!","ok");}
+
+// Apply saved theme
+(function(){
+  var p=localStorage.getItem('procThemeP'),a=localStorage.getItem('procThemeA'),ac=localStorage.getItem('procAvatarColor');
+  if(p) document.documentElement.style.setProperty('--navy',p);
+  if(a) document.documentElement.style.setProperty('--orange',a);
+  if(ac){var av=document.getElementById('tb-avatar');if(av)av.style.background=ac;}
+})();
+
+// Auto login
+if(TOKEN&&USER){startApp();}
+</script>
+<script src="paype-chatbot.js"></script>
+</body>
+</html>

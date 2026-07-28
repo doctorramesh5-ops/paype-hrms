@@ -847,7 +847,7 @@ function setRole(role, el) {
   var tabs = document.querySelectorAll('.rtab');
   for (var i = 0; i < tabs.length; i++) tabs[i].classList.remove('on');
   el.classList.add('on');
-  var emails = { admin: 'admin@paype.co.in', hr: 'muthu@paype.co.in', employee: 'suresh@paype.co.in' };
+  var emails = {admin:'',hr:'',employee:''};
   document.getElementById('lem').value = emails[role] || '';
   document.getElementById('lpw').value = '';
   document.getElementById('lerr').style.display = 'none';
