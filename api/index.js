@@ -95,6 +95,31 @@ app.get('/', (req, res) => {
 });
 
 // Health
+
+// ── SETUP — Create default admin user ─────────────
+app.get('/api/setup', async (req, res) => {
+  try {
+    const users = [
+      { username: 'admin@paype.co.in',    password: 'Admin@PayPe2026',    role: 'admin' },
+      { username: 'hr@paype.co.in',       password: 'Hr@PayPe2026',       role: 'hr'    },
+      { username: 'employee@paype.co.in', password: 'Employee@PayPe2026', role: 'employee' },
+    ];
+    const results = [];
+    for (const u of users) {
+      const existing = await db('SELECT id FROM users WHERE LOWER(username)=LOWER($1)', [u.username]);
+      if (existing.rows.length) {
+        results.push({ username: u.username, status: 'already exists' });
+      } else {
+        const hash = await bcrypt.hash(u.password, 10);
+        await db('INSERT INTO users (id,username,password_hash,role) VALUES (gen_random_uuid(),$1,$2,$3)',
+          [u.username, hash, u.role]);
+        results.push({ username: u.username, status: 'created ✅' });
+      }
+    }
+    res.json({ success: true, results });
+  } catch(e) { res.status(500).json({ success: false, message: e.message }); }
+});
+
 app.get('/api/health', async (req, res) => {
   let dbStatus = 'not configured';
   if (process.env.DATABASE_URL) {
