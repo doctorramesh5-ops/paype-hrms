@@ -350,10 +350,7 @@ tr:hover td{background:#F7FAFC;}
     <div class="pg" id="pg-settings">
       <div class="ph"><div><h1>Settings</h1><p>Account settings</p></div></div>
       <div id="stc"></div>
-    </div>
-
-
-    <div class="pg" id="pg-digitalid">
+    </div>    <div class="pg" id="pg-digitalid">
       <div class="ph">
         <div><h1>Digital Identity</h1><p>Visiting cards, ID cards, agreements and QR codes</p></div>
       </div>
@@ -515,10 +512,7 @@ tr:hover td{background:#F7FAFC;}
         </div>
         <div class="mf"><button class="btn bto" onclick="closeMod('signMod')">Cancel</button><button class="btn btp" onclick="saveSign()">Apply Signature</button></div>
       </div>
-    </div>
-
-
-    <!-- REPORTS PAGE -->
+    </div>    <!-- REPORTS PAGE -->
     <div class="pg" id="pg-reports">
       <div class="ph"><div><h1>Reports & Analytics</h1><p>HR insights and data export</p></div>
         <button class="btn btp" onclick="exportAllReport()">Export Excel</button>
@@ -546,10 +540,7 @@ tr:hover td{background:#F7FAFC;}
       <div id="perf-content"><div class="ld"><div class="sp"></div>Loading...</div></div>
     </div>
 
-    <!-- NOTIFICATIONS BELL - shown in topbar -->
-
-
-    <div class="pg" id="pg-helpdesk">
+    <!-- NOTIFICATIONS BELL - shown in topbar -->    <div class="pg" id="pg-helpdesk">
       <div class="ph"><div><h1>Helpdesk</h1><p>Tickets, IT requests and complaints</p></div>
         <button class="btn btp" onclick="openMod('hdm')">+ Raise Ticket</button>
       </div>
@@ -562,9 +553,6 @@ tr:hover td{background:#F7FAFC;}
     </div>
   </main>
 </div>
-
-
-
 <div class="ov" id="aem" onclick="if(event.target===this)closeMod('aem')">
   <div class="mo">
     <div class="mh"><div class="mt">Add New Employee</div><button class="mx" onclick="closeMod('aem')">&#x2715;</button></div>
@@ -1128,10 +1116,7 @@ async function loadEmps() {
   });
   h += '</tbody></table>';
   if (etbl) etbl.innerHTML = h;
-}
-
-
-async function addEmp() {
+}async function addEmp() {
   var body = {
     firstName: document.getElementById('ef1').value.trim(),
     lastName: document.getElementById('ef2').value.trim(),
@@ -2177,10 +2162,7 @@ function downloadAgreement() {
   var el2 = document.querySelector('#agr-output > div');
   if (!el2) { toast('Generate agreement first','err'); return; }
   var win = window.open('', '_blank');
-  win.document.write('<html><head><title>PayPe Agreement</title><style>body{font-family:Arial,sans-serif;padding:30px;max-width:750px;margin:0 auto;}img{max-height:65px;}</style></head><body>' + el2.innerHTML + '
-
-
-</body></html>');
+  win.document.write('<html><head><title>PayPe Agreement</title><style>body{font-family:Arial,sans-serif;padding:30px;max-width:750px;margin:0 auto;}img{max-height:65px;}</style></head><body>' + el2.innerHTML + '</body></html>');
   win.document.close();
   setTimeout(function() { win.print(); }, 500);
 }
@@ -2204,10 +2186,7 @@ function shareAgreementEmail() {
   var sub = 'PayPe Technologies - ' + types[type] + ' - ' + nm;
   var body = 'Dear ' + e.first_name + ', Please find the ' + types[type] + ' for review and signature. Best regards, HR Department, PayPe Technologies Pvt. Ltd. hr@paype.co.in | +91 99448 57191';
   window.open('mailto:' + (e.work_email||'') + '?subject=' + encodeURIComponent(sub) + '&body=' + encodeURIComponent(body));
-}
-
-
-// ── AUTO SEND AGREEMENT LINKS ─────────────────────
+}// ── AUTO SEND AGREEMENT LINKS ─────────────────────
 function sendAgreementLinks(emp) {
   var nm = emp.first_name + ' ' + emp.last_name;
   var link = 'https://hr.paype.co.in/';
@@ -2247,10 +2226,7 @@ function sendAgreementLinksManual(empId) {
   var emp = allEmps.find(function(e) { return e.id === empId; });
   if (!emp) { toast('Employee not found','err'); return; }
   sendAgreementLinks(emp);
-}
-
-
-// ── MY DOCUMENTS (Employee Self Service) ──────────
+}// ── MY DOCUMENTS (Employee Self Service) ──────────
 function showProfTab(tab, el) {
   ['info','edit','education','experience','docs'].forEach(function(t) {
     var el2 = document.getElementById('prof-' + t);
@@ -2404,10 +2380,7 @@ function downloadAllMyDocs(nm) {
       buildMyNDA(e,nm,today) + '<hr style="margin:30px 0;">' +
       buildMyOffer(e,nm,today,joined) + '<hr style="margin:30px 0;">' +
       buildMyPolicy(e,nm,today);
-    win.document.write('<html><head><title>PayPe Documents - ' + nm + '</title><style>body{font-family:Arial,sans-serif;padding:30px;max-width:750px;margin:0 auto;font-size:13px;line-height:1.7;}h2{color:#0D1B3E;text-align:center;}h3{color:#0D1B3E;margin:12px 0 6px;}table{width:100%;border-collapse:collapse;}td,th{padding:7px 10px;border:1px solid #E2E8F0;}th{background:#F7FAFC;}</style></head><body>' + body + '
-
-
-</body></html>');
+    win.document.write('<html><head><title>PayPe Documents - ' + nm + '</title><style>body{font-family:Arial,sans-serif;padding:30px;max-width:750px;margin:0 auto;font-size:13px;line-height:1.7;}h2{color:#0D1B3E;text-align:center;}h3{color:#0D1B3E;margin:12px 0 6px;}table{width:100%;border-collapse:collapse;}td,th{padding:7px 10px;border:1px solid #E2E8F0;}th{background:#F7FAFC;}</style></head><body>' + body + '</body></html>');
     win.document.close();
     setTimeout(function() { win.print(); }, 500);
   });
@@ -2469,10 +2442,7 @@ function buildSignDisplay(e, nm) {
     '<div style="font-size:10px;font-weight:700;color:#0D1B3E;margin-bottom:8px;">EMPLOYEE</div>' +
     signHtml +
     '<div style="font-size:9px;color:#718096;margin-top:5px;">' + nm + ' | ' + (e.employee_id||'') + '</div></div></div>';
-}
-
-
-// ── NEW EMPLOYEE CREDENTIALS ──────────────────────
+}// ── NEW EMPLOYEE CREDENTIALS ──────────────────────
 function showNewEmpCredentials(emp, body) {
   var nm = emp.first_name + ' ' + emp.last_name;
   var email = emp.work_email || body.workEmail || '';
@@ -2536,10 +2506,7 @@ function sendCredsEmail(nm, email, pass, url) {
     ' Best regards, HR Department, PayPe Technologies Pvt. Ltd.' +
     ' hr@paype.co.in | +91 99448 57191';
   window.open('mailto:' + email + '?subject=' + encodeURIComponent(sub) + '&body=' + encodeURIComponent(body));
-}
-
-
-function viewEmp(id) {
+}function viewEmp(id) {
   var e = allEmps.find(function(emp){ return emp.id === id; });
   if (!e) return;
   var nm = e.first_name + ' ' + e.last_name;
@@ -2749,10 +2716,7 @@ async function suspendEmp(id, currentStatus) {
   var res = await req('PUT', '/api/employees/' + id, { employmentStatus: newStatus });
   if (res.success) { toast('Employee ' + action + 'd!'); loadEmps(); }
   else toast(res.message||'Failed','err');
-}
-
-
-async function editEmp(id) {
+}async function editEmp(id) {
   // Fetch fresh employee data from API
   var empRes = await req('GET', '/api/employees/' + id);
   var e = empRes.success ? empRes.data : allEmps.find(function(emp){ return emp.id === id; });
@@ -2833,10 +2797,7 @@ async function removeEmp(id, nm) {
     allEmps = []; // clear cache
     loadEmps();
   } else toast(res.message || 'Remove failed','err');
-}
-
-
-// ── PHOTO UPLOAD ──────────────────────────────────
+}// ── PHOTO UPLOAD ──────────────────────────────────
 function openPhotoUpload() {
   if (!CU || !CU.employeeId) { toast('Employee profile not linked','err'); return; }
   var input = document.createElement('input');
@@ -2920,10 +2881,7 @@ function generatePayslipPDF(s, month, year) {
   win.document.write('<tr><td class="ttl">Net Take Home</td><td class="ttl">Rs ' + Number(s.net_salary||0).toLocaleString('en-IN') + '</td></tr>');
   win.document.write('</table>');
   win.document.write('<p style="margin-top:16px;font-size:10px;color:#718096;text-align:center;">This is a computer-generated payslip. No signature required.</p>');
-  win.document.write('
-
-
-</body></html>');
+  win.document.write('</body></html>');
   win.document.close();
   setTimeout(function() { win.print(); }, 500);
 }
@@ -3251,10 +3209,7 @@ function saveExperience() {
     if (res.success) toast('Experience records saved!');
     else toast('Saved locally. Sync failed.','err');
   });
-}
-
-
-// ═══════════════════════════════════════════════════
+}// ═══════════════════════════════════════════════════
 // PHASE 6 — REPORTS, PERFORMANCE, NOTIFICATIONS, PAYROLL, ATTENDANCE, WHATSAPP
 // ═══════════════════════════════════════════════════
 
@@ -3757,10 +3712,7 @@ async function loadAttendanceEnhanced() {
 // Auto-refresh notifications every 2 minutes
 setInterval(function() {
   if (tok && CU) loadNotifications();
-}, 120000);
-
-
-async function submitLeave() {
+}, 120000);async function submitLeave() {
   var leaveTypeId = document.getElementById('lv1').value;
   var startDate = document.getElementById('lv2').value;
   var endDate = document.getElementById('lv3').value;
@@ -3784,10 +3736,7 @@ async function submitLeave() {
       window.open('https://wa.me/?text=' + encodeURIComponent(msg), '_blank');
     }
   } else toast(res.message||'Failed','err');
-}
-
-
-// ── SETTINGS & THEMES ─────────────────────────────
+}// ── SETTINGS & THEMES ─────────────────────────────
 var themes = {
   default: {
     name: 'PayPe Blue',
@@ -3942,10 +3891,7 @@ function applyTheme(key) {
 function initTheme() {
   var key = localStorage.getItem('paype_theme') || 'default';
   if (key !== 'default') applyTheme(key);
-}
-
-
-// ═══════════════════════════════════════════════════
+}// ═══════════════════════════════════════════════════
 // PHASE 7 — PAYROLL ENHANCED, ATTENDANCE, HELPDESK, PF/ESI
 // ═══════════════════════════════════════════════════
 
@@ -4669,10 +4615,7 @@ async function updateTicket(id) {
   var res = await req('PUT', '/api/helpdesk/tickets/' + id, {status, resolution});
   if (res.success) { toast('Ticket updated!'); loadHDTab('all'); }
   else toast(res.message,'err');
-}
-
-
-// ── ORG CHART ─────────────────────────────────────
+}// ── ORG CHART ─────────────────────────────────────
 async function loadOrgChart() {
   var c = document.getElementById('ogc');
   if (c) c.innerHTML = '<div class="ld"><div class="sp"></div>Loading...</div>';
@@ -4733,10 +4676,7 @@ async function loadOrgChart() {
   });
 
   c.innerHTML = h;
-}
-
-
-// ── PWA SERVICE WORKER & INSTALL ──────────────────
+}// ── PWA SERVICE WORKER & INSTALL ──────────────────
 var deferredPrompt = null;
 
 // Register service worker
@@ -4795,10 +4735,7 @@ function isPWA() {
 // If running as PWA, hide browser UI elements
 if (isPWA()) {
   document.documentElement.style.setProperty('--pwa-mode', '1');
-}
-
-
-// ── FIELD VALIDATION HELPERS ──────────────────────
+}// ── FIELD VALIDATION HELPERS ──────────────────────
 function onlyNums(el) { el.value = el.value.replace(/[^0-9]/g, ''); }
 function onlyLetters(el) { el.value = el.value.replace(/[^a-zA-Z .]/g, ''); }
 function onlyPAN(el) { el.value = el.value.toUpperCase().replace(/[^A-Z0-9]/g, ''); }
@@ -4836,10 +4773,7 @@ function validatePAN(input) {
   } else {
     input.style.borderColor = '#E2E8F0';
   }
-}
-
-
-// ── OPEN BASE64 FILE ──────────────────────────────
+}// ── OPEN BASE64 FILE ──────────────────────────────
 function openStoredFile(idx) {
   var f = window._hrFiles && window._hrFiles[idx];
   if (!f) { toast('File not found','err'); return; }
