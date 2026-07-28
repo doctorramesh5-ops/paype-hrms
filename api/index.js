@@ -217,8 +217,9 @@ app.get('/api/docs', (req, res) => {
 
 app.post('/api/auth/login', async (req, res) => {
   try {
-    const { username, password } = req.body;
-    if (!username || !password) {
+    const { username, password, email } = req.body;
+    const loginId = username || email;
+    if (!loginId || !password) {
       return res.status(400).json({ success: false, message: 'Username and password required' });
     }
     const r = await db(
@@ -231,7 +232,7 @@ app.post('/api/auth/login', async (req, res) => {
        LEFT JOIN departments d ON d.id  = e.department_id
        LEFT JOIN designations des ON des.id = e.designation_id
        WHERE LOWER(u.username) = LOWER($1)`,
-      [username.trim()]
+      [loginId.trim()]
     );
     if (!r.rows.length) {
       return res.status(401).json({ success: false, message: 'Invalid credentials' });
@@ -256,6 +257,7 @@ app.post('/api/auth/login', async (req, res) => {
     return res.json({
       success: true,
       message: 'Login successful',
+      token: access,
       data: {
         accessToken:  access,
         refreshToken: refresh,
