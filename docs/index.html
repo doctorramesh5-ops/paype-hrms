@@ -1635,7 +1635,11 @@ async function loadCandidates() {
     h += '<td>' + (c.expected_ctc?'Rs '+Number(c.expected_ctc/1000).toFixed(0)+'k/yr':'--') + '</td>';
     h += '<td><span class="b bn">' + (c.source||'Direct') + '</span></td>';
     var cid = c.id;
-    h += '<td><div style="display:flex;gap:4px;"><button class="btn btt btsm" onclick="applyToJob(\"'+cid+'\",\"'+nm+'\")">Apply</button><button class="btn bto btsm" onclick="addToPool(\"'+cid+'\")">Pool</button><button class="btn btsm" style="background:rgba(230,51,41,.08);color:#E63329;border:1px solid rgba(230,51,41,.2);border-radius:6px;padding:4px 8px;cursor:pointer;font-size:11px;" onclick="deleteCandidate(\"'+cid+'\")">&#x2715;</button></div></td></tr>';
+    h += '<td><div style="display:flex;gap:4px;">'
+      +'<button class="btn btt btsm" data-id="'+cid+'" data-nm="'+nm.replace(/"/g,'')+'" onclick="applyToJob(this.dataset.id,this.dataset.nm)">Apply</button>'
+      +'<button class="btn bto btsm" data-id="'+cid+'" onclick="addToPool(this.dataset.id)">Pool</button>'
+      +'<button class="btn btsm" style="background:rgba(230,51,41,.08);color:#E63329;border:1px solid rgba(230,51,41,.2);border-radius:6px;padding:4px 8px;cursor:pointer;font-size:11px;" data-id="'+cid+'" onclick="deleteCandidate(this.dataset.id)">&#x2715;</button>'
+      +'</div></td></tr>';
   });
   h += '</tbody></table></div></div>';
   document.getElementById('cdc').innerHTML = h;
