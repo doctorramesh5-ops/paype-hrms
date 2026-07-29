@@ -1595,7 +1595,7 @@ async function loadCandidates() {
   var candidates = res.data.filter(function(c3){ return !hidden.includes(c3.id); });
   if (!candidates.length) { document.getElementById('cdc').innerHTML = '<div class="card"><div class="cb"><div class="em"><h3>No candidates yet</h3><p>Add candidates to talent pool</p></div></div></div>'; return; }
   var clrs = ['#00C2A8','#0D1B3E','#805AD5','#38A169','#D69E2E'];
-  var h = '<div class="card"><div class="tw"><table><thead><tr><th>Candidate</th><th>Role / Company</th><th>Exp</th><th>CTC</th><th>Source</th><th>Action</th></tr></thead><tbody>';
+  var h = '<div class="card"><div class="ch"><div class="ct">Candidates (' + candidates.length + ')</div></div><div class="tw"><table><thead><tr><th>Candidate</th><th>Role / Company</th><th>Exp</th><th>CTC</th><th>Source</th><th>Action</th></tr></thead><tbody>';
   candidates.forEach(function(c, i) {
     var nm = c.first_name + ' ' + c.last_name;
     h += '<tr><td><div style="display:flex;align-items:center;gap:8px;"><div class="av" style="background:' + clrs[i%clrs.length] + '">' + c.first_name[0] + '</div>';
@@ -1744,7 +1744,7 @@ async function loadInterviewsList() {
     c2.innerHTML = '<div class="card"><div class="cb"><div class="em"><h3>No interviews scheduled</h3><p>Click + Schedule Interview to add</p></div></div></div>';
     return;
   }
-  var h = '<div class="card"><div class="tw"><table><thead><tr><th>Candidate</th><th>Round</th><th>Type</th><th>Date & Time</th><th>Interviewer</th><th>Status</th></tr></thead><tbody>';
+  var h = '<div class="card"><div class="ch"><div class="ct">Scheduled Interviews</div></div><div class="tw"><table><thead><tr><th>Candidate</th><th>Round</th><th>Type</th><th>Date & Time</th><th>Interviewer</th><th>Status</th></tr></thead><tbody>';
   res.data.forEach(function(iv) {
     var nm = ((iv.candidate_first||'') + ' ' + (iv.candidate_last||'')).trim() || '--';
     var interviewer = ((iv.interviewer_first||'') + ' ' + (iv.interviewer_last||'')).trim() || '--';
@@ -1804,7 +1804,7 @@ async function loadAssets() {
   h += '<div class="kp"><div class="kv" style="color:#38A169;">' + avail + '</div><div class="kl">Available</div></div>';
   h += '<div class="kp"><div class="kv" style="color:#805AD5;">' + assigned + '</div><div class="kl">Assigned</div></div>';
   h += '</div>';
-  h += '<div class="card"><div class="tw"><table><thead><tr><th>Asset</th><th>Code</th><th>Category</th><th>Brand/Model</th><th>Status</th><th>Assigned To</th><th>Action</th></tr></thead><tbody>';
+  h += '<div class="card"><div class="ch"><div class="ct">IT Assets (' + assets.length + ')</div></div><div class="tw"><table><thead><tr><th>Asset</th><th>Code</th><th>Category</th><th>Brand/Model</th><th>Status</th><th>Assigned To</th><th>Action</th></tr></thead><tbody>';
   if (!assets.length) { h += '<tr><td colspan="7"><div class="em"><h3>No assets found</h3></div></td></tr>'; }
   assets.forEach(function(a) {
     var sc = a.status==='Available'?'bg':a.status==='Assigned'?'bp':'by';
@@ -5106,7 +5106,7 @@ async function loadOffers() {
     c2.innerHTML = '<div class="card"><div class="cb"><div class="em"><h3>No offer letters yet</h3><p>Move candidates to Offer stage in ATS Pipeline first</p></div></div></div>';
     return;
   }
-  var h = '<div class="card"><div class="tw"><table><thead><tr><th>Candidate</th><th>Position</th><th>Dept</th><th>CTC</th><th>Stage</th><th>Action</th></tr></thead><tbody>';
+  var h = '<div class="card"><div class="ch"><div class="ct">Offer Letters</div></div><div class="tw"><table><thead><tr><th>Candidate</th><th>Position</th><th>Dept</th><th>CTC</th><th>Stage</th><th>Action</th></tr></thead><tbody>';
   offers.forEach(function(o) {
     var nm = (o.first_name||'') + ' ' + (o.last_name||'');
     var sc = o.stage==='Hired'?'bg':'by';
@@ -5235,7 +5235,7 @@ async function loadInterviewsList() {
     c2.innerHTML = '<div class="card"><div class="cb"><div class="em"><h3>No interviews scheduled</h3><p>Click + Schedule Interview to add</p></div></div></div>';
     return;
   }
-  var h = '<div class="card"><div class="tw"><table><thead><tr><th>Candidate</th><th>Round</th><th>Type</th><th>Date & Time</th><th>Interviewer</th><th>Status</th></tr></thead><tbody>';
+  var h = '<div class="card"><div class="ch"><div class="ct">Scheduled Interviews</div></div><div class="tw"><table><thead><tr><th>Candidate</th><th>Round</th><th>Type</th><th>Date & Time</th><th>Interviewer</th><th>Status</th></tr></thead><tbody>';
   res.data.forEach(function(iv) {
     var nm = ((iv.candidate_first||'') + ' ' + (iv.candidate_last||'')).trim() || '--';
     var interviewer = ((iv.interviewer_first||'') + ' ' + (iv.interviewer_last||'')).trim() || '--';
