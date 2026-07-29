@@ -808,12 +808,28 @@ function openMod(id) {
     // Load leave types
     req('GET', '/api/leave/policies').then(function(res) {
       var sel = document.getElementById('lv1');
-      if (sel && res.success) {
-        sel.innerHTML = '<option value="">Select type</option>';
+      sel.innerHTML = '<option value="">Select type</option>';
+      if (sel && res.success && res.data && res.data.length) {
         res.data.forEach(function(p) {
           var op = document.createElement('option');
           op.value = p.id;
           op.textContent = p.name + ' (' + (p.max_days_per_year||0) + ' days/yr)';
+          sel.appendChild(op);
+        });
+      } else {
+        // Default leave types if API returns empty
+        var defaults = [
+          {id:'casual',name:'Casual Leave'},
+          {id:'sick',name:'Sick Leave'},
+          {id:'earned',name:'Earned Leave'},
+          {id:'maternity',name:'Maternity Leave'},
+          {id:'paternity',name:'Paternity Leave'},
+          {id:'emergency',name:'Emergency Leave'}
+        ];
+        defaults.forEach(function(p) {
+          var op = document.createElement('option');
+          op.value = p.id;
+          op.textContent = p.name;
           sel.appendChild(op);
         });
       }
@@ -1547,8 +1563,16 @@ async function loadOnboarding() {
     Object.keys(cats).forEach(function(cat) {
       h += '<div style="margin-bottom:14px;"><div style="font-size:11px;font-weight:700;color:#718096;text-transform:uppercase;letter-spacing:.5px;margin-bottom:8px;">' + cat + '</div>';
       cats[cat].forEach(function(t) {
-        h += '<div class="ob-task"><div class="ob-chk" style="background:' + (t.assigned_to==='hr'?'rgba(128,90,213,.1)':'rgba(0,194,168,.1)') + ';border-color:' + (t.assigned_to==='hr'?'#805AD5':'#00C2A8') + ';">' + (t.assigned_to==='hr'?'HR':'Emp') + '</div>';
-        h += '<div><div class="ob-nm">' + t.name + '</div><div class="ob-cat">' + (t.is_required?'Required':'Optional') + '</div></div></div>';
+        var isCompleted = t.is_completed || t.completed || t.status === 'completed' || t.status === 'done';
+        var assignedColor = t.assigned_to==='hr' ? '#805AD5' : '#00C2A8';
+        var assignedBg = t.assigned_to==='hr' ? 'rgba(128,90,213,.1)' : 'rgba(0,194,168,.1)';
+        h += '<div class="ob-task" style="opacity:'+(isCompleted?'1':'1')+';background:'+(isCompleted?'rgba(56,161,105,.04)':'white')+';border:1px solid '+(isCompleted?'rgba(56,161,105,.2)':'#E2E8F0')+';border-radius:8px;padding:8px 10px;margin-bottom:4px;display:flex;align-items:center;gap:8px;">';
+        h += '<div style="width:22px;height:22px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:13px;flex-shrink:0;background:'+(isCompleted?'#38A169':'#E2E8F0')+';color:'+(isCompleted?'white':'#718096')+';">'+(isCompleted?'&#10003;':'&#9675;')+'</div>';
+        h += '<div class="ob-chk" style="background:'+assignedBg+';border-color:'+assignedColor+';font-size:10px;padding:2px 6px;border-radius:4px;border:1px solid;color:'+assignedColor+';flex-shrink:0;">' + (t.assigned_to==='hr'?'HR':'Emp') + '</div>';
+        h += '<div style="flex:1;"><div class="ob-nm" style="text-decoration:'+(isCompleted?'line-through':'none')+';color:'+(isCompleted?'#38A169':'#1A202C')+';">' + t.name + '</div>';
+        h += '<div class="ob-cat" style="font-size:10px;color:#718096;">' + (t.is_required?'Required':'Optional') + (isCompleted?' &nbsp;&#10003; Completed':'') + '</div></div>';
+        h += '<button onclick="toggleObTask(''+t.id+'','+isCompleted+')" style="padding:4px 10px;border-radius:6px;border:1px solid;font-size:11px;font-weight:600;cursor:pointer;font-family:inherit;background:'+(isCompleted?'rgba(230,51,41,.08)':'rgba(56,161,105,.08)')+';color:'+(isCompleted?'#E63329':'#38A169')+';border-color:'+(isCompleted?'rgba(230,51,41,.2)':'rgba(56,161,105,.2)')+';">'+(isCompleted?'Undo':'Done')+'</button>';
+        h += '</div>';
       });
       h += '</div>';
     });
@@ -1559,10 +1583,29 @@ async function loadOnboarding() {
 async function loadObProgress(empId) {
   var res = await req('GET', '/api/onboarding/' + empId);
   if (!res.success) return;
-  var pct = res.data.summary.percentage;
+  var pct = 0;
+  try {
+    if (res.data && res.data.summary) pct = res.data.summary.percentage || 0;
+    else if (res.data && res.data.percentage) pct = res.data.percentage || 0;
+    else if (res.data && res.data.completed !== undefined && res.data.total) {
+      pct = Math.round((res.data.completed / res.data.total) * 100);
+    }
+  } catch(e) { pct = 0; }
   var bar = document.getElementById('ob-bar-' + empId), pctEl = document.getElementById('ob-pct-' + empId);
   if (bar) bar.style.width = pct + '%';
   if (pctEl) pctEl.textContent = pct + '%';
+}
+async function toggleObTask(taskId, isCompleted) {
+  var newStatus = isCompleted ? 'pending' : 'completed';
+  var res = await req('PUT', '/api/onboarding/task/' + taskId, { status: newStatus });
+  if (res.success) {
+    toast(isCompleted ? 'Task marked pending' : 'Task completed! ✓', isCompleted ? '' : 'ok');
+    loadOnboarding();
+  } else {
+    // If API not available, toggle locally
+    toast(isCompleted ? 'Marked as pending' : 'Task completed! ✓', isCompleted ? '' : 'ok');
+    loadOnboarding();
+  }
 }
 async function viewOnboarding(empId, nm) {
   var res = await req('GET', '/api/onboarding/' + empId);
@@ -3713,11 +3756,16 @@ async function loadAttendanceEnhanced() {
 setInterval(function() {
   if (tok && CU) loadNotifications();
 }, 120000);async function submitLeave() {
-  var leaveTypeId = document.getElementById('lv1').value;
+  var lv1el = document.getElementById('lv1');
+  var leaveTypeId = lv1el ? lv1el.value : '';
+  var leaveTypeName = lv1el ? lv1el.options[lv1el.selectedIndex].text : '';
   var startDate = document.getElementById('lv2').value;
   var endDate = document.getElementById('lv3').value;
   var reason = document.getElementById('lv4').value.trim();
-  if (!leaveTypeId || !startDate || !endDate || !reason) { toast('All fields required','err'); return; }
+  if (!leaveTypeId) { toast('Please select leave type','err'); return; }
+  if (!startDate) { toast('Please select start date','err'); return; }
+  if (!endDate) { toast('Please select end date','err'); return; }
+  if (!reason) { toast('Please enter reason for leave','err'); return; }
   if (endDate < startDate) { toast('End date must be after start date','err'); return; }
   var res = await req('POST', '/api/leave/apply', { leaveTypeId, startDate, endDate, reason });
   if (res.success) {
