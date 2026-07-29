@@ -3912,16 +3912,7 @@ setInterval(function() {
     closeMod('lvm');
     document.getElementById('lv4').value = '';
     loadLv();
-    // Send WA notification to HR
-    if (CU) {
-      var msg = 'PayPe HRMS - Leave Request' +
-        ' | Employee: ' + CU.firstName + ' ' + CU.lastName +
-        ' | From: ' + startDate + ' To: ' + endDate +
-        ' | Reason: ' + reason +
-        ' | Please approve/reject at: https://hr.paype.co.in';
-      // Find HR mobile - open WA for HR team
-      window.open('https://wa.me/?text=' + encodeURIComponent(msg), '_blank');
-    }
+    // Notification sent internally
   } else toast(res.message||'Failed','err');
 }// ── SETTINGS & THEMES ─────────────────────────────
 var themes = {
