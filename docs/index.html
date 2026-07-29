@@ -907,30 +907,30 @@ function toast(msg, type) {
 function openMod(id) {
   document.getElementById(id).classList.add('on');
   if (id === 'nom') {
-    // Populate candidate dropdown
-    var olCand = document.getElementById('ol-candidate');
-    if (olCand && olCand.options.length <= 1) {
+    // Populate candidate dropdown (of1)
+    var of1 = document.getElementById('of1');
+    if (of1 && of1.options.length <= 1) {
       req('GET', '/api/candidates').then(function(r) {
         if (r.success && r.data) {
-          r.data.forEach(function(cd) {
+          r.data.filter(function(cd){return cd.source!=='Deleted';}).forEach(function(cd) {
             var op = document.createElement('option');
             op.value = cd.id;
             op.textContent = cd.first_name + ' ' + cd.last_name;
-            olCand.appendChild(op);
+            of1.appendChild(op);
           });
         }
       });
     }
-    // Populate department dropdown
-    var olDept = document.getElementById('ol-dept');
-    if (olDept && olDept.options.length <= 1) {
+    // Populate department dropdown (of3)
+    var of3 = document.getElementById('of3');
+    if (of3 && of3.options.length <= 1) {
       req('GET', '/api/departments').then(function(r) {
         if (r.success && r.data) {
           r.data.forEach(function(d) {
             var op = document.createElement('option');
             op.value = d.id;
             op.textContent = d.name;
-            olDept.appendChild(op);
+            of3.appendChild(op);
           });
         }
       });
@@ -2199,7 +2199,7 @@ function buildNDA2(e, nm, today) {
 function buildOffer2(e, nm, today) {
   var joined = e.date_of_joining ? new Date(e.date_of_joining).toLocaleDateString('en-IN',{day:'2-digit',month:'long',year:'numeric'}) : '--';
   return '<div style="background:white;border:1px solid #E2E8F0;border-radius:8px;padding:20px;max-height:440px;overflow-y:auto;' + SS + '">' +
-    '<div style="' + SH + '"><div style="font-family:Syne,sans-serif;font-size:15px;font-weight:800;color:white;">PayPe Technologies Pvt. Ltd.</div><div style="font-size:9px;color:rgba(255,255,255,.5);">hr@paype.co.in | +91 99448 57191 | paype.co.in</div></div>' +
+    '<div style="' + SH + '"><div style="font-family:Syne,sans-serif;font-size:15px;font-weight:800;color:white;">PayPe Technologies Pvt. Ltd.</div><div style="font-size:9px;color:rgba(255,255,255,.5);">hr@paype.co.in | paype.co.in</div></div>' +
     '<p>Date: <strong>' + today + '</strong></p>' +
     '<p style="margin-top:10px;">Dear <strong>' + e.first_name + '</strong>,</p>' +
     '<p>We are pleased to offer you the position of <strong>' + (e.designation||e.role||'Staff') + '</strong> in the <strong>' + (e.department_name||'--') + '</strong> department.</p>' +
@@ -2363,7 +2363,7 @@ function shareDIDEmail(type) {
   if (!didSelEmp) { toast('Select employee first','err'); return; }
   var e = didSelEmp, nm = e.first_name + ' ' + e.last_name;
   var sub = 'PayPe - ' + (type==='vc'?'Visiting Card':'ID Card') + ' - ' + nm;
-  var body = 'Name: ' + nm + ' | ID: ' + e.employee_id + ' | Role: ' + (e.designation||'') + ' | Email: ' + (e.work_email||'') + ' | Mobile: ' + (e.mobile||'') + ' | PayPe Technologies Pvt. Ltd. | hr@paype.co.in | +91 99448 57191';
+  var body = 'Name: ' + nm + ' | ID: ' + e.employee_id + ' | Role: ' + (e.designation||'') + ' | Email: ' + (e.work_email||'') + ' | Mobile: ' + (e.mobile||'') + ' | PayPe Technologies Pvt. Ltd. | hr@paype.co.in';
   window.open('mailto:?subject=' + encodeURIComponent(sub) + '&body=' + encodeURIComponent(body));
 }
 
@@ -2438,7 +2438,7 @@ function shareAgreementEmail() {
   var e = allEmps[parseInt(idx)], nm = e.first_name + ' ' + e.last_name;
   var types = {employment:'Employment Agreement',nda:'Non-Disclosure Agreement',offer:'Offer Letter',policy:'Policy Acknowledgement'};
   var sub = 'PayPe Technologies - ' + types[type] + ' - ' + nm;
-  var body = 'Dear ' + e.first_name + ', Please find the ' + types[type] + ' for review and signature. Best regards, HR Department, PayPe Technologies Pvt. Ltd. hr@paype.co.in | +91 99448 57191';
+  var body = 'Dear ' + e.first_name + ', Please find the ' + types[type] + ' for review and signature. Best regards, HR Department, PayPe Technologies Pvt. Ltd. hr@paype.co.in';
   window.open('mailto:' + (e.work_email||'') + '?subject=' + encodeURIComponent(sub) + '&body=' + encodeURIComponent(body));
 }// ── AUTO SEND AGREEMENT LINKS ─────────────────────
 function sendAgreementLinks(emp) {
@@ -2466,7 +2466,7 @@ function sendAgreementLinks(emp) {
       ' Please review and sign your onboarding documents at: ' + link +
       ' Your Employee ID is: ' + emp.employee_id +
       ' Best regards, HR Department, PayPe Technologies Pvt. Ltd.' +
-      ' hr@paype.co.in | +91 99448 57191';
+      ' hr@paype.co.in';
     setTimeout(function() {
       window.open('mailto:' + email + '?subject=' + encodeURIComponent(sub) + '&body=' + encodeURIComponent(body));
     }, 1000);
@@ -2670,7 +2670,7 @@ function buildMyOffer(e, nm, today, joined) {
     '<p><strong>Date of Joining:</strong> ' + joined + ' | <strong>Location:</strong> ' + (e.work_location||'Coimbatore') + '</p>' +
     '<p>Subject to satisfactory background verification and document submission.</p>' +
     '<p>Welcome to the PayPe family!</p>' +
-    '<p><strong>HR Department</strong><br>PayPe Technologies Pvt. Ltd.<br>CIN: U74994TN2022PTC151114 | GST: 33AAMCP7960K1ZU<br>hr@paype.co.in | +91 99448 57191</p>' +
+    '<p><strong>HR Department</strong><br>PayPe Technologies Pvt. Ltd.<br>CIN: U74994TN2022PTC151114 | GST: 33AAMCP7960K1ZU<br>hr@paype.co.in</p>' +
     buildSignDisplay(e, nm);
 }
 
@@ -2758,7 +2758,7 @@ function sendCredsEmail(nm, email, pass, url) {
     ' Please login and change your password immediately.' +
     ' Then go to My Profile > My Documents to sign your onboarding documents.' +
     ' Best regards, HR Department, PayPe Technologies Pvt. Ltd.' +
-    ' hr@paype.co.in | +91 99448 57191';
+    ' hr@paype.co.in';
   window.open('mailto:' + email + '?subject=' + encodeURIComponent(sub) + '&body=' + encodeURIComponent(body));
 }function viewEmp(id) {
   var e = allEmps.find(function(emp){ return emp.id === id; });
@@ -5138,7 +5138,7 @@ async function loadOffers() {
     c2.innerHTML = '<div class="card"><div class="cb"><div class="em"><h3>No offer letters yet</h3><p>Move candidates to Offer stage in ATS Pipeline first</p></div></div></div>';
     return;
   }
-  var h = '<div class="card"><div class="ch"><div class="ct">Offer Letters</div></div><div class="tw"><table><thead><tr><th>Candidate</th><th>Position</th><th>Dept</th><th>CTC</th><th>Stage</th><th>Action</th></tr></thead><tbody>';
+  var h = '<div class="card"><div class="ch"><div class="ct">Offer Letters</div></div><div class="tw"><table><thead><tr><th>Candidate</th><th>Position</th><th>Dept</th><th>CTC</th><th>Status</th><th>Action</th></tr></thead><tbody>';
   offers.forEach(function(o) {
     var nm = (o.first_name||'') + ' ' + (o.last_name||'');
     var sc = o.stage==='Hired'?'bg':'by';
@@ -5245,7 +5245,7 @@ async function generateOfferLetter(candidateName, position, ctc) {
         277/1A, Annamalai Industrial Park<br>
         Kalapatti, Coimbatore - 641048<br>
         Tamil Nadu, India<br>
-        hr@paype.co.in | +91 99448 57191<br>
+        hr@paype.co.in<br>
         www.paype.co.in
       </div>
     </div>
@@ -5306,13 +5306,17 @@ async function generateOfferLetter(candidateName, position, ctc) {
 
       <div class="signature-section">
         <div class="sign-box">
-          <div class="sign-line"></div>
+          <div style="border:1px dashed #00C2A8;border-radius:6px;padding:12px;margin-bottom:8px;min-height:60px;background:#f0fff8;display:flex;align-items:center;justify-content:center;">
+            <div style="text-align:center;"><div style="font-size:18px;color:#00C2A8;">✍️</div><div style="font-size:10px;color:#666;margin-top:4px;">Digitally Signed</div><div style="font-size:11px;font-weight:bold;color:#0D1B3E;">HR Department</div></div>
+          </div>
           <div class="sign-name">Authorised Signatory</div>
           <div class="sign-label">HR Department</div>
           <div class="sign-label">PayPe Technologies Pvt. Ltd.</div>
         </div>
         <div class="sign-box">
-          <div class="sign-line"></div>
+          <div style="border:1px dashed #ccc;border-radius:6px;padding:12px;margin-bottom:8px;min-height:60px;background:#f9f9f9;display:flex;align-items:center;justify-content:center;">
+            <div style="text-align:center;"><div style="font-size:18px;">✍️</div><div style="font-size:10px;color:#666;margin-top:4px;">Sign Here</div><div style="font-size:11px;color:#999;">Candidate Signature</div></div>
+          </div>
           <div class="sign-name">${candidateName}</div>
           <div class="sign-label">Candidate Signature & Date</div>
           <div class="sign-label">Acceptance of Offer</div>
