@@ -2625,64 +2625,9 @@ function downloadAllMyDocs(nm) {
       buildMyOffer(e,nm,today,joined) + '<hr style="margin:30px 0;">' +
       buildMyPolicy(e,nm,today);
     win.document.write('<html><head><title>PayPe Documents - ' + nm + '</title><style>body{font-family:Arial,sans-serif;padding:30px;max-width:750px;margin:0 auto;font-size:13px;line-height:1.7;}h2{color:#0D1B3E;text-align:center;}h3{color:#0D1B3E;margin:12px 0 6px;}table{width:100%;border-collapse:collapse;}td,th{padding:7px 10px;border:1px solid #E2E8F0;}th{background:#F7FAFC;}</style></head><body>' + body + '</body></html>');
-<div class="ov" id="ncm" onclick="if(event.target===this)closeMod('ncm')">
-  <div class="mod" style="max-width:560px;">
-    <div class="mh"><div class="mt">Add Candidate</div><button class="mx" onclick="closeMod('ncm')">&#x2715;</button></div>
-    <div class="g2">
-      <div class="ff"><label>First Name *</label><input id="cf1" placeholder="First name"></div>
-      <div class="ff"><label>Last Name *</label><input id="cf2" placeholder="Last name"></div>
-      <div class="ff"><label>Email *</label><input id="cf3" type="email" placeholder="email@example.com"></div>
-      <div class="ff"><label>Mobile</label><input id="cf4" placeholder="+91 XXXXX XXXXX"></div>
-      <div class="ff"><label>Current Company</label><input id="cf5" placeholder="Company name"></div>
-      <div class="ff"><label>Current Position</label><input id="cf6" placeholder="Job title"></div>
-      <div class="ff"><label>Experience (Years)</label><input id="cf7" type="number" placeholder="0"></div>
-      <div class="ff"><label>Current CTC (Rs)</label><input id="cf8" type="number" placeholder="0"></div>
-      <div class="ff"><label>Expected CTC (Rs)</label><input id="cf9" type="number" placeholder="0"></div>
-      <div class="ff"><label>Notice Period (Days)</label><input id="cf10" type="number" placeholder="30"></div>
-      <div class="ff"><label>Location</label><input id="cf11" placeholder="City"></div>
-      <div class="ff"><label>Source</label>
-        <select id="cf12">
-          <option>Direct</option><option>LinkedIn</option><option>Referral</option>
-          <option>Job Portal</option><option>Walk-in</option><option>Other</option>
-        </select>
-      </div>
-    </div>
-    <div class="ma">
-      <button class="btn bto" onclick="closeMod('ncm')">Cancel</button>
-      <button class="btn btp" onclick="addCandidate()">Add Candidate</button>
-    </div>
-  </div>
-</div>
 
-<div class="ov" id="nam" onclick="if(event.target===this)closeMod('nam')">
-  <div class="mod" style="max-width:480px;">
-    <div class="mh"><div class="mt">Add IT Asset</div><button class="mx" onclick="closeMod('nam')">&#x2715;</button></div>
-    <div class="g2">
-      <div class="ff"><label>Asset Code *</label><input id="as1" placeholder="e.g. LAP-001"></div>
-      <div class="ff"><label>Asset Name *</label><input id="as2" placeholder="e.g. Dell Laptop"></div>
-      <div class="ff"><label>Category</label>
-        <select id="as3">
-          <option>Laptop</option><option>Desktop</option><option>Mobile</option>
-          <option>Tablet</option><option>Monitor</option><option>Printer</option>
-          <option>Server</option><option>Network</option><option>Other</option>
-        </select>
-      </div>
-      <div class="ff"><label>Brand</label><input id="as4" placeholder="e.g. Dell, HP, Apple"></div>
-      <div class="ff"><label>Model</label><input id="as5" placeholder="Model number"></div>
-      <div class="ff"><label>Serial Number</label><input id="as6" placeholder="Serial number"></div>
-      <div class="ff"><label>Purchase Date</label><input id="as7" type="date"></div>
-      <div class="ff"><label>Purchase Cost (Rs)</label><input id="as8" type="number" placeholder="0"></div>
-      <div class="ff"><label>Condition</label>
-        <select id="as9"><option>New</option><option>Good</option><option>Fair</option><option>Poor</option></select>
-      </div>
-      <div class="ff"><label>Location</label><input id="as10" placeholder="e.g. Coimbatore Office"></div>
-    </div>
-    <div class="ma">
-      <button class="btn bto" onclick="closeMod('nam')">Cancel</button>
-      <button class="btn btp" onclick="addAsset()">Add Asset</button>
-    </div>
-  </div>
-</div>
+
+
 </body></html>');
     win.document.close();
     setTimeout(function() { win.print(); }, 500);
@@ -3185,64 +3130,9 @@ function generatePayslipPDF(s, month, year) {
   win.document.write('</table>');
   win.document.write('<p style="margin-top:16px;font-size:10px;color:#718096;text-align:center;">This is a computer-generated payslip. No signature required.</p>');
   win.document.write('</body></html>');
-<div class="ov" id="ncm" onclick="if(event.target===this)closeMod('ncm')">
-  <div class="mod" style="max-width:560px;">
-    <div class="mh"><div class="mt">Add Candidate</div><button class="mx" onclick="closeMod('ncm')">&#x2715;</button></div>
-    <div class="g2">
-      <div class="ff"><label>First Name *</label><input id="cf1" placeholder="First name"></div>
-      <div class="ff"><label>Last Name *</label><input id="cf2" placeholder="Last name"></div>
-      <div class="ff"><label>Email *</label><input id="cf3" type="email" placeholder="email@example.com"></div>
-      <div class="ff"><label>Mobile</label><input id="cf4" placeholder="+91 XXXXX XXXXX"></div>
-      <div class="ff"><label>Current Company</label><input id="cf5" placeholder="Company name"></div>
-      <div class="ff"><label>Current Position</label><input id="cf6" placeholder="Job title"></div>
-      <div class="ff"><label>Experience (Years)</label><input id="cf7" type="number" placeholder="0"></div>
-      <div class="ff"><label>Current CTC (Rs)</label><input id="cf8" type="number" placeholder="0"></div>
-      <div class="ff"><label>Expected CTC (Rs)</label><input id="cf9" type="number" placeholder="0"></div>
-      <div class="ff"><label>Notice Period (Days)</label><input id="cf10" type="number" placeholder="30"></div>
-      <div class="ff"><label>Location</label><input id="cf11" placeholder="City"></div>
-      <div class="ff"><label>Source</label>
-        <select id="cf12">
-          <option>Direct</option><option>LinkedIn</option><option>Referral</option>
-          <option>Job Portal</option><option>Walk-in</option><option>Other</option>
-        </select>
-      </div>
-    </div>
-    <div class="ma">
-      <button class="btn bto" onclick="closeMod('ncm')">Cancel</button>
-      <button class="btn btp" onclick="addCandidate()">Add Candidate</button>
-    </div>
-  </div>
-</div>
 
-<div class="ov" id="nam" onclick="if(event.target===this)closeMod('nam')">
-  <div class="mod" style="max-width:480px;">
-    <div class="mh"><div class="mt">Add IT Asset</div><button class="mx" onclick="closeMod('nam')">&#x2715;</button></div>
-    <div class="g2">
-      <div class="ff"><label>Asset Code *</label><input id="as1" placeholder="e.g. LAP-001"></div>
-      <div class="ff"><label>Asset Name *</label><input id="as2" placeholder="e.g. Dell Laptop"></div>
-      <div class="ff"><label>Category</label>
-        <select id="as3">
-          <option>Laptop</option><option>Desktop</option><option>Mobile</option>
-          <option>Tablet</option><option>Monitor</option><option>Printer</option>
-          <option>Server</option><option>Network</option><option>Other</option>
-        </select>
-      </div>
-      <div class="ff"><label>Brand</label><input id="as4" placeholder="e.g. Dell, HP, Apple"></div>
-      <div class="ff"><label>Model</label><input id="as5" placeholder="Model number"></div>
-      <div class="ff"><label>Serial Number</label><input id="as6" placeholder="Serial number"></div>
-      <div class="ff"><label>Purchase Date</label><input id="as7" type="date"></div>
-      <div class="ff"><label>Purchase Cost (Rs)</label><input id="as8" type="number" placeholder="0"></div>
-      <div class="ff"><label>Condition</label>
-        <select id="as9"><option>New</option><option>Good</option><option>Fair</option><option>Poor</option></select>
-      </div>
-      <div class="ff"><label>Location</label><input id="as10" placeholder="e.g. Coimbatore Office"></div>
-    </div>
-    <div class="ma">
-      <button class="btn bto" onclick="closeMod('nam')">Cancel</button>
-      <button class="btn btp" onclick="addAsset()">Add Asset</button>
-    </div>
-  </div>
-</div>
+
+
 </body></html>');
   win.document.close();
   setTimeout(function() { win.print(); }, 500);
@@ -5177,63 +5067,8 @@ if (tok && CU) { startApp(); } else { document.getElementById('LP').style.displa
 
 <script src="https://doctorramesh5-ops.github.io/paype-erp/paype-chatbot.js"></script>
 
-<div class="ov" id="ncm" onclick="if(event.target===this)closeMod('ncm')">
-  <div class="mod" style="max-width:560px;">
-    <div class="mh"><div class="mt">Add Candidate</div><button class="mx" onclick="closeMod('ncm')">&#x2715;</button></div>
-    <div class="g2">
-      <div class="ff"><label>First Name *</label><input id="cf1" placeholder="First name"></div>
-      <div class="ff"><label>Last Name *</label><input id="cf2" placeholder="Last name"></div>
-      <div class="ff"><label>Email *</label><input id="cf3" type="email" placeholder="email@example.com"></div>
-      <div class="ff"><label>Mobile</label><input id="cf4" placeholder="+91 XXXXX XXXXX"></div>
-      <div class="ff"><label>Current Company</label><input id="cf5" placeholder="Company name"></div>
-      <div class="ff"><label>Current Position</label><input id="cf6" placeholder="Job title"></div>
-      <div class="ff"><label>Experience (Years)</label><input id="cf7" type="number" placeholder="0"></div>
-      <div class="ff"><label>Current CTC (Rs)</label><input id="cf8" type="number" placeholder="0"></div>
-      <div class="ff"><label>Expected CTC (Rs)</label><input id="cf9" type="number" placeholder="0"></div>
-      <div class="ff"><label>Notice Period (Days)</label><input id="cf10" type="number" placeholder="30"></div>
-      <div class="ff"><label>Location</label><input id="cf11" placeholder="City"></div>
-      <div class="ff"><label>Source</label>
-        <select id="cf12">
-          <option>Direct</option><option>LinkedIn</option><option>Referral</option>
-          <option>Job Portal</option><option>Walk-in</option><option>Other</option>
-        </select>
-      </div>
-    </div>
-    <div class="ma">
-      <button class="btn bto" onclick="closeMod('ncm')">Cancel</button>
-      <button class="btn btp" onclick="addCandidate()">Add Candidate</button>
-    </div>
-  </div>
-</div>
 
-<div class="ov" id="nam" onclick="if(event.target===this)closeMod('nam')">
-  <div class="mod" style="max-width:480px;">
-    <div class="mh"><div class="mt">Add IT Asset</div><button class="mx" onclick="closeMod('nam')">&#x2715;</button></div>
-    <div class="g2">
-      <div class="ff"><label>Asset Code *</label><input id="as1" placeholder="e.g. LAP-001"></div>
-      <div class="ff"><label>Asset Name *</label><input id="as2" placeholder="e.g. Dell Laptop"></div>
-      <div class="ff"><label>Category</label>
-        <select id="as3">
-          <option>Laptop</option><option>Desktop</option><option>Mobile</option>
-          <option>Tablet</option><option>Monitor</option><option>Printer</option>
-          <option>Server</option><option>Network</option><option>Other</option>
-        </select>
-      </div>
-      <div class="ff"><label>Brand</label><input id="as4" placeholder="e.g. Dell, HP, Apple"></div>
-      <div class="ff"><label>Model</label><input id="as5" placeholder="Model number"></div>
-      <div class="ff"><label>Serial Number</label><input id="as6" placeholder="Serial number"></div>
-      <div class="ff"><label>Purchase Date</label><input id="as7" type="date"></div>
-      <div class="ff"><label>Purchase Cost (Rs)</label><input id="as8" type="number" placeholder="0"></div>
-      <div class="ff"><label>Condition</label>
-        <select id="as9"><option>New</option><option>Good</option><option>Fair</option><option>Poor</option></select>
-      </div>
-      <div class="ff"><label>Location</label><input id="as10" placeholder="e.g. Coimbatore Office"></div>
-    </div>
-    <div class="ma">
-      <button class="btn bto" onclick="closeMod('nam')">Cancel</button>
-      <button class="btn btp" onclick="addAsset()">Add Asset</button>
-    </div>
-  </div>
-</div>
+
+
 </body>
 </html>
