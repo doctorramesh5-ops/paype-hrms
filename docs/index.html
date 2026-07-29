@@ -995,6 +995,7 @@ function doLogout() {
   document.getElementById('lbtn').textContent = 'Sign In';
   toast('Logged out');
 }
+var cachedCandidates = [];
 function startApp() {
   document.getElementById('LP').style.display = 'none';
   document.getElementById('AP').style.display = 'block';
@@ -1002,6 +1003,8 @@ function startApp() {
   document.getElementById('url2').textContent = CU.role;
   document.getElementById('uav').textContent = (CU.firstName || '?')[0].toUpperCase();
   buildNav(); loadDepts(); loadLvPols(); loadDash();
+  // Preload candidates for interview modal
+  req('GET', '/api/candidates').then(function(r){ if(r.success) cachedCandidates = r.data; });
 }
 var svgs = {
   grid: '<rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/>',
@@ -5059,20 +5062,20 @@ async function scheduleInterview() {
 
 async function openScheduleInterview() {
   // Load candidates into dropdown
-  var res = await req('GET', '/api/candidates');
   var sel = document.getElementById('iv1');
   if (sel) {
-    sel.innerHTML = '<option value="">Select Candidate</option>';
-    if (res.success && res.data && res.data.length) {
-      res.data.forEach(function(a) {
-        var op = document.createElement('option');
-        op.value = a.id;
-        op.textContent = (a.first_name||'') + ' ' + (a.last_name||'');
-        sel.appendChild(op);
-      });
-    } else {
-      sel.innerHTML = '<option value="">No candidates - add candidates first</option>';
+    var cands = cachedCandidates.length ? cachedCandidates : [];
+    if (!cands.length) {
+      var res2 = await req('GET', '/api/candidates');
+      if (res2.success) { cands = res2.data; cachedCandidates = cands; }
     }
+    sel.innerHTML = '<option value="">Select Candidate</option>';
+    cands.forEach(function(a) {
+      var op = document.createElement('option');
+      op.value = a.id;
+      op.textContent = (a.first_name||'') + ' ' + (a.last_name||'');
+      sel.appendChild(op);
+    });
   }
   // Load interviewers
   var empRes = await req('GET', '/api/employees');
@@ -5145,24 +5148,72 @@ async function openCreateOffer() {
 
 async function generateOfferLetter(candidateName, position, ctc) {
   var today = new Date().toLocaleDateString('en-IN',{day:'2-digit',month:'long',year:'numeric'});
+  var refNo = 'PPC/HR/OL/' + new Date().getFullYear() + '/' + Math.floor(Math.random()*9000+1000);
   var win = window.open('','_blank');
-  var html = '<html><head><title>Offer Letter - '+candidateName+'</title><style>body{font-family:Arial,sans-serif;padding:40px;max-width:750px;margin:0 auto;line-height:1.8;}h1{color:#0D1B3E;}h2{color:#00C2A8;}.header{text-align:center;border-bottom:2px solid #0D1B3E;padding-bottom:20px;margin-bottom:30px;}.footer{margin-top:50px;border-top:1px solid #ddd;padding-top:20px;}</style></head><body>';
-  html += '<div class="header"><h1>PayPe Technologies Pvt. Ltd.</h1><p>277/1A Annamalai Industrial Park, Kalapatti, Coimbatore - 641048</p><p>CIN: U74994TN2022PTC151114 | GST: 33AAMCP7960K1ZU</p></div>';
-  html += '<p>Date: '+today+'</p>';
+  var html = '<html><head><title>Offer Letter - '+candidateName+'</title>';
+  html += '<style>';
+  html += 'body{font-family:Arial,sans-serif;margin:0;padding:0;background:#fff;color:#1a1a2e;}';
+  html += '.page{max-width:794px;margin:0 auto;padding:0;}';
+  html += '.header{background:#0D1B3E;color:white;padding:20px 40px;display:flex;align-items:center;justify-content:space-between;}';
+  html += '.logo-text{font-size:28px;font-weight:900;letter-spacing:-1px;}';
+  html += '.logo-text span{color:#00C2A8;}';
+  html += '.header-right{text-align:right;font-size:11px;opacity:.8;line-height:1.8;}';
+  html += '.teal-bar{background:#00C2A8;height:4px;}';
+  html += '.content{padding:40px;}';
+  html += '.ref{font-size:11px;color:#718096;margin-bottom:20px;}';
+  html += 'h2{color:#0D1B3E;font-size:18px;text-align:center;margin:20px 0;text-transform:uppercase;letter-spacing:1px;border-bottom:2px solid #00C2A8;padding-bottom:10px;}';
+  html += 'table{width:100%;border-collapse:collapse;margin:20px 0;}';
+  html += 'td{padding:10px 14px;border:1px solid #e2e8f0;font-size:13px;}';
+  html += 'tr:nth-child(even) td{background:#f7fafc;}';
+  html += 'td:first-child{font-weight:700;color:#0D1B3E;width:40%;}';
+  html += '.footer{background:#f7fafc;border-top:2px solid #0D1B3E;padding:20px 40px;margin-top:40px;}';
+  html += '.sign-box{display:flex;justify-content:space-between;margin-top:50px;}';
+  html += '.sign-line{text-align:center;width:45%;}';
+  html += '.sign-line hr{border:none;border-top:1px solid #333;margin-bottom:8px;}';
+  html += '.watermark{position:fixed;top:50%;left:50%;transform:translate(-50%,-50%) rotate(-45deg);font-size:80px;color:rgba(0,194,168,.06);font-weight:900;pointer-events:none;z-index:0;}';
+  html += '@media print{.watermark{position:fixed;}}';
+  html += '</style></head><body>';
+  html += '<div class="watermark">PayPe</div>';
+  html += '<div class="page">';
+  html += '<div class="header">';
+  html += '<div><div class="logo-text">Pay<span>Pe</span></div><div style="font-size:11px;opacity:.7;margin-top:4px;">Technologies Pvt. Ltd.</div></div>';
+  html += '<div class="header-right">277/1A, Annamalai Industrial Park<br>Kalapatti, Coimbatore - 641048<br>Tamil Nadu, India<br>hr@paype.co.in | +91 99448 57191</div>';
+  html += '</div>';
+  html += '<div class="teal-bar"></div>';
+  html += '<div class="content">';
+  html += '<div class="ref">Ref No: '+refNo+' &nbsp;&nbsp;|&nbsp;&nbsp; Date: '+today+'</div>';
+  html += '<p>To,<br><strong>'+candidateName+'</strong></p>';
+  html += '<h2>Letter of Offer</h2>';
   html += '<p>Dear <strong>'+candidateName+'</strong>,</p>';
-  html += '<p>We are pleased to offer you the position of <strong>'+position+'</strong> at PayPe Technologies Pvt. Ltd.</p>';
-  html += '<h2>Offer Details</h2>';
-  html += '<table style="width:100%;border-collapse:collapse;"><tr style="background:#f5f5f5;"><td style="padding:10px;border:1px solid #ddd;"><strong>Position</strong></td><td style="padding:10px;border:1px solid #ddd;">'+position+'</td></tr>';
-  if (ctc && ctc > 0) html += '<tr><td style="padding:10px;border:1px solid #ddd;"><strong>Annual CTC</strong></td><td style="padding:10px;border:1px solid #ddd;">Rs '+Number(ctc).toLocaleString('en-IN')+'</td></tr>';
-  html += '<tr style="background:#f5f5f5;"><td style="padding:10px;border:1px solid #ddd;"><strong>Location</strong></td><td style="padding:10px;border:1px solid #ddd;">Coimbatore, Tamil Nadu</td></tr>';
-  html += '<tr><td style="padding:10px;border:1px solid #ddd;"><strong>Employment Type</strong></td><td style="padding:10px;border:1px solid #ddd;">Full Time, Permanent</td></tr></table>';
-  html += '<p style="margin-top:24px;">This offer is contingent upon successful completion of background verification. Please sign and return a copy of this letter within 7 days.</p>';
-  html += '<div class="footer"><p>Yours sincerely,</p><br><p><strong>HR Department</strong><br>PayPe Technologies Pvt. Ltd.<br>hr@paype.co.in | +91 99448 57191</p></div>';
-  html += '<p style="margin-top:40px;">Accepted by: _____________________ Date: ___________</p>';
-  html += '</body></html>';
+  html += '<p>We are delighted to offer you the position of <strong>'+position+'</strong> at <strong>PayPe Technologies Pvt. Ltd.</strong> We believe your skills and experience will be a valuable addition to our team.</p>';
+  html += '<table>';
+  html += '<tr><td>Position / Designation</td><td>'+position+'</td></tr>';
+  html += '<tr><td>Department</td><td>Technology & Products</td></tr>';
+  html += '<tr><td>Location</td><td>Coimbatore, Tamil Nadu</td></tr>';
+  html += '<tr><td>Employment Type</td><td>Full Time, Permanent</td></tr>';
+  if (ctc && ctc > 0) {
+    html += '<tr><td>Annual CTC</td><td><strong>Rs '+Number(ctc).toLocaleString('en-IN')+'</strong> per annum</td></tr>';
+    html += '<tr><td>Monthly Gross</td><td>Rs '+Number(Math.round(ctc/12)).toLocaleString('en-IN')+'</td></tr>';
+  }
+  html += '<tr><td>Probation Period</td><td>6 Months</td></tr>';
+  html += '<tr><td>Notice Period</td><td>30 Days (post probation)</td></tr>';
+  html += '<tr><td>Date of Joining</td><td>To be confirmed</td></tr>';
+  html += '</table>';
+  html += '<p><strong>Benefits:</strong> PF, ESI (if applicable), paid leaves as per company policy, performance bonus, and professional development opportunities.</p>';
+  html += '<p>This offer is subject to successful completion of reference checks and document verification. Please confirm your acceptance within <strong>7 working days</strong>.</p>';
+  html += '<div class="sign-box">';
+  html += '<div class="sign-line"><hr><p><strong>Authorised Signatory</strong><br>HR Department<br>PayPe Technologies Pvt. Ltd.</p></div>';
+  html += '<div class="sign-line"><hr><p><strong>Candidate Acceptance</strong><br>'+candidateName+'<br>Date: _______________</p></div>';
+  html += '</div></div>';
+  html += '<div class="footer">';
+  html += '<div style="display:flex;justify-content:space-between;font-size:11px;color:#718096;">';
+  html += '<div><strong style="color:#0D1B3E;">PayPe Technologies Pvt. Ltd.</strong><br>CIN: U74994TN2022PTC151114 | GST: 33AAMCP7960K1ZU | PAN: AAMCP7960K</div>';
+  html += '<div style="text-align:right;">paype.co.in | hr.paype.co.in<br>Confidential Document</div>';
+  html += '</div></div>';
+  html += '</div></body></html>';
   win.document.write(html);
   win.document.close();
-  setTimeout(function(){win.print();},500);
+  setTimeout(function(){win.print();},800);
 }
 async function viewOfferLetter(id) {
   toast('Loading offer letter...');
