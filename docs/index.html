@@ -915,7 +915,7 @@ function openMod(id) {
         res.data.forEach(function(p) {
           var op = document.createElement('option');
           op.value = p.id;
-          op.textContent = p.name + ' (' + (p.max_days_per_year||0) + ' days/yr)';
+          op.textContent = p.name + ' (' + (p.days_per_year||p.max_days_per_year||0) + ' days/yr)';
           sel.appendChild(op);
         });
       } else {
@@ -1653,15 +1653,34 @@ async function loadOnboarding() {
       var nm = e.first_name + ' ' + e.last_name;
       h += '<tr><td><div style="font-weight:600;">' + nm + '</div><div style="font-size:11px;color:#718096;">' + e.employee_id + '</div></td>';
       h += '<td><div style="display:flex;align-items:center;gap:8px;"><div style="flex:1;height:6px;background:#E2E8F0;border-radius:3px;overflow:hidden;"><div style="width:0%;height:100%;background:#00C2A8;border-radius:3px;" id="ob-bar-' + e.id + '"></div></div><span style="font-size:11px;color:#718096;" id="ob-pct-' + e.id + '">--</span></div></td>';
-      h += '<td><button class="btn bto btsm" onclick="viewOnboarding(' + "'" + e.id + "','" + nm + "'" + ')">View</button></td></tr>';
-      loadObProgress(e.id);
+      h += '<td><button class="btn bto btsm" onclick="viewOnboardingDetail('' + e.id + '','' + nm + '')">View</button></td></tr>';
+      // Init onboarding then load progress
+      req('POST', '/api/onboarding/' + e.id + '/init', {}).then(function() {
+        loadObProgress(e.id);
+      });
     });
     h += '</tbody></table></div></div>';
   }
   if (tasksRes.success) {
+    // For employee view - get their personal progress
+    var empProgress = {};
+    if (CU && CU.employeeId) {
+      try {
+        var obRes = await req('GET', '/api/onboarding/' + CU.employeeId);
+        if (obRes.success && obRes.data.progress) {
+          obRes.data.progress.forEach(function(p) {
+            empProgress[p.task_id] = p.status;
+          });
+        }
+      } catch(e) {}
+    }
     h += '<div class="card"><div class="ch"><div class="ct">Onboarding Checklist (' + tasksRes.data.length + ' tasks)</div></div><div class="cb">';
     var cats = {};
-    tasksRes.data.forEach(function(t) { if (!cats[t.category]) cats[t.category] = []; cats[t.category].push(t); });
+    tasksRes.data.forEach(function(t) {
+      t.is_completed = empProgress[t.id] === 'Completed';
+      if (!cats[t.category]) cats[t.category] = [];
+      cats[t.category].push(t);
+    });
     Object.keys(cats).forEach(function(cat) {
       h += '<div style="margin-bottom:14px;"><div style="font-size:11px;font-weight:700;color:#718096;text-transform:uppercase;letter-spacing:.5px;margin-bottom:8px;">' + cat + '</div>';
       cats[cat].forEach(function(t) {
@@ -1688,10 +1707,15 @@ async function loadObProgress(empId) {
   if (!res.success) return;
   var pct = 0;
   try {
-    if (res.data && res.data.summary) pct = res.data.summary.percentage || 0;
-    else if (res.data && res.data.percentage) pct = res.data.percentage || 0;
-    else if (res.data && res.data.completed !== undefined && res.data.total) {
-      pct = Math.round((res.data.completed / res.data.total) * 100);
+    var d = res.data;
+    if (d && d.summary && d.summary.total > 0) {
+      pct = Math.round((d.summary.done / d.summary.total) * 100);
+    } else if (d && d.summary && d.summary.percentage) {
+      pct = d.summary.percentage;
+    } else if (d && d.percentage) {
+      pct = d.percentage;
+    } else if (d && d.total > 0) {
+      pct = Math.round(((d.completed||d.done||0) / d.total) * 100);
     }
   } catch(e) { pct = 0; }
   var bar = document.getElementById('ob-bar-' + empId), pctEl = document.getElementById('ob-pct-' + empId);
@@ -1699,16 +1723,28 @@ async function loadObProgress(empId) {
   if (pctEl) pctEl.textContent = pct + '%';
 }
 async function toggleObTask(taskId, isCompleted) {
-  var newStatus = isCompleted ? 'pending' : 'completed';
-  var res = await req('PUT', '/api/onboarding/task/' + taskId, { status: newStatus });
-  if (res.success) {
-    toast(isCompleted ? 'Task marked pending' : 'Task completed! ✓', isCompleted ? '' : 'ok');
-    loadOnboarding();
-  } else {
-    // If API not available, toggle locally
-    toast(isCompleted ? 'Marked as pending' : 'Task completed! ✓', isCompleted ? '' : 'ok');
-    loadOnboarding();
-  }
+  var newStatus = isCompleted ? 'Pending' : 'Completed';
+  var empId = CU && CU.employeeId ? CU.employeeId : null;
+  if (!empId) { toast('Employee profile not linked','err'); return; }
+  // First ensure initialized
+  await req('POST', '/api/onboarding/' + empId + '/init', {});
+  var res = await req('PUT', '/api/onboarding/' + empId + '/task/' + taskId, { status: newStatus });
+  toast(isCompleted ? 'Task marked pending' : 'Task completed! ✓', isCompleted ? '' : 'ok');
+  loadOnboarding();
+}
+async function viewOnboardingDetail(empId, nm) {
+  // Init first then show
+  await req('POST', '/api/onboarding/' + empId + '/init', {});
+  var res = await req('GET', '/api/onboarding/' + empId);
+  if (!res.success) { toast('Error loading onboarding','err'); return; }
+  var s = res.data.summary;
+  var pct = s.total > 0 ? Math.round((s.done/s.total)*100) : 0;
+  toast(nm + ': ' + s.done + '/' + s.total + ' tasks (' + pct + '% complete)');
+  // Update progress bar
+  var bar = document.getElementById('ob-bar-' + empId);
+  var pctEl = document.getElementById('ob-pct-' + empId);
+  if (bar) bar.style.width = pct + '%';
+  if (pctEl) pctEl.textContent = pct + '%';
 }
 async function viewOnboarding(empId, nm) {
   var res = await req('GET', '/api/onboarding/' + empId);
@@ -3870,7 +3906,7 @@ setInterval(function() {
   if (!endDate) { toast('Please select end date','err'); return; }
   if (!reason) { toast('Please enter reason for leave','err'); return; }
   if (endDate < startDate) { toast('End date must be after start date','err'); return; }
-  var res = await req('POST', '/api/leave/apply', { leaveTypeId, startDate, endDate, reason });
+  var res = await req('POST', '/api/leave/apply', { leaveTypeId, leave_type_id: leaveTypeId, startDate, start_date: startDate, endDate, end_date: endDate, reason });
   if (res.success) {
     toast('Leave request submitted!');
     closeMod('lvm');
