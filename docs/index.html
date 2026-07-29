@@ -3657,9 +3657,11 @@ function exportAttendanceReport() {
     var link = document.createElement('a');
     link.href = url;
     link.download = 'Attendance_' + today + '.csv';
+    link.style.display = 'none';
+    document.body.appendChild(link);
     link.click();
-    URL.revokeObjectURL(url);
-    toast('Attendance exported!');
+    setTimeout(function(){ document.body.removeChild(link); URL.revokeObjectURL(url); }, 1000);
+    toast('Attendance exported! Check your Downloads folder.');
   });
 }
 
