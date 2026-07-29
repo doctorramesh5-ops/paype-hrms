@@ -1673,7 +1673,8 @@ async function loadOnboarding() {
         h += '<div class="ob-chk" style="background:'+assignedBg+';border-color:'+assignedColor+';font-size:10px;padding:2px 6px;border-radius:4px;border:1px solid;color:'+assignedColor+';flex-shrink:0;">' + (t.assigned_to==='hr'?'HR':'Emp') + '</div>';
         h += '<div style="flex:1;"><div class="ob-nm" style="text-decoration:'+(isCompleted?'line-through':'none')+';color:'+(isCompleted?'#38A169':'#1A202C')+';">' + t.name + '</div>';
         h += '<div class="ob-cat" style="font-size:10px;color:#718096;">' + (t.is_required?'Required':'Optional') + (isCompleted?' &nbsp;&#10003; Completed':'') + '</div></div>';
-        h += '<button onclick="toggleObTask(''+t.id+'','+isCompleted+')" style="padding:4px 10px;border-radius:6px;border:1px solid;font-size:11px;font-weight:600;cursor:pointer;font-family:inherit;background:'+(isCompleted?'rgba(230,51,41,.08)':'rgba(56,161,105,.08)')+';color:'+(isCompleted?'#E63329':'#38A169')+';border-color:'+(isCompleted?'rgba(230,51,41,.2)':'rgba(56,161,105,.2)')+';">'+(isCompleted?'Undo':'Done')+'</button>';
+        var tid = t.id;
+        h += '<button onclick="toggleObTask(\"'+tid+'\",'+isCompleted+')" style="padding:4px 10px;border-radius:6px;border:1px solid;font-size:11px;font-weight:600;cursor:pointer;font-family:inherit;background:'+(isCompleted?'rgba(230,51,41,.08)':'rgba(56,161,105,.08)')+';color:'+(isCompleted?'#E63329':'#38A169')+';border-color:'+(isCompleted?'rgba(230,51,41,.2)':'rgba(56,161,105,.2)')+';">'+(isCompleted?'Undo':'Done')+'</button>';
         h += '</div>';
       });
       h += '</div>';
@@ -2307,8 +2308,7 @@ function downloadAgreement() {
   var el2 = document.querySelector('#agr-output > div');
   if (!el2) { toast('Generate agreement first','err'); return; }
   var win = window.open('', '_blank');
-  win.document.write('<html><head><title>PayPe Agreement</title><style>body{font-family:Arial,sans-serif;padding:30px;max-width:750px;margin:0 auto;}img{max-height:65px;}</style></head><body>' + el2.innerHTML + '</body></html>'
-</body></html>');
+  win.document.write('<html><head><title>PayPe Agreement</title><style>body{font-family:Arial,sans-serif;padding:30px;max-width:750px;margin:0 auto;}img{max-height:65px;}</style></head><body>' + el2.innerHTML + '</body></html>');
   win.document.close();
   setTimeout(function() { win.print(); }, 500);
 }
@@ -2526,8 +2526,7 @@ function downloadAllMyDocs(nm) {
       buildMyNDA(e,nm,today) + '<hr style="margin:30px 0;">' +
       buildMyOffer(e,nm,today,joined) + '<hr style="margin:30px 0;">' +
       buildMyPolicy(e,nm,today);
-    win.document.write('<html><head><title>PayPe Documents - ' + nm + '</title><style>body{font-family:Arial,sans-serif;padding:30px;max-width:750px;margin:0 auto;font-size:13px;line-height:1.7;}h2{color:#0D1B3E;text-align:center;}h3{color:#0D1B3E;margin:12px 0 6px;}table{width:100%;border-collapse:collapse;}td,th{padding:7px 10px;border:1px solid #E2E8F0;}th{background:#F7FAFC;}</style></head><body>' + body + '</body></html>'
-</body></html>');
+    win.document.write('<html><head><title>PayPe Documents - ' + nm + '</title><style>body{font-family:Arial,sans-serif;padding:30px;max-width:750px;margin:0 auto;font-size:13px;line-height:1.7;}h2{color:#0D1B3E;text-align:center;}h3{color:#0D1B3E;margin:12px 0 6px;}table{width:100%;border-collapse:collapse;}td,th{padding:7px 10px;border:1px solid #E2E8F0;}th{background:#F7FAFC;}</style></head><body>' + body + '</body></html>');
     win.document.close();
     setTimeout(function() { win.print(); }, 500);
   });
@@ -3028,8 +3027,7 @@ function generatePayslipPDF(s, month, year) {
   win.document.write('<tr><td class="ttl">Net Take Home</td><td class="ttl">Rs ' + Number(s.net_salary||0).toLocaleString('en-IN') + '</td></tr>');
   win.document.write('</table>');
   win.document.write('<p style="margin-top:16px;font-size:10px;color:#718096;text-align:center;">This is a computer-generated payslip. No signature required.</p>');
-  win.document.write('')
-</body></html>');
+  win.document.write('</body></html>');
   win.document.close();
   setTimeout(function() { win.print(); }, 500);
 }
