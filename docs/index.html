@@ -1561,7 +1561,16 @@ async function loadRecruitment() {
         if (score) h += '<div class="pipe-score" style="background:rgba(0,0,0,.06);color:' + scoreClr + '">AI: ' + score + '%</div>';
         h += '<div style="display:flex;gap:4px;margin-top:6px;">';
         if (stage === 'Screening') h += '<button class="btn btt btsm" onclick="aiScreen(' + "'" + a.id + "'" + ')">AI Screen</button>';
-        h += '<button class="btn bto btsm" onclick="moveApp(' + "'" + a.id + "','" + (stage==='Screening'?'Interview':stage==='Interview'?'Offer':stage==='Offer'?'Hired':'Hired') + "'" + ')">' + (stage==='Hired'?'Done':'Move') + '</button>';
+        var aid = a.id;
+        var nextStage = stage==='Screening'?'Interview':stage==='Interview'?'Offer':stage==='Offer'?'Hired':'Hired';
+        if (stage !== 'Hired' && stage !== 'Rejected') {
+          h += '<button class="btn btp btsm" data-id="'+aid+'" data-stage="'+nextStage+'" onclick="moveApp(this.dataset.id,this.dataset.stage)">Move &#x2192;</button>';
+          h += '<button class="btn btsm" style="background:rgba(230,51,41,.08);color:#E63329;border:1px solid rgba(230,51,41,.2);border-radius:6px;padding:4px 8px;cursor:pointer;font-size:11px;" data-id="'+aid+'" data-rej="Rejected" onclick="moveApp(this.dataset.id,this.dataset.rej)">Reject</button>';
+        } else if (stage === 'Hired') {
+          h += '<span style="color:#38A169;font-size:11px;font-weight:600;">&#x2713; Hired</span>';
+        } else {
+          h += '<span style="color:#E63329;font-size:11px;font-weight:600;">&#x2715; Rejected</span>';
+        }
         h += '</div></div>';
       });
     } else { h += '<div style="text-align:center;padding:20px;color:#718096;font-size:12px;">No candidates</div>'; }
