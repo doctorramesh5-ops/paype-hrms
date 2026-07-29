@@ -1653,7 +1653,7 @@ async function loadOnboarding() {
       var nm = e.first_name + ' ' + e.last_name;
       h += '<tr><td><div style="font-weight:600;">' + nm + '</div><div style="font-size:11px;color:#718096;">' + e.employee_id + '</div></td>';
       h += '<td><div style="display:flex;align-items:center;gap:8px;"><div style="flex:1;height:6px;background:#E2E8F0;border-radius:3px;overflow:hidden;"><div style="width:0%;height:100%;background:#00C2A8;border-radius:3px;" id="ob-bar-' + e.id + '"></div></div><span style="font-size:11px;color:#718096;" id="ob-pct-' + e.id + '">--</span></div></td>';
-      h += '<td><button class="btn bto btsm" onclick="viewOnboardingDetail('' + e.id + '','' + nm + '')">View</button></td></tr>';
+      h += '<td><button class="btn bto btsm" onclick="viewOnboardingDetail(\"' + e.id + '\",\"' + nm + '\")">View</button></td></tr>';
       // Init onboarding then load progress
       req('POST', '/api/onboarding/' + e.id + '/init', {}).then(function() {
         loadObProgress(e.id);
