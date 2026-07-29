@@ -1770,20 +1770,7 @@ async function toggleObTask(taskId, isCompleted) {
   toast(isCompleted ? 'Task marked pending' : 'Task completed! ✓', isCompleted ? '' : 'ok');
   loadOnboarding();
 }
-async function viewOnboardingDetail(empId, nm) {
-  // Init first then show
-  await req('POST', '/api/onboarding/' + empId + '/init', {});
-  var res = await req('GET', '/api/onboarding/' + empId);
-  if (!res.success) { toast('Error loading onboarding','err'); return; }
-  var s = res.data.summary;
-  var pct = s.total > 0 ? Math.round((s.done/s.total)*100) : 0;
-  toast(nm + ': ' + s.done + '/' + s.total + ' tasks (' + pct + '% complete)');
-  // Update progress bar
-  var bar = document.getElementById('ob-bar-' + empId);
-  var pctEl = document.getElementById('ob-pct-' + empId);
-  if (bar) bar.style.width = pct + '%';
-  if (pctEl) pctEl.textContent = pct + '%';
-}
+
 async function viewOnboarding(empId, nm) {
   var res = await req('GET', '/api/onboarding/' + empId);
   if (!res.success) { toast('Error loading onboarding','err'); return; }
@@ -3621,9 +3608,11 @@ function exportAttendanceReport() {
     var link = document.createElement('a');
     link.href = url;
     link.download = 'Attendance_' + today + '.csv';
+    link.style.display = 'none';
+    document.body.appendChild(link);
     link.click();
-    URL.revokeObjectURL(url);
-    toast('Attendance exported!');
+    setTimeout(function(){ document.body.removeChild(link); URL.revokeObjectURL(url); }, 1000);
+    toast('Attendance exported! Check Downloads folder.');
   });
 }
 
