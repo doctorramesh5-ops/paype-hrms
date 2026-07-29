@@ -1057,6 +1057,16 @@ app.post('/api/applications/:id/ai-screen', auth, async (req, res) => {
   } catch(e) { res.status(500).json({ success: false, message: e.message }); }
 });
 
+// ── DELETE APPLICATION ───────────────────────────
+app.delete('/api/applications/:id', auth, async (req, res) => {
+  try {
+    await db('DELETE FROM applications WHERE id=$1', [req.params.id]);
+    res.json({ success: true, message: 'Application deleted' });
+  } catch(e) {
+    res.status(500).json({ success: false, message: e.message });
+  }
+});
+
 // ── INTERVIEWS ────────────────────────────────────
 
 app.get('/api/interviews', auth, async (req, res) => {
