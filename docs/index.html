@@ -1621,8 +1621,7 @@ async function publishJob(id, status) {
 async function loadCandidates() {
   var res = await req('GET', '/api/candidates');
   if (!res.success) { document.getElementById('cdc').innerHTML = '<div class="em"><h3>' + res.message + '</h3></div>'; return; }
-  var hidden = JSON.parse(localStorage.getItem('hidden_candidates') || '[]');
-  var candidates = res.data.filter(function(c3){ return !hidden.includes(c3.id); });
+  var candidates = res.data.filter(function(c3){ return c3.source !== 'Deleted'; });
   if (!candidates.length) { document.getElementById('cdc').innerHTML = '<div class="card"><div class="cb"><div class="em"><h3>No candidates yet</h3><p>Add candidates to talent pool</p></div></div></div>'; return; }
   var clrs = ['#00C2A8','#0D1B3E','#805AD5','#38A169','#D69E2E'];
   var h = '<div class="card"><div class="ch"><div class="ct">Candidates (' + candidates.length + ')</div></div><div class="tw"><table><thead><tr><th>Candidate</th><th>Role / Company</th><th>Exp</th><th>CTC</th><th>Source</th><th>Action</th></tr></thead><tbody>';
