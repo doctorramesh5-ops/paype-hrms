@@ -1718,13 +1718,14 @@ async function loadOnboarding() {
     var empProgress = {};
     if (CU && CU.employeeId) {
       try {
+        await req('POST', '/api/onboarding/' + CU.employeeId + '/init', {});
         var obRes = await req('GET', '/api/onboarding/' + CU.employeeId);
-        if (obRes.success && obRes.data.progress) {
+        if (obRes.success && obRes.data && obRes.data.progress) {
           obRes.data.progress.forEach(function(p) {
             empProgress[p.task_id] = p.status;
           });
         }
-      } catch(e) {}
+      } catch(e) { console.log('Progress error:', e); }
     }
     h += '<div class="card"><div class="ch"><div class="ct">Onboarding Checklist (' + tasksRes.data.length + ' tasks)</div></div><div class="cb">';
     var cats = {};
@@ -5364,15 +5365,6 @@ async function viewOfferLetter(id) {
 
 // ── ONBOARDING ENHANCED ────────────────────────
 
-async function toggleObTask(taskId, isCompleted) {
-  var newStatus = isCompleted ? 'Pending' : 'Completed';
-  var empId = CU && CU.employeeId ? CU.employeeId : null;
-  if (!empId) { toast('Employee profile not linked','err'); return; }
-  await req('POST', '/api/onboarding/' + empId + '/init', {});
-  var res = await req('PUT', '/api/onboarding/' + empId + '/task/' + taskId, { status: newStatus });
-  toast(isCompleted ? 'Task marked pending' : 'Task completed!');
-  loadOnboarding();
-}
 
 async function loadObProgress(empId) {
   await req('POST', '/api/onboarding/' + empId + '/init', {});
