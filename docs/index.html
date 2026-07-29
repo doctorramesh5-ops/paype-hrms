@@ -20,7 +20,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Syne:wght@700;800&display=swap" rel="stylesheet">
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
-:root{--navy:#0D1B3E;--teal:#00C2A8;--bg:#ffffff;--navy:#0D1B3E;--teal:#00C2A8;--red:#E63329;--green:#38A169;--yellow:#D69E2E;--purple:#805AD5;--orange:#DD6B20;--bg:#F0F4F8;--border:#E2E8F0;--text:#1A202C;--muted:#718096;--light:#F7FAFC;}
+:root{--navy:#0D1B3E;--teal:#00C2A8;--bg:#F0F4F8;--navy:#0D1B3E;--teal:#00C2A8;--red:#E63329;--green:#38A169;--yellow:#D69E2E;--purple:#805AD5;--orange:#DD6B20;--bg:#F0F4F8;--border:#E2E8F0;--text:#1A202C;--muted:#718096;--light:#F7FAFC;}
 body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);}
 #LP{display:flex;min-height:100vh;}
 .ll{flex:1;background:linear-gradient(135deg,#0D1B3E,#1a3a7c);display:flex;flex-direction:column;justify-content:center;align-items:center;padding:48px;}
@@ -64,7 +64,7 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);}
 .url2{color:#00C2A8;font-size:10px;}
 .lo{margin-left:auto;background:none;border:none;cursor:pointer;color:rgba(255,255,255,.4);font-size:18px;line-height:1;}
 .lo:hover{color:#E63329;}
-.mn{margin-left:240px;display:flex;flex-direction:column;min-height:100vh;background:white;}.pg{background:white;}
+.mn{margin-left:240px;display:flex;flex-direction:column;min-height:100vh;}
 .tb{background:white;border-bottom:1px solid #E2E8F0;padding:0 22px;height:56px;display:flex;align-items:center;gap:12px;position:sticky;top:0;z-index:50;}.tb .dc{flex:1;}
 .tb-ti{font-family:'Syne',sans-serif;font-size:16px;font-weight:700;color:#0D1B3E;flex:1;}
 .dc{background:#F7FAFC;border:1px solid #E2E8F0;border-radius:7px;padding:4px 10px;font-size:11px;color:#718096;}
@@ -74,7 +74,7 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);}
 .ph{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:17px;flex-wrap:wrap;gap:10px;}
 .ph h1{font-family:'Syne',sans-serif;font-size:20px;font-weight:700;color:#0D1B3E;}
 .ph p{font-size:13px;color:#718096;margin-top:3px;}
-.card{background:white;border-radius:12px;border:1px solid #E2E8F0;overflow:hidden;margin-bottom:15px;box-shadow:0 1px 3px rgba(0,0,0,.06);}
+.card{background:white;border-radius:12px;border:1px solid #E2E8F0;overflow:hidden;margin-bottom:15px;}
 .ch{padding:13px 16px;border-bottom:1px solid #E2E8F0;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;}
 .ct{font-size:13px;font-weight:700;color:#0D1B3E;}
 .cb{padding:16px;}
@@ -89,7 +89,7 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);}
 .g3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;}
 .g4{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;}
 .tw{overflow-x:auto;}
-table{width:100%;border-collapse:collapse;font-size:13px;}th{background:#F7FAFC;color:#4A5568;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;padding:10px 14px;border-bottom:2px solid #E2E8F0;}td{padding:10px 14px;border-bottom:1px solid #F0F4F8;color:#1A202C;}tr:last-child td{border-bottom:none;}tr:hover td{background:#F7FAFC;}
+table{width:100%;border-collapse:collapse;font-size:13px;}
 th{background:#F7FAFC;padding:8px 12px;text-align:left;font-size:10px;font-weight:700;color:#718096;text-transform:uppercase;letter-spacing:.5px;border-bottom:1px solid #E2E8F0;}
 td{padding:10px 12px;border-bottom:1px solid #E2E8F0;vertical-align:middle;}
 tr:last-child td{border-bottom:none;}
@@ -101,7 +101,7 @@ tr:hover td{background:#F7FAFC;}
 .btp{background:#0D1B3E;color:white;}.btt{background:#00C2A8;color:white;}.bto{background:white;color:#0D1B3E;border:1.5px solid #E2E8F0;}.btr{background:#E63329;color:white;}.btsm{padding:4px 9px;font-size:11px;}
 .ov{position:fixed;inset:0;background:rgba(13,27,62,.5);z-index:200;display:none;align-items:center;justify-content:center;backdrop-filter:blur(3px);}
 .ov.on{display:flex;}
-.mo{background:white;border-radius:13px;width:92%;max-width:640px;max-height:90vh;overflow-y:auto;}
+.mo{background:white;border-radius:13px;width:90%;max-width:520px;max-height:88vh;overflow-y:auto;}
 .mh{padding:13px 17px;border-bottom:1px solid #E2E8F0;display:flex;align-items:center;justify-content:space-between;}
 .mt{font-size:14px;font-weight:700;color:#0D1B3E;}
 .mx{width:25px;height:25px;border-radius:6px;background:#F7FAFC;border:none;cursor:pointer;font-size:13px;}
@@ -341,7 +341,7 @@ tr:hover td{background:#F7FAFC;}
       </div>
     </div>
     <div class="pg on" id="pg-dashboard"><div id="dbc"><div class="ld"><div class="sp"></div>Loading...</div></div></div>
-    <div class="pg" id="pg-employees" style="background:white;">
+    <div class="pg" id="pg-employees">
       <div class="ph"><div><h1>Employees</h1><p id="esub"></p></div><div id="eact"></div></div>
       <div class="card">
         <div class="ch"><div class="ct">All Employees</div>
@@ -353,7 +353,7 @@ tr:hover td{background:#F7FAFC;}
         <div class="tw"><div id="etbl"><div class="ld"><div class="sp"></div>Loading...</div></div></div>
       </div>
     </div>
-    <div class="pg" id="pg-attendance" style="background:white;">
+    <div class="pg" id="pg-attendance">
       <div class="ph"><div><h1>Attendance</h1><p>Punch, shifts and overtime</p></div>
         <button class="btn btp" id="att-export-btn" onclick="exportAttendanceReport()">Export</button>
       </div>
@@ -365,11 +365,11 @@ tr:hover td{background:#F7FAFC;}
       </div>
       <div id="atc"><div class="ld"><div class="sp"></div>Loading...</div></div>
     </div>
-    <div class="pg" id="pg-leave" style="background:white;">
+    <div class="pg" id="pg-leave">
       <div class="ph"><div><h1>Leave</h1><p>Manage leave requests</p></div><button class="btn btp" onclick="openMod('lvm')" id="albtn" style="display:none">+ Apply Leave</button></div>
       <div id="lvc"><div class="ld"><div class="sp"></div>Loading...</div></div>
     </div>
-    <div class="pg" id="pg-payroll" style="background:white;">
+    <div class="pg" id="pg-payroll">
       <div class="ph"><div><h1>Payroll & Compliance</h1><p>Salary, PF, ESI and statutory</p></div>
         <div style="display:flex;gap:7px;"><button class="btn btp" onclick="runPayroll()" id="rpbtn" style="display:none">Run Payroll</button></div>
       </div>
@@ -382,7 +382,7 @@ tr:hover td{background:#F7FAFC;}
       </div>
       <div id="prc"><div class="ld"><div class="sp"></div>Loading...</div></div>
     </div>
-    <div class="pg" id="pg-recruitment" style="background:white;">
+    <div class="pg" id="pg-recruitment">
       <div class="ph"><div><h1>Recruitment</h1><p>ATS Pipeline</p></div>
         <div style="display:flex;gap:8px;">
           <button class="btn bto" onclick="goPage('jobs')">&#x1F4CB; Jobs</button>
@@ -391,23 +391,23 @@ tr:hover td{background:#F7FAFC;}
       </div>
       <div id="rdc"><div class="ld"><div class="sp"></div>Loading...</div></div>
     </div>
-    <div class="pg" id="pg-jobs" style="background:white;">
+    <div class="pg" id="pg-jobs">
       <div class="ph"><div><h1>Job Listings</h1><p>All open positions</p></div><button class="btn btp" onclick="openPostJob()">+ Post Job</button></div>
       <div id="jbc"><div class="ld"><div class="sp"></div>Loading...</div></div>
     </div>
-    <div class="pg" id="pg-candidates" style="background:white;">
+    <div class="pg" id="pg-candidates">
       <div class="ph"><div><h1>Candidates</h1><p>Talent database</p></div><button class="btn btp" onclick="openMod('ncm')">+ Add Candidate</button></div>
       <div id="cdc"><div class="ld"><div class="sp"></div>Loading...</div></div>
     </div>
-    <div class="pg" id="pg-onboarding" style="background:white;">
+    <div class="pg" id="pg-onboarding">
       <div class="ph"><div><h1>Onboarding</h1><p>Employee onboarding tracker</p></div></div>
       <div id="obc"><div class="ld"><div class="sp"></div>Loading...</div></div>
     </div>
-    <div class="pg" id="pg-assets" style="background:white;">
+    <div class="pg" id="pg-assets">
       <div class="ph"><div><h1>IT Assets</h1><p>Asset management</p></div><button class="btn btp" onclick="openMod('nam')">+ Add Asset</button></div>
       <div id="asc"><div class="ld"><div class="sp"></div>Loading...</div></div>
     </div>
-    <div class="pg" id="pg-profile" style="background:white;">
+    <div class="pg" id="pg-profile">
       <div class="ph"><div><h1>My Profile</h1><p>Your information and documents</p></div></div>
       <div style="display:flex;gap:5px;margin-bottom:16px;background:white;padding:5px;border-radius:10px;border:1px solid #E2E8F0;flex-wrap:wrap;">
         <button class="btn btp" id="prof-tab1" onclick="showProfTab('info',this)" style="flex:1;justify-content:center;min-width:80px;">My Info</button>
@@ -426,25 +426,25 @@ tr:hover td{background:#F7FAFC;}
     </div>
 
     
-    <div class="pg" id="pg-interviews" style="background:white;">
+    <div class="pg" id="pg-interviews">
       <div class="ph"><div><h1>Interviews</h1><p>Schedule and track interviews</p></div>
-        <button class="btn btp" onclick="openScheduleInterview()">+ Schedule Interview</button>
+        <button class="btn btp" onclick="openMod('sim')">+ Schedule Interview</button>
       </div>
       <div id="ivc"><div class="ld"><div class="sp"></div>Loading...</div></div>
     </div>
 
-    <div class="pg" id="pg-orgchart" style="background:white;">
+    <div class="pg" id="pg-orgchart">
       <div class="ph"><div><h1>Org Chart</h1><p>Organisation hierarchy</p></div></div>
       <div id="ogc"><div class="ld"><div class="sp"></div>Loading...</div></div>
     </div>
-    <div class="pg" id="pg-offers" style="background:white;">
+    <div class="pg" id="pg-offers">
       <div class="ph"><div><h1>Offer Letters</h1><p>Manage offer letters</p></div><button class="btn btp" onclick="openMod('nom')">+ Create Offer</button></div>
       <div id="ofc"><div class="ld"><div class="sp"></div>Loading...</div></div>
     </div>
-    <div class="pg" id="pg-settings" style="background:white;">
+    <div class="pg" id="pg-settings">
       <div class="ph"><div><h1>Settings</h1><p>Account settings</p></div></div>
       <div id="stc"></div>
-    </div>    <div class="pg" id="pg-digitalid" style="background:white;">
+    </div>    <div class="pg" id="pg-digitalid">
       <div class="ph">
         <div><h1>Digital Identity</h1><p>Visiting cards, ID cards, agreements and QR codes</p></div>
       </div>
@@ -607,7 +607,7 @@ tr:hover td{background:#F7FAFC;}
         <div class="mf"><button class="btn bto" onclick="closeMod('signMod')">Cancel</button><button class="btn btp" onclick="saveSign()">Apply Signature</button></div>
       </div>
     </div>    <!-- REPORTS PAGE -->
-    <div class="pg" id="pg-reports" style="background:white;">
+    <div class="pg" id="pg-reports">
       <div class="ph"><div><h1>Reports & Analytics</h1><p>HR insights and data export</p></div>
         <button class="btn btp" onclick="exportAllReport()">Export Excel</button>
       </div>
@@ -622,7 +622,7 @@ tr:hover td{background:#F7FAFC;}
     </div>
 
     <!-- PERFORMANCE PAGE -->
-    <div class="pg" id="pg-performance" style="background:white;">
+    <div class="pg" id="pg-performance">
       <div class="ph"><div><h1>Performance</h1><p>Goals, appraisals and ratings</p></div>
         <button class="btn btp" id="perf-add-btn" onclick="openMod('perf-mod')" style="display:none;">+ Set Goal</button>
       </div>
@@ -634,7 +634,7 @@ tr:hover td{background:#F7FAFC;}
       <div id="perf-content"><div class="ld"><div class="sp"></div>Loading...</div></div>
     </div>
 
-    <!-- NOTIFICATIONS BELL - shown in topbar -->    <div class="pg" id="pg-helpdesk" style="background:white;">
+    <!-- NOTIFICATIONS BELL - shown in topbar -->    <div class="pg" id="pg-helpdesk">
       <div class="ph"><div><h1>Helpdesk</h1><p>Tickets, IT requests and complaints</p></div>
         <button class="btn btp" onclick="openMod('hdm')">+ Raise Ticket</button>
       </div>
@@ -906,36 +906,6 @@ function toast(msg, type) {
 }
 function openMod(id) {
   document.getElementById(id).classList.add('on');
-  if (id === 'nom') {
-    // Populate candidate dropdown (of1)
-    var of1 = document.getElementById('of1');
-    if (of1 && of1.options.length <= 1) {
-      req('GET', '/api/candidates').then(function(r) {
-        if (r.success && r.data) {
-          r.data.filter(function(cd){return cd.source!=='Deleted';}).forEach(function(cd) {
-            var op = document.createElement('option');
-            op.value = cd.id;
-            op.textContent = cd.first_name + ' ' + cd.last_name;
-            of1.appendChild(op);
-          });
-        }
-      });
-    }
-    // Populate department dropdown (of3)
-    var of3 = document.getElementById('of3');
-    if (of3 && of3.options.length <= 1) {
-      req('GET', '/api/departments').then(function(r) {
-        if (r.success && r.data) {
-          r.data.forEach(function(d) {
-            var op = document.createElement('option');
-            op.value = d.id;
-            op.textContent = d.name;
-            of3.appendChild(op);
-          });
-        }
-      });
-    }
-  }
   if (id === 'lvm') {
     // Load leave types
     req('GET', '/api/leave/policies').then(function(res) {
@@ -1025,7 +995,6 @@ function doLogout() {
   document.getElementById('lbtn').textContent = 'Sign In';
   toast('Logged out');
 }
-var cachedCandidates = [];
 function startApp() {
   document.getElementById('LP').style.display = 'none';
   document.getElementById('AP').style.display = 'block';
@@ -1033,8 +1002,6 @@ function startApp() {
   document.getElementById('url2').textContent = CU.role;
   document.getElementById('uav').textContent = (CU.firstName || '?')[0].toUpperCase();
   buildNav(); loadDepts(); loadLvPols(); loadDash();
-  // Preload candidates for interview modal
-  req('GET', '/api/candidates').then(function(r){ if(r.success) cachedCandidates = r.data; });
 }
 var svgs = {
   grid: '<rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/>',
@@ -1098,7 +1065,7 @@ function showAllOff(title) {
 }
 
 function goPage(name) {
-  if (name === 'interviews') { showAllOff('Interviews'); loadInterviewsList(); return; }
+  if (name === 'interviews') { showAllOff('Interviews'); loadInterviews(); return; }
   if (name === 'reports') { showAllOff('Reports'); loadReports(); return; }
   if (name === 'helpdesk') { showAllOff('Helpdesk'); loadHelpdesk(); return; }
   if (name === 'performance') { showAllOff('Performance'); loadPerformance(); return; }
@@ -1126,7 +1093,6 @@ function goPage(name) {
   if (name === 'jobs') loadJobs();
   if (name === 'candidates') loadCandidates();
   if (name === 'onboarding') loadOnboarding();
-  if (name === 'interviews') loadInterviewsList();
   if (name === 'assets') loadAssets();
   if (name === 'profile') loadProf();
 }
@@ -1630,10 +1596,10 @@ async function publishJob(id, status) {
 async function loadCandidates() {
   var res = await req('GET', '/api/candidates');
   if (!res.success) { document.getElementById('cdc').innerHTML = '<div class="em"><h3>' + res.message + '</h3></div>'; return; }
-  var candidates = res.data.filter(function(c3){ return c3.source !== 'Deleted'; });
+  var candidates = res.data;
   if (!candidates.length) { document.getElementById('cdc').innerHTML = '<div class="card"><div class="cb"><div class="em"><h3>No candidates yet</h3><p>Add candidates to talent pool</p></div></div></div>'; return; }
   var clrs = ['#00C2A8','#0D1B3E','#805AD5','#38A169','#D69E2E'];
-  var h = '<div class="card"><div class="ch"><div class="ct">Candidates (' + candidates.length + ')</div></div><div class="tw"><table><thead><tr><th>Candidate</th><th>Role / Company</th><th>Exp</th><th>CTC</th><th>Source</th><th>Action</th></tr></thead><tbody>';
+  var h = '<div class="card"><div class="tw"><table><thead><tr><th>Candidate</th><th>Current Role</th><th>Experience</th><th>Expected CTC</th><th>Notice</th><th>Source</th><th>Applications</th><th>Action</th></tr></thead><tbody>';
   candidates.forEach(function(c, i) {
     var nm = c.first_name + ' ' + c.last_name;
     h += '<tr><td><div style="display:flex;align-items:center;gap:8px;"><div class="av" style="background:' + clrs[i%clrs.length] + '">' + c.first_name[0] + '</div>';
@@ -1641,7 +1607,9 @@ async function loadCandidates() {
     h += '<td>' + (c.current_position||'--') + '<br><span style="font-size:11px;color:#718096;">' + (c.current_company||'') + '</span></td>';
     h += '<td>' + (c.experience_yrs||0) + ' yrs</td>';
     h += '<td>' + (c.expected_ctc?'Rs '+Number(c.expected_ctc/1000).toFixed(0)+'k/yr':'--') + '</td>';
+    h += '<td>' + (c.notice_period?c.notice_period+' days':'--') + '</td>';
     h += '<td><span class="b bn">' + (c.source||'Direct') + '</span></td>';
+    h += '<td style="text-align:center;">' + (c.total_applications||0) + '</td>';
     var cid = c.id;
     h += '<td><div style="display:flex;gap:4px;">'
       +'<button class="btn btt btsm" data-id="'+cid+'" data-nm="'+nm.replace(/"/g,'')+'" onclick="applyToJob(this.dataset.id,this.dataset.nm)">Apply</button>'
@@ -1651,12 +1619,6 @@ async function loadCandidates() {
   });
   h += '</tbody></table></div></div>';
   document.getElementById('cdc').innerHTML = h;
-}
-async function deleteCandidate(id) {
-  if (!confirm('Delete this candidate? This cannot be undone.')) return;
-  var res = await req('DELETE', '/api/candidates/' + id);
-  if (res.success) { toast('Candidate deleted!'); loadCandidates(); }
-  else toast(res.message||'Failed','err');
 }
 async function addCandidate() {
   var body = { firstName:document.getElementById('cf1').value.trim(), lastName:document.getElementById('cf2').value.trim(), email:document.getElementById('cf3').value.trim(), mobile:document.getElementById('cf4').value.trim(), currentCompany:document.getElementById('cf5').value.trim(), currentPosition:document.getElementById('cf6').value.trim(), experienceYrs:parseFloat(document.getElementById('cf7').value)||undefined, currentCtc:parseFloat(document.getElementById('cf8').value)||undefined, expectedCtc:parseFloat(document.getElementById('cf9').value)||undefined, noticePeriod:parseInt(document.getElementById('cf10').value)||undefined, location:document.getElementById('cf11').value.trim(), source:document.getElementById('cf12').value };
@@ -1718,14 +1680,13 @@ async function loadOnboarding() {
     var empProgress = {};
     if (CU && CU.employeeId) {
       try {
-        await req('POST', '/api/onboarding/' + CU.employeeId + '/init', {});
         var obRes = await req('GET', '/api/onboarding/' + CU.employeeId);
-        if (obRes.success && obRes.data && obRes.data.progress) {
+        if (obRes.success && obRes.data.progress) {
           obRes.data.progress.forEach(function(p) {
             empProgress[p.task_id] = p.status;
           });
         }
-      } catch(e) { console.log('Progress error:', e); }
+      } catch(e) {}
     }
     h += '<div class="card"><div class="ch"><div class="ct">Onboarding Checklist (' + tasksRes.data.length + ' tasks)</div></div><div class="cb">';
     var cats = {};
@@ -1775,34 +1736,6 @@ async function loadObProgress(empId) {
   if (bar) bar.style.width = pct + '%';
   if (pctEl) pctEl.textContent = pct + '%';
 }
-async function loadInterviewsList() {
-  var c2 = document.getElementById('ivc');
-  if (!c2) return;
-  c2.innerHTML = '<div class="ld"><div class="sp"></div>Loading...</div>';
-  var res = await req('GET', '/api/interviews');
-  if (!res.success || !res.data || !res.data.length) {
-    c2.innerHTML = '<div class="card"><div class="cb"><div class="em"><h3>No interviews scheduled</h3><p>Click + Schedule Interview to add</p></div></div></div>';
-    return;
-  }
-  var h = '<div class="card"><div class="ch"><div class="ct">Scheduled Interviews</div></div><div class="tw"><table><thead><tr><th>Candidate</th><th>Round</th><th>Type</th><th>Date & Time</th><th>Interviewer</th><th>Status</th></tr></thead><tbody>';
-  res.data.forEach(function(iv) {
-    var nm = ((iv.candidate_first||'') + ' ' + (iv.candidate_last||'')).trim() || '--';
-    var interviewer = ((iv.interviewer_first||'') + ' ' + (iv.interviewer_last||'')).trim() || '--';
-    var dt = iv.scheduled_at ? new Date(iv.scheduled_at).toLocaleString('en-IN',{day:'2-digit',month:'short',year:'numeric',hour:'2-digit',minute:'2-digit'}) : '--';
-    var sc = iv.status==='Completed'?'bg':iv.status==='Cancelled'?'br':'bt';
-    h += '<tr>';
-    h += '<td><div style="font-weight:600;">' + nm + '</div><div style="font-size:11px;color:#718096;">' + (iv.job_title||'') + '</div></td>';
-    h += '<td>' + (iv.round_name||'Round '+iv.round||'Round 1') + '</td>';
-    h += '<td>' + (iv.interview_type||'--') + '</td>';
-    h += '<td>' + dt + '</td>';
-    h += '<td>' + interviewer + '</td>';
-    h += '<td><span class="b ' + sc + '">' + (iv.status||'Scheduled') + '</span></td>';
-    h += '</tr>';
-  });
-  h += '</tbody></table></div></div>';
-  c2.innerHTML = h;
-}
-
 async function toggleObTask(taskId, isCompleted) {
   var newStatus = isCompleted ? 'Pending' : 'Completed';
   var empId = CU && CU.employeeId ? CU.employeeId : null;
@@ -1814,66 +1747,18 @@ async function toggleObTask(taskId, isCompleted) {
   loadOnboarding();
 }
 async function viewOnboardingDetail(empId, nm) {
+  // Init first then show
   await req('POST', '/api/onboarding/' + empId + '/init', {});
   var res = await req('GET', '/api/onboarding/' + empId);
   if (!res.success) { toast('Error loading onboarding','err'); return; }
   var s = res.data.summary;
   var pct = s.total > 0 ? Math.round((s.done/s.total)*100) : 0;
-  var tasks = res.data.tasks || [];
-  var progress = res.data.progress || [];
-  var progMap = {};
-  progress.forEach(function(p){ progMap[p.task_id] = p.status; });
-
-  // Update progress bar in table
+  toast(nm + ': ' + s.done + '/' + s.total + ' tasks (' + pct + '% complete)');
+  // Update progress bar
   var bar = document.getElementById('ob-bar-' + empId);
   var pctEl = document.getElementById('ob-pct-' + empId);
   if (bar) bar.style.width = pct + '%';
   if (pctEl) pctEl.textContent = pct + '%';
-
-  // Show detail modal
-  var cats = {};
-  tasks.forEach(function(t){
-    t.isCompleted = progMap[t.id] === 'Completed';
-    if (!cats[t.category]) cats[t.category] = [];
-    cats[t.category].push(t);
-  });
-
-  var h = '<div style="padding:0;">';
-  h += '<div style="display:flex;align-items:center;gap:12px;margin-bottom:16px;">';
-  h += '<div style="flex:1;height:8px;background:#E2E8F0;border-radius:4px;overflow:hidden;">';
-  h += '<div style="width:'+pct+'%;height:100%;background:'+(pct>=100?'#38A169':'#00C2A8')+';border-radius:4px;transition:.3s;"></div></div>';
-  h += '<span style="font-size:14px;font-weight:700;color:'+(pct>=100?'#38A169':'#0D1B3E')+';">'+pct+'%</span></div>';
-  h += '<div style="font-size:12px;color:#718096;margin-bottom:16px;">'+s.done+' of '+s.total+' tasks completed</div>';
-
-  Object.keys(cats).forEach(function(cat) {
-    h += '<div style="margin-bottom:14px;">';
-    h += '<div style="font-size:11px;font-weight:700;color:#718096;text-transform:uppercase;letter-spacing:.5px;margin-bottom:8px;">'+cat+'</div>';
-    cats[cat].forEach(function(t) {
-      var done = t.isCompleted;
-      h += '<div style="display:flex;align-items:center;gap:10px;padding:8px 12px;background:'+(done?'rgba(56,161,105,.05)':'white')+';border:1px solid '+(done?'rgba(56,161,105,.2)':'#E2E8F0')+';border-radius:8px;margin-bottom:4px;">';
-      h += '<div style="width:20px;height:20px;border-radius:50%;background:'+(done?'#38A169':'#E2E8F0')+';display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:11px;color:white;">'+(done?'&#10003;':'')+'</div>';
-      h += '<div style="flex:1;"><div style="font-size:13px;font-weight:500;color:'+(done?'#38A169':'#1A202C')+';text-decoration:'+(done?'line-through':'none')+';">'+t.name+'</div>';
-      h += '<div style="font-size:11px;color:#718096;">'+(t.is_required?'Required':'Optional')+' | '+(t.assigned_to==='hr'?'HR':'Employee')+'</div></div>';
-      h += '<span style="font-size:10px;font-weight:700;color:'+(done?'#38A169':'#718096')+';padding:2px 8px;background:'+(done?'rgba(56,161,105,.1)':'#F7FAFC')+';border-radius:10px;">'+(done?'Done':'Pending')+'</span>';
-      h += '</div>';
-    });
-    h += '</div>';
-  });
-  h += '</div>';
-
-  // Show in a modal-like overlay
-  var existing = document.getElementById('ob-detail-modal');
-  if (existing) existing.remove();
-  var modal = document.createElement('div');
-  modal.id = 'ob-detail-modal';
-  modal.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:9999;display:flex;align-items:center;justify-content:center;padding:16px;';
-  modal.innerHTML = '<div style="background:white;border-radius:16px;width:100%;max-width:560px;max-height:85vh;overflow-y:auto;">'
-    +'<div style="padding:20px 24px;border-bottom:1px solid #E2E8F0;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;background:white;z-index:1;">'
-    +'<div><div style="font-weight:700;font-size:16px;color:#0D1B3E;">'+nm+'</div><div style="font-size:12px;color:#718096;">Onboarding Progress</div></div>'
-    +'<button onclick="document.getElementById('ob-detail-modal').remove()" style="background:none;border:none;font-size:20px;cursor:pointer;color:#718096;">&#x2715;</button></div>'
-    +'<div style="padding:20px 24px;">'+h+'</div></div>';
-  document.body.appendChild(modal);
-  modal.addEventListener('click', function(e){ if(e.target===modal) modal.remove(); });
 }
 async function viewOnboarding(empId, nm) {
   var res = await req('GET', '/api/onboarding/' + empId);
@@ -1892,7 +1777,7 @@ async function loadAssets() {
   h += '<div class="kp"><div class="kv" style="color:#38A169;">' + avail + '</div><div class="kl">Available</div></div>';
   h += '<div class="kp"><div class="kv" style="color:#805AD5;">' + assigned + '</div><div class="kl">Assigned</div></div>';
   h += '</div>';
-  h += '<div class="card"><div class="ch"><div class="ct">IT Assets (' + assets.length + ')</div></div><div class="tw"><table><thead><tr><th>Asset</th><th>Code</th><th>Category</th><th>Brand/Model</th><th>Status</th><th>Assigned To</th><th>Action</th></tr></thead><tbody>';
+  h += '<div class="card"><div class="tw"><table><thead><tr><th>Asset</th><th>Code</th><th>Category</th><th>Brand/Model</th><th>Status</th><th>Assigned To</th><th>Action</th></tr></thead><tbody>';
   if (!assets.length) { h += '<tr><td colspan="7"><div class="em"><h3>No assets found</h3></div></td></tr>'; }
   assets.forEach(function(a) {
     var sc = a.status==='Available'?'bg':a.status==='Assigned'?'bp':'by';
@@ -1915,7 +1800,7 @@ async function addAsset() {
   var body = { assetCode:g('as1'), name:g('as2'), category:g('as3'), brand:g('as4'), model:g('as5'), serialNumber:g('as6'), purchaseDate:g('as7')||undefined, purchaseCost:parseFloat(g('as8'))||undefined, condition:g('as9'), location:g('as10') };
   if (!body.assetCode||!body.name) { toast('Asset code and name required','err'); return; }
   var res = await req('POST', '/api/assets', body);
-  if (res.success) { toast('Asset added!'); closeMod('nam'); loadAssets(); ['af1','af2','af4','af5','af6','af7','af8'].forEach(function(id){document.getElementById(id).value='';}); }
+  if (res.success) { toast('Asset added!'); closeMod('nam'); loadAssets(); }
   else toast(res.message||'Failed','err');
 }
 async function assignAsset(assetId) {
@@ -2257,7 +2142,7 @@ function buildNDA2(e, nm, today) {
 function buildOffer2(e, nm, today) {
   var joined = e.date_of_joining ? new Date(e.date_of_joining).toLocaleDateString('en-IN',{day:'2-digit',month:'long',year:'numeric'}) : '--';
   return '<div style="background:white;border:1px solid #E2E8F0;border-radius:8px;padding:20px;max-height:440px;overflow-y:auto;' + SS + '">' +
-    '<div style="' + SH + '"><div style="font-family:Syne,sans-serif;font-size:15px;font-weight:800;color:white;">PayPe Technologies Pvt. Ltd.</div><div style="font-size:9px;color:rgba(255,255,255,.5);">hr@paype.co.in | paype.co.in</div></div>' +
+    '<div style="' + SH + '"><div style="font-family:Syne,sans-serif;font-size:15px;font-weight:800;color:white;">PayPe Technologies Pvt. Ltd.</div><div style="font-size:9px;color:rgba(255,255,255,.5);">hr@paype.co.in | +91 99448 57191 | paype.co.in</div></div>' +
     '<p>Date: <strong>' + today + '</strong></p>' +
     '<p style="margin-top:10px;">Dear <strong>' + e.first_name + '</strong>,</p>' +
     '<p>We are pleased to offer you the position of <strong>' + (e.designation||e.role||'Staff') + '</strong> in the <strong>' + (e.department_name||'--') + '</strong> department.</p>' +
@@ -2421,7 +2306,7 @@ function shareDIDEmail(type) {
   if (!didSelEmp) { toast('Select employee first','err'); return; }
   var e = didSelEmp, nm = e.first_name + ' ' + e.last_name;
   var sub = 'PayPe - ' + (type==='vc'?'Visiting Card':'ID Card') + ' - ' + nm;
-  var body = 'Name: ' + nm + ' | ID: ' + e.employee_id + ' | Role: ' + (e.designation||'') + ' | Email: ' + (e.work_email||'') + ' | Mobile: ' + (e.mobile||'') + ' | PayPe Technologies Pvt. Ltd. | hr@paype.co.in';
+  var body = 'Name: ' + nm + ' | ID: ' + e.employee_id + ' | Role: ' + (e.designation||'') + ' | Email: ' + (e.work_email||'') + ' | Mobile: ' + (e.mobile||'') + ' | PayPe Technologies Pvt. Ltd. | hr@paype.co.in | +91 99448 57191';
   window.open('mailto:?subject=' + encodeURIComponent(sub) + '&body=' + encodeURIComponent(body));
 }
 
@@ -2496,7 +2381,7 @@ function shareAgreementEmail() {
   var e = allEmps[parseInt(idx)], nm = e.first_name + ' ' + e.last_name;
   var types = {employment:'Employment Agreement',nda:'Non-Disclosure Agreement',offer:'Offer Letter',policy:'Policy Acknowledgement'};
   var sub = 'PayPe Technologies - ' + types[type] + ' - ' + nm;
-  var body = 'Dear ' + e.first_name + ', Please find the ' + types[type] + ' for review and signature. Best regards, HR Department, PayPe Technologies Pvt. Ltd. hr@paype.co.in';
+  var body = 'Dear ' + e.first_name + ', Please find the ' + types[type] + ' for review and signature. Best regards, HR Department, PayPe Technologies Pvt. Ltd. hr@paype.co.in | +91 99448 57191';
   window.open('mailto:' + (e.work_email||'') + '?subject=' + encodeURIComponent(sub) + '&body=' + encodeURIComponent(body));
 }// ── AUTO SEND AGREEMENT LINKS ─────────────────────
 function sendAgreementLinks(emp) {
@@ -2524,7 +2409,7 @@ function sendAgreementLinks(emp) {
       ' Please review and sign your onboarding documents at: ' + link +
       ' Your Employee ID is: ' + emp.employee_id +
       ' Best regards, HR Department, PayPe Technologies Pvt. Ltd.' +
-      ' hr@paype.co.in';
+      ' hr@paype.co.in | +91 99448 57191';
     setTimeout(function() {
       window.open('mailto:' + email + '?subject=' + encodeURIComponent(sub) + '&body=' + encodeURIComponent(body));
     }, 1000);
@@ -2728,7 +2613,7 @@ function buildMyOffer(e, nm, today, joined) {
     '<p><strong>Date of Joining:</strong> ' + joined + ' | <strong>Location:</strong> ' + (e.work_location||'Coimbatore') + '</p>' +
     '<p>Subject to satisfactory background verification and document submission.</p>' +
     '<p>Welcome to the PayPe family!</p>' +
-    '<p><strong>HR Department</strong><br>PayPe Technologies Pvt. Ltd.<br>CIN: U74994TN2022PTC151114 | GST: 33AAMCP7960K1ZU<br>hr@paype.co.in</p>' +
+    '<p><strong>HR Department</strong><br>PayPe Technologies Pvt. Ltd.<br>CIN: U74994TN2022PTC151114 | GST: 33AAMCP7960K1ZU<br>hr@paype.co.in | +91 99448 57191</p>' +
     buildSignDisplay(e, nm);
 }
 
@@ -2816,7 +2701,7 @@ function sendCredsEmail(nm, email, pass, url) {
     ' Please login and change your password immediately.' +
     ' Then go to My Profile > My Documents to sign your onboarding documents.' +
     ' Best regards, HR Department, PayPe Technologies Pvt. Ltd.' +
-    ' hr@paype.co.in';
+    ' hr@paype.co.in | +91 99448 57191';
   window.open('mailto:' + email + '?subject=' + encodeURIComponent(sub) + '&body=' + encodeURIComponent(body));
 }function viewEmp(id) {
   var e = allEmps.find(function(emp){ return emp.id === id; });
@@ -3194,8 +3079,6 @@ function generatePayslipPDF(s, month, year) {
   win.document.write('</table>');
   win.document.write('<p style="margin-top:16px;font-size:10px;color:#718096;text-align:center;">This is a computer-generated payslip. No signature required.</p>');
   win.document.write('</body></html>');
-
-
   win.document.close();
   setTimeout(function() { win.print(); }, 500);
 }
@@ -3714,11 +3597,9 @@ function exportAttendanceReport() {
     var link = document.createElement('a');
     link.href = url;
     link.download = 'Attendance_' + today + '.csv';
-    link.style.display = 'none';
-    document.body.appendChild(link);
     link.click();
-    setTimeout(function(){ document.body.removeChild(link); URL.revokeObjectURL(url); }, 1000);
-    toast('Attendance exported! Check your Downloads folder.');
+    URL.revokeObjectURL(url);
+    toast('Attendance exported!');
   });
 }
 
@@ -5122,323 +5003,23 @@ function openBase64File(base64Data, fileName) {
 }
 
 
-// ── SCHEDULE INTERVIEW ─────────────────────────
-async function scheduleInterview() {
-  var appId = document.getElementById('iv1').value;
-  var date = document.getElementById('iv6').value;
-  if (!appId || !date) { toast('Select candidate and date','err'); return; }
-  var body = {
-    applicationId: appId,
-    round: document.getElementById('iv2').value,
-    roundName: document.getElementById('iv3').value || 'Interview',
-    interviewType: document.getElementById('iv4').value,
-    interviewerId: document.getElementById('iv5').value || undefined,
-    scheduledAt: date,
-    duration: parseInt(document.getElementById('iv7').value) || 60,
-    meetLink: document.getElementById('iv8').value || undefined
-  };
-  var res = await req('POST', '/api/interviews', body);
-  if (res.success) {
-    toast('Interview scheduled!');
-    closeMod('sim');
-    loadInterviewsList();
-  } else {
-    // Save locally and show success
-    toast('Interview scheduled!');
-    closeMod('sim');
-    loadInterviewsList();
-  }
+// ── DELETE CANDIDATE ──────────────────────────────
+async function deleteCandidate(id) {
+  if (!confirm('Delete this candidate?')) return;
+  var res = await req('DELETE', '/api/candidates/' + id);
+  if (res.success) { toast('Candidate deleted!'); loadCandidates(); }
+  else toast(res.message||'Failed','err');
 }
 
-async function openScheduleInterview() {
-  // Load candidates into dropdown
-  var sel = document.getElementById('iv1');
-  if (sel) {
-    var cands = cachedCandidates.length ? cachedCandidates : [];
-    if (!cands.length) {
-      var res2 = await req('GET', '/api/candidates');
-      if (res2.success) { cands = res2.data; cachedCandidates = cands; }
-    }
-    sel.innerHTML = '<option value="">Select Candidate</option>';
-    cands.forEach(function(a) {
-      var op = document.createElement('option');
-      op.value = a.id;
-      op.textContent = (a.first_name||'') + ' ' + (a.last_name||'');
-      sel.appendChild(op);
-    });
-  }
-  // Load interviewers
-  var empRes = await req('GET', '/api/employees');
-  var iv5 = document.getElementById('iv5');
-  if (iv5 && empRes.success) {
-    iv5.innerHTML = '<option value="">Select Interviewer</option>';
-    (empRes.data.employees||[]).forEach(function(e) {
-      var op = document.createElement('option');
-      op.value = e.id;
-      op.textContent = e.first_name + ' ' + e.last_name;
-      iv5.appendChild(op);
-    });
-  }
-  openMod('sim');
-}
-
-// ── OFFER LETTERS ──────────────────────────────
-async function loadOffers() {
-  var c2 = document.getElementById('ofc');
-  if (!c2) return;
-  c2.innerHTML = '<div class="ld"><div class="sp"></div>Loading...</div>';
-  var res = await req('GET', '/api/applications');
-  var offers = [];
-  if (res.success && res.data) {
-    offers = res.data.filter(function(a){ return a.stage==='Offer' || a.stage==='Hired' || a.stage==='Rejected' || a.status==='Rejected' || a.status==='Selected'; });
-  }
-  if (!offers.length) {
-    c2.innerHTML = '<div class="card"><div class="cb"><div class="em"><h3>No offer letters yet</h3><p>Move candidates to Offer stage in ATS Pipeline first</p></div></div></div>';
-    return;
-  }
-  var h = '<div class="card"><div class="ch"><div class="ct">Offer Letters</div></div><div class="tw"><table><thead><tr><th>Candidate</th><th>Position</th><th>Dept</th><th>CTC</th><th>Status</th><th>Action</th></tr></thead><tbody>';
-  offers.forEach(function(o) {
-    var nm = (o.first_name||'') + ' ' + (o.last_name||'');
-    var sc = o.stage==='Hired'?'bg':'by';
-    var ctc = o.expected_ctc || 0;
-    h += '<tr>';
-    h += '<td><div style="font-weight:600;">'+nm+'</div><div style="font-size:11px;color:#718096;">'+(o.email||'')+'</div></td>';
-    h += '<td>'+(o.job_title||'--')+'</td>';
-    h += '<td>'+(o.department_name||'--')+'</td>';
-    h += '<td>'+(ctc?'Rs '+Number(ctc/1000).toFixed(0)+'k/yr':'--')+'</td>';
-    h += '<td><span class="b '+sc+'">'+(o.stage||'Offer')+'</span></td>';
-    h += '<td><button class="btn btp btsm" onclick="generateOfferLetter(this.dataset.nm,this.dataset.pos,this.dataset.ctc)" data-nm="'+nm.replace(/"/g,"")+'" data-pos="'+(o.job_title||'').replace(/"/g,"")+'" data-ctc="'+ctc+'">Generate</button></td>';
-    h += '</tr>';
-  });
-  h += '</tbody></table></div></div>';
-  c2.innerHTML = h;
-}
-
-async function openCreateOffer() {
-  openMod('nom');
-  // Load candidates into offer modal dropdown
-  var res = await req('GET', '/api/candidates');
-  var sel = document.getElementById('ol-candidate');
-  if (!sel) {
-    // Try finding candidate select in nom modal
-    var nomModal = document.getElementById('nom');
-    if (nomModal) sel = nomModal.querySelector('select');
-  }
-  if (sel && res.success && res.data.length) {
-    var firstOpt = sel.options[0] ? sel.options[0].text : 'Select';
-    sel.innerHTML = '<option value="">' + firstOpt + '</option>';
-    res.data.forEach(function(c3) {
-      var op = document.createElement('option');
-      op.value = c3.id;
-      op.textContent = c3.first_name + ' ' + c3.last_name + ' (' + (c3.email||'') + ')';
-      sel.appendChild(op);
-    });
-  }
-}
-
-async function generateOfferLetter(candidateName, position, ctc) {
-  var today = new Date().toLocaleDateString('en-IN',{day:'2-digit',month:'long',year:'numeric'});
-  var refNo = 'PPC/HR/' + new Date().getFullYear() + '/' + String(Math.floor(Math.random()*900+100));
-  var joiningDate = new Date(); joiningDate.setDate(joiningDate.getDate()+30);
-  var joiningStr = joiningDate.toLocaleDateString('en-IN',{day:'2-digit',month:'long',year:'numeric'});
-  var expiryDate = new Date(); expiryDate.setDate(expiryDate.getDate()+7);
-  var expiryStr = expiryDate.toLocaleDateString('en-IN',{day:'2-digit',month:'long',year:'numeric'});
-  var monthly = ctc > 0 ? Math.round(ctc/12) : 0;
-  var basic = Math.round(monthly*0.4);
-  var hra = Math.round(monthly*0.2);
-  var special = monthly - basic - hra;
-
-  var win = window.open('','_blank');
-  var html = `<!DOCTYPE html><html><head><meta charset="UTF-8"><title>Offer Letter</title>
-  <style>
-    *{margin:0;padding:0;box-sizing:border-box;}
-    body{font-family:'Times New Roman',serif;background:#fff;color:#1a1a1a;font-size:13px;line-height:1.7;}
-    .page{width:794px;min-height:1123px;margin:0 auto;padding:0;position:relative;}
-    .header{display:flex;justify-content:space-between;align-items:flex-start;padding:32px 48px 20px;border-bottom:3px solid #0D1B3E;}
-    .logo-section{display:flex;flex-direction:column;}
-    .logo-name{font-family:Arial,sans-serif;font-size:26px;font-weight:900;color:#0D1B3E;letter-spacing:-0.5px;}
-    .logo-name span{color:#00C2A8;}
-    .logo-sub{font-size:10px;color:#666;letter-spacing:1px;text-transform:uppercase;margin-top:2px;}
-    .header-right{text-align:right;font-size:11px;color:#555;line-height:1.8;}
-    .teal-strip{height:5px;background:linear-gradient(90deg,#0D1B3E,#00C2A8);}
-    .ref-bar{background:#f8f9fa;padding:10px 48px;display:flex;justify-content:space-between;font-size:11px;color:#555;border-bottom:1px solid #e0e0e0;}
-    .content{padding:32px 48px;}
-    .subject{background:#0D1B3E;color:white;padding:12px 20px;border-radius:4px;font-size:14px;font-weight:bold;text-align:center;letter-spacing:1px;margin:20px 0;text-transform:uppercase;}
-    .salutation{margin:16px 0 8px;}
-    .body-text{margin:10px 0;text-align:justify;}
-    .details-box{border:1px solid #ddd;border-radius:6px;overflow:hidden;margin:20px 0;}
-    .details-header{background:#0D1B3E;color:white;padding:10px 16px;font-size:12px;font-weight:bold;letter-spacing:.5px;}
-    .details-row{display:flex;border-bottom:1px solid #eee;}
-    .details-row:last-child{border-bottom:none;}
-    .details-label{width:45%;padding:9px 16px;background:#f8f9fa;font-weight:600;font-size:12px;color:#333;}
-    .details-value{width:55%;padding:9px 16px;font-size:12px;color:#1a1a1a;}
-    .ctc-table{width:100%;border-collapse:collapse;margin:16px 0;}
-    .ctc-table th{background:#0D1B3E;color:white;padding:8px 12px;text-align:left;font-size:11px;}
-    .ctc-table td{padding:7px 12px;border-bottom:1px solid #eee;font-size:12px;}
-    .ctc-table tr:nth-child(even) td{background:#f8f9fa;}
-    .ctc-table .total td{background:#00C2A8;color:white;font-weight:bold;}
-    .conditions{margin:16px 0;}
-    .conditions h4{color:#0D1B3E;font-size:12px;margin-bottom:8px;border-bottom:1px solid #eee;padding-bottom:4px;}
-    .conditions ol{padding-left:18px;}
-    .conditions li{margin-bottom:4px;font-size:11.5px;color:#444;}
-    .signature-section{display:flex;justify-content:space-between;margin-top:40px;padding-top:20px;}
-    .sign-box{width:45%;text-align:center;}
-    .sign-line{border-top:1px solid #333;margin-bottom:6px;}
-    .sign-label{font-size:11px;color:#555;}
-    .sign-name{font-size:12px;font-weight:bold;color:#1a1a1a;}
-    .footer{background:#0D1B3E;color:white;padding:14px 48px;display:flex;justify-content:space-between;align-items:center;margin-top:30px;}
-    .footer-left{font-size:10px;line-height:1.8;}
-    .footer-right{text-align:right;font-size:10px;line-height:1.8;}
-    .confidential{text-align:center;font-size:10px;color:#999;padding:8px;letter-spacing:2px;text-transform:uppercase;}
-    @media print{body{-webkit-print-color-adjust:exact;print-color-adjust:exact;}}
-  </style></head><body>
-  <div class="page">
-    <div class="header">
-      <div class="logo-section">
-        <div class="logo-name">Pay<span>Pe</span></div>
-        <div class="logo-sub">Technologies Private Limited</div>
-        <div style="margin-top:8px;font-size:10px;color:#888;">Est. 2022 &nbsp;|&nbsp; CIN: U74994TN2022PTC151114</div>
-      </div>
-      <div class="header-right">
-        277/1A, Annamalai Industrial Park<br>
-        Kalapatti, Coimbatore - 641048<br>
-        Tamil Nadu, India<br>
-        hr@paype.co.in<br>
-        www.paype.co.in
-      </div>
-    </div>
-    <div class="teal-strip"></div>
-    <div class="ref-bar">
-      <span>Ref: ${refNo}</span>
-      <span>Date: ${today}</span>
-      <span>CONFIDENTIAL</span>
-    </div>
-    <div class="content">
-      <p>To,</p>
-      <p style="font-weight:bold;font-size:14px;margin:6px 0;">${candidateName}</p>
-      <div class="subject">Letter of Offer — ${position}</div>
-      <p class="salutation">Dear <strong>${candidateName}</strong>,</p>
-      <p class="body-text">We are delighted to extend this offer of employment for the position of <strong>${position}</strong> at <strong>PayPe Technologies Pvt. Ltd.</strong> After careful consideration, we believe your skills, experience, and enthusiasm make you an ideal candidate to join our growing team.</p>
-      <p class="body-text">Please review the details of this offer below:</p>
-
-      <div class="details-box">
-        <div class="details-header">EMPLOYMENT DETAILS</div>
-        <div class="details-row"><div class="details-label">Position / Designation</div><div class="details-value"><strong>${position}</strong></div></div>
-        <div class="details-row"><div class="details-label">Department</div><div class="details-value">Technology & Products</div></div>
-        <div class="details-row"><div class="details-label">Reporting To</div><div class="details-value">Department Head</div></div>
-        <div class="details-row"><div class="details-label">Work Location</div><div class="details-value">Coimbatore, Tamil Nadu</div></div>
-        <div class="details-row"><div class="details-label">Employment Type</div><div class="details-value">Full Time, Permanent</div></div>
-        <div class="details-row"><div class="details-label">Proposed Date of Joining</div><div class="details-value">${joiningStr}</div></div>
-        <div class="details-row"><div class="details-label">Probation Period</div><div class="details-value">6 Months (extendable based on performance)</div></div>
-        <div class="details-row"><div class="details-label">Notice Period (Post Probation)</div><div class="details-value">30 Days</div></div>
-        <div class="details-row"><div class="details-label">Offer Valid Until</div><div class="details-value"><strong>${expiryStr}</strong></div></div>
-      </div>
-
-      ${ctc > 0 ? `
-      <div class="details-box" style="margin-top:16px;">
-        <div class="details-header">COMPENSATION STRUCTURE (ANNUAL)</div>
-        <table class="ctc-table">
-          <thead><tr><th>Component</th><th>Monthly (Rs)</th><th>Annual (Rs)</th></tr></thead>
-          <tbody>
-            <tr><td>Basic Salary</td><td>${basic.toLocaleString('en-IN')}</td><td>${(basic*12).toLocaleString('en-IN')}</td></tr>
-            <tr><td>House Rent Allowance (HRA)</td><td>${hra.toLocaleString('en-IN')}</td><td>${(hra*12).toLocaleString('en-IN')}</td></tr>
-            <tr><td>Special Allowance</td><td>${special.toLocaleString('en-IN')}</td><td>${(special*12).toLocaleString('en-IN')}</td></tr>
-            <tr class="total"><td><strong>Gross CTC</strong></td><td><strong>Rs ${monthly.toLocaleString('en-IN')}</strong></td><td><strong>Rs ${Number(ctc).toLocaleString('en-IN')}</strong></td></tr>
-          </tbody>
-        </table>
-        <div style="padding:8px 16px;font-size:11px;color:#666;background:#fff9e6;">* PF, ESI and TDS will be deducted as per applicable laws</div>
-      </div>` : ''}
-
-      <div class="conditions">
-        <h4>TERMS & CONDITIONS</h4>
-        <ol>
-          <li>This offer is subject to satisfactory reference checks and document verification.</li>
-          <li>Please submit your acceptance by signing and returning this letter before <strong>${expiryStr}</strong>.</li>
-          <li>Original educational certificates, experience letters and ID proof must be submitted on joining.</li>
-          <li>You will be required to sign a Non-Disclosure Agreement (NDA) on your date of joining.</li>
-          <li>This offer is confidential and should not be disclosed to third parties.</li>
-        </ol>
-      </div>
-
-      <p class="body-text">We look forward to welcoming you to the PayPe Technologies family. Please feel free to contact us at <strong>hr@paype.co.in</strong> for any queries.</p>
-
-      <div class="signature-section">
-        <div class="sign-box">
-          <div style="border:1px dashed #00C2A8;border-radius:6px;padding:12px;margin-bottom:8px;min-height:60px;background:#f0fff8;display:flex;align-items:center;justify-content:center;">
-            <div style="text-align:center;"><div style="font-size:18px;color:#00C2A8;">✍️</div><div style="font-size:10px;color:#666;margin-top:4px;">Digitally Signed</div><div style="font-size:11px;font-weight:bold;color:#0D1B3E;">HR Department</div></div>
-          </div>
-          <div class="sign-name">Authorised Signatory</div>
-          <div class="sign-label">HR Department</div>
-          <div class="sign-label">PayPe Technologies Pvt. Ltd.</div>
-        </div>
-        <div class="sign-box">
-          <div style="border:1px dashed #ccc;border-radius:6px;padding:12px;margin-bottom:8px;min-height:60px;background:#f9f9f9;display:flex;align-items:center;justify-content:center;">
-            <div style="text-align:center;"><div style="font-size:18px;">✍️</div><div style="font-size:10px;color:#666;margin-top:4px;">Sign Here</div><div style="font-size:11px;color:#999;">Candidate Signature</div></div>
-          </div>
-          <div class="sign-name">${candidateName}</div>
-          <div class="sign-label">Candidate Signature & Date</div>
-          <div class="sign-label">Acceptance of Offer</div>
-        </div>
-      </div>
-    </div>
-
-    <div class="footer">
-      <div class="footer-left">
-        <strong>PayPe Technologies Pvt. Ltd.</strong><br>
-        CIN: U74994TN2022PTC151114 | GST: 33AAMCP7960K1ZU | PAN: AAMCP7960K
-      </div>
-      <div class="footer-right">
-        paype.co.in | hr.paype.co.in<br>
-        Ref: ${refNo}
-      </div>
-    </div>
-    <div class="confidential">— Confidential Document — For Addressee Only —</div>
-  </div>
-  </body></html>`;
-
-  win.document.write(html);
-  win.document.close();
-  setTimeout(function(){win.print();},800);
-}
-
-async function viewOfferLetter(id) {
-  toast('Loading offer letter...');
-  var res = await req('GET', '/api/offer-letters/' + id);
-  if (res.success) {
-    openMod('ofv');
-  } else {
-    toast('Offer letter not found','err');
-  }
-}
-
-// ── ONBOARDING ENHANCED ────────────────────────
-
-
-async function loadObProgress(empId) {
-  await req('POST', '/api/onboarding/' + empId + '/init', {});
-  var res = await req('GET', '/api/onboarding/' + empId);
-  if (!res.success) return;
-  var pct = 0;
-  try {
-    var d = res.data;
-    if (d && d.summary && d.summary.total > 0) pct = Math.round((d.summary.done / d.summary.total) * 100);
-  } catch(e) { pct = 0; }
-  var bar = document.getElementById('ob-bar-' + empId);
-  var pctEl = document.getElementById('ob-pct-' + empId);
-  if (bar) bar.style.width = pct + '%';
-  if (pctEl) pctEl.textContent = pct + '%';
-}
-
+// ── POST JOB ───────────────────────────────────────
 async function openPostJob() {
-  // Load departments into dropdown
   var sel = document.getElementById('nj2');
   if (sel && sel.options.length <= 1) {
-    var res = await req('GET', '/api/departments');
-    if (res.success && res.data) {
-      res.data.forEach(function(d) {
+    var r = await req('GET', '/api/departments');
+    if (r.success && r.data) {
+      r.data.forEach(function(d) {
         var op = document.createElement('option');
-        op.value = d.id;
-        op.textContent = d.name;
+        op.value = d.id; op.textContent = d.name;
         sel.appendChild(op);
       });
     }
@@ -5454,21 +5035,217 @@ async function postJob() {
     departmentId: document.getElementById('nj2').value || undefined,
     location: document.getElementById('nj3').value || 'Coimbatore',
     employmentType: document.getElementById('nj4').value,
-    experienceMin: parseInt(document.getElementById('nj5').value) || 0,
+    experienceMin: parseInt(document.getElementById('nj5').value)||0,
     salaryRange: document.getElementById('nj6').value || undefined,
-    vacancies: parseInt(document.getElementById('nj7').value) || 1,
+    vacancies: parseInt(document.getElementById('nj7').value)||1,
     description: document.getElementById('nj8').value || undefined,
     skills: document.getElementById('nj9').value || undefined,
     status: 'Active'
   };
   var res = await req('POST', '/api/jobs', body);
   if (res.success) {
-    toast('Job posted successfully!');
-    closeMod('njm');
-    ['nj1','nj3','nj6','nj8','nj9'].forEach(function(id){ var e=document.getElementById(id); if(e) e.value=''; });
+    toast('Job posted!'); closeMod('njm');
     if (typeof loadJobs === 'function') loadJobs();
-    else if (typeof loadRecruitment === 'function') loadRecruitment();
+    else loadRecruitment();
   } else toast(res.message||'Failed','err');
+}
+
+// ── OFFER LETTERS ──────────────────────────────────
+async function loadOffers() {
+  var c2 = document.getElementById('ofc');
+  if (!c2) return;
+  c2.innerHTML = '<div class="ld"><div class="sp"></div>Loading...</div>';
+  var res = await req('GET', '/api/applications');
+  var offers = [];
+  if (res.success && res.data) {
+    offers = res.data.filter(function(a){ return a.stage==='Offer'||a.stage==='Hired'||a.stage==='Rejected'; });
+  }
+  if (!offers.length) {
+    c2.innerHTML = '<div class="card"><div class="cb"><div class="em"><h3>No offer letters yet</h3><p>Move candidates to Offer/Hired stage in ATS</p></div></div></div>';
+    return;
+  }
+  var h = '<div class="card"><div class="ch"><div class="ct">Offer Letters</div></div><div class="tw"><table><thead><tr><th>Candidate</th><th>Position</th><th>Dept</th><th>CTC</th><th>Status</th><th>Action</th></tr></thead><tbody>';
+  offers.forEach(function(o) {
+    var nm = (o.first_name||'') + ' ' + (o.last_name||'');
+    var sc = o.stage==='Hired'?'bg':o.stage==='Rejected'?'br':'by';
+    var ctc = o.expected_ctc||0;
+    h += '<tr>';
+    h += '<td><div style="font-weight:600;">'+nm+'</div><div style="font-size:11px;color:#718096;">'+(o.email||'')+'</div></td>';
+    h += '<td>'+(o.job_title||'--')+'</td>';
+    h += '<td>'+(o.department_name||'--')+'</td>';
+    h += '<td>'+(ctc?'Rs '+Number(ctc/1000).toFixed(0)+'k/yr':'--')+'</td>';
+    h += '<td><span class="b '+sc+'">'+(o.stage||'Offer')+'</span></td>';
+    h += '<td><button class="btn btp btsm" data-nm="'+nm.replace(/"/g,'')+'" data-pos="'+(o.job_title||'').replace(/"/g,'')+'" data-ctc="'+ctc+'" onclick="generateOfferLetter(this.dataset.nm,this.dataset.pos,this.dataset.ctc)">Generate</button></td>';
+    h += '</tr>';
+  });
+  h += '</tbody></table></div></div>';
+  c2.innerHTML = h;
+}
+
+// ── INTERVIEWS ─────────────────────────────────────
+async function loadInterviewsList() {
+  var c2 = document.getElementById('ivc');
+  if (!c2) return;
+  c2.innerHTML = '<div class="ld"><div class="sp"></div>Loading...</div>';
+  var res = await req('GET', '/api/interviews');
+  if (!res.success || !res.data || !res.data.length) {
+    c2.innerHTML = '<div class="card"><div class="ch"><div class="ct">Scheduled Interviews</div></div><div class="cb"><div class="em"><h3>No interviews scheduled yet</h3><button class="btn btp" onclick="openScheduleInterview()" style="margin-top:12px;">+ Schedule Interview</button></div></div></div>';
+    return;
+  }
+  var h = '<div class="card"><div class="ch"><div class="ct">Scheduled Interviews</div></div><div class="tw"><table><thead><tr><th>Candidate</th><th>Round</th><th>Type</th><th>Date & Time</th><th>Interviewer</th><th>Status</th></tr></thead><tbody>';
+  res.data.forEach(function(iv) {
+    var nm = ((iv.candidate_first||'') + ' ' + (iv.candidate_last||'')).trim() || '--';
+    var interviewer = ((iv.interviewer_first||'') + ' ' + (iv.interviewer_last||'')).trim() || '--';
+    var dt = iv.scheduled_at ? new Date(iv.scheduled_at).toLocaleString('en-IN',{day:'2-digit',month:'short',year:'numeric',hour:'2-digit',minute:'2-digit'}) : '--';
+    var sc = iv.status==='Completed'?'bg':iv.status==='Cancelled'?'br':'bt';
+    h += '<tr><td><div style="font-weight:600;">'+nm+'</div><div style="font-size:11px;color:#718096;">'+(iv.job_title||'')+'</div></td>';
+    h += '<td>'+(iv.round_name||'Round '+iv.round)+'</td>';
+    h += '<td>'+(iv.interview_type||'--')+'</td>';
+    h += '<td>'+dt+'</td>';
+    h += '<td>'+interviewer+'</td>';
+    h += '<td><span class="b '+sc+'">'+(iv.status||'Scheduled')+'</span></td>';
+    h += '</tr>';
+  });
+  h += '</tbody></table></div></div>';
+  c2.innerHTML = h;
+}
+
+var cachedCandidates = [];
+async function openScheduleInterview() {
+  var sel = document.getElementById('iv1');
+  if (sel) {
+    var cands = cachedCandidates.length ? cachedCandidates : [];
+    if (!cands.length) {
+      var r2 = await req('GET', '/api/candidates');
+      if (r2.success) { cands = r2.data; cachedCandidates = cands; }
+    }
+    sel.innerHTML = '<option value="">Select Candidate</option>';
+    cands.filter(function(a){return a.source!=='Deleted';}).forEach(function(a) {
+      var op = document.createElement('option');
+      op.value = a.id;
+      op.textContent = (a.first_name||'') + ' ' + (a.last_name||'');
+      sel.appendChild(op);
+    });
+  }
+  var iv5 = document.getElementById('iv5');
+  if (iv5 && iv5.options.length <= 1) {
+    var empRes = await req('GET', '/api/employees');
+    if (empRes.success) {
+      (empRes.data.employees||[]).forEach(function(e) {
+        var op = document.createElement('option');
+        op.value = e.id;
+        op.textContent = e.first_name + ' ' + e.last_name;
+        iv5.appendChild(op);
+      });
+    }
+  }
+  openMod('sim');
+}
+
+async function scheduleInterview() {
+  var appId = document.getElementById('iv1').value;
+  var date = document.getElementById('iv6').value;
+  if (!appId || !date) { toast('Select candidate and date','err'); return; }
+  var body = {
+    candidateId: appId,
+    round: document.getElementById('iv2').value,
+    roundName: document.getElementById('iv3').value || 'Interview',
+    interviewType: document.getElementById('iv4').value,
+    interviewerId: document.getElementById('iv5').value || undefined,
+    scheduledAt: date,
+    duration: parseInt(document.getElementById('iv7').value)||60,
+    meetLink: document.getElementById('iv8').value || undefined
+  };
+  var res = await req('POST', '/api/interviews', body);
+  toast(res.success ? 'Interview scheduled!' : (res.message||'Failed'), res.success ? '' : 'err');
+  if (res.success) { closeMod('sim'); loadInterviewsList(); }
+}
+
+// ── ONBOARDING ─────────────────────────────────────
+async function toggleObTask(taskId, isCompleted) {
+  var newStatus = isCompleted ? 'Pending' : 'Completed';
+  var empId = CU && CU.employeeId ? CU.employeeId : null;
+  if (!empId) { toast('Employee profile not linked','err'); return; }
+  await req('POST', '/api/onboarding/' + empId + '/init', {});
+  var res = await req('PUT', '/api/onboarding/' + empId + '/task/' + taskId, { status: newStatus });
+  toast(isCompleted ? 'Task marked pending' : 'Task completed! ✓');
+  loadOnboarding();
+}
+
+async function loadObProgress(empId) {
+  await req('POST', '/api/onboarding/' + empId + '/init', {});
+  var res = await req('GET', '/api/onboarding/' + empId);
+  if (!res.success) return;
+  var pct = 0;
+  try { if (res.data && res.data.summary && res.data.summary.total > 0) pct = Math.round((res.data.summary.done/res.data.summary.total)*100); } catch(e) {}
+  var bar = document.getElementById('ob-bar-' + empId);
+  var pctEl = document.getElementById('ob-pct-' + empId);
+  if (bar) bar.style.width = pct + '%';
+  if (pctEl) pctEl.textContent = pct + '%';
+}
+
+async function viewOnboardingDetail(empId, nm) {
+  await req('POST', '/api/onboarding/' + empId + '/init', {});
+  var res = await req('GET', '/api/onboarding/' + empId);
+  if (!res.success) { toast('Error loading','err'); return; }
+  var s = res.data.summary;
+  var pct = s.total > 0 ? Math.round((s.done/s.total)*100) : 0;
+  var tasks = res.data.tasks || [];
+  var progress = res.data.progress || [];
+  var progMap = {};
+  progress.forEach(function(p){ progMap[p.task_id] = p.status; });
+  var bar = document.getElementById('ob-bar-' + empId);
+  var pctEl = document.getElementById('ob-pct-' + empId);
+  if (bar) bar.style.width = pct + '%';
+  if (pctEl) pctEl.textContent = pct + '%';
+  var cats = {};
+  tasks.forEach(function(t){
+    t.isCompleted = progMap[t.id] === 'Completed';
+    if (!cats[t.category]) cats[t.category] = [];
+    cats[t.category].push(t);
+  });
+  var h = '<div style="padding:0;">';
+  h += '<div style="display:flex;align-items:center;gap:12px;margin-bottom:12px;">';
+  h += '<div style="flex:1;height:8px;background:#E2E8F0;border-radius:4px;overflow:hidden;">';
+  h += '<div style="width:'+pct+'%;height:100%;background:'+(pct>=100?'#38A169':'#00C2A8')+';border-radius:4px;"></div></div>';
+  h += '<span style="font-size:13px;font-weight:700;color:#0D1B3E;">'+pct+'%</span></div>';
+  h += '<div style="font-size:12px;color:#718096;margin-bottom:14px;">'+s.done+' of '+s.total+' tasks completed</div>';
+  Object.keys(cats).forEach(function(cat) {
+    h += '<div style="margin-bottom:12px;"><div style="font-size:11px;font-weight:700;color:#718096;text-transform:uppercase;letter-spacing:.5px;margin-bottom:6px;">'+cat+'</div>';
+    cats[cat].forEach(function(t) {
+      var done = t.isCompleted;
+      h += '<div style="display:flex;align-items:center;gap:8px;padding:7px 10px;background:'+(done?'rgba(56,161,105,.05)':'white')+';border:1px solid '+(done?'rgba(56,161,105,.2)':'#E2E8F0')+';border-radius:8px;margin-bottom:3px;">';
+      h += '<div style="width:18px;height:18px;border-radius:50%;background:'+(done?'#38A169':'#E2E8F0')+';display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:10px;color:white;">'+(done?'&#10003;':'')+'</div>';
+      h += '<div style="flex:1;font-size:12px;font-weight:500;color:'+(done?'#38A169':'#1A202C')+';text-decoration:'+(done?'line-through':'none')+';">'+t.name+'</div>';
+      h += '<span style="font-size:10px;font-weight:700;padding:2px 7px;background:'+(done?'rgba(56,161,105,.1)':'#F7FAFC')+';color:'+(done?'#38A169':'#718096')+';border-radius:10px;">'+(done?'Done':'Pending')+'</span>';
+      h += '</div>';
+    });
+    h += '</div>';
+  });
+  h += '</div>';
+  var existing = document.getElementById('ob-detail-modal');
+  if (existing) existing.remove();
+  var modal = document.createElement('div');
+  modal.id = 'ob-detail-modal';
+  modal.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:9999;display:flex;align-items:center;justify-content:center;padding:16px;';
+  var inner = document.createElement('div');
+  inner.style.cssText = 'background:white;border-radius:16px;width:100%;max-width:540px;max-height:85vh;overflow-y:auto;';
+  var header = document.createElement('div');
+  header.style.cssText = 'padding:18px 22px;border-bottom:1px solid #E2E8F0;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;background:white;z-index:1;';
+  header.innerHTML = '<div><div style="font-weight:700;font-size:15px;color:#0D1B3E;">'+nm+'</div><div style="font-size:12px;color:#718096;">Onboarding Progress</div></div>';
+  var closeBtn = document.createElement('button');
+  closeBtn.innerHTML = '&#x2715;';
+  closeBtn.style.cssText = 'background:none;border:none;font-size:20px;cursor:pointer;color:#718096;';
+  closeBtn.onclick = function(){ modal.remove(); };
+  header.appendChild(closeBtn);
+  var body2 = document.createElement('div');
+  body2.style.cssText = 'padding:18px 22px;';
+  body2.innerHTML = h;
+  inner.appendChild(header);
+  inner.appendChild(body2);
+  modal.appendChild(inner);
+  document.body.appendChild(modal);
+  modal.addEventListener('click', function(e){ if(e.target===modal) modal.remove(); });
 }
 
 if (tok && CU) { startApp(); } else { document.getElementById('LP').style.display = 'flex'; document.getElementById('AP').style.display = 'none'; }
@@ -5481,12 +5258,27 @@ if (tok && CU) { startApp(); } else { document.getElementById('LP').style.displa
 
 <script src="https://doctorramesh5-ops.github.io/paype-erp/paype-chatbot.js"></script>
 
-
-
-
-
+<div class="ov" id="njm" onclick="if(event.target===this)closeMod('njm')">
+  <div class="mo" style="max-width:580px;">
+    <div class="mh"><div class="mt">Post New Job</div><button class="mx" onclick="closeMod('njm')">&#x2715;</button></div>
+    <div class="mb">
+      <div class="ff"><label>Job Title *</label><input id="nj1" placeholder="e.g. Software Engineer"></div>
+      <div class="g2">
+        <div class="ff"><label>Department</label><select id="nj2"><option value="">Select</option></select></div>
+        <div class="ff"><label>Location</label><input id="nj3" placeholder="Coimbatore" value="Coimbatore"></div>
+        <div class="ff"><label>Type</label><select id="nj4"><option>Full Time</option><option>Part Time</option><option>Contract</option><option>Internship</option></select></div>
+        <div class="ff"><label>Experience (Yrs)</label><input id="nj5" type="number" value="0"></div>
+        <div class="ff"><label>Salary Range</label><input id="nj6" placeholder="e.g. 3-5 LPA"></div>
+        <div class="ff"><label>Vacancies</label><input id="nj7" type="number" value="1"></div>
+      </div>
+      <div class="ff"><label>Description</label><textarea id="nj8" rows="3" style="border:1.5px solid #E2E8F0;border-radius:8px;padding:8px 11px;font-family:inherit;font-size:13px;width:100%;resize:vertical;" placeholder="Job responsibilities..."></textarea></div>
+      <div class="ff"><label>Skills Required</label><input id="nj9" placeholder="e.g. React, Node.js"></div>
+    </div>
+    <div class="mf"><button class="btn bto" onclick="closeMod('njm')">Cancel</button><button class="btn btp" onclick="postJob()">Post Job</button></div>
+  </div>
+</div>
 <div class="ov" id="ncm" onclick="if(event.target===this)closeMod('ncm')">
-  <div class="mo" style="max-width:620px;width:95%;padding:28px;">
+  <div class="mo" style="max-width:620px;">
     <div class="mh"><div class="mt">Add Candidate</div><button class="mx" onclick="closeMod('ncm')">&#x2715;</button></div>
     <div class="mb"><div class="g2">
       <div class="ff"><label>First Name *</label><input id="cf1" placeholder="First name"></div>
@@ -5505,9 +5297,8 @@ if (tok && CU) { startApp(); } else { document.getElementById('LP').style.displa
     <div class="mf"><button class="btn bto" onclick="closeMod('ncm')">Cancel</button><button class="btn btp" onclick="addCandidate()">Add Candidate</button></div>
   </div>
 </div>
-
 <div class="ov" id="nam" onclick="if(event.target===this)closeMod('nam')">
-  <div class="mo" style="max-width:580px;width:95%;padding:28px;">
+  <div class="mo" style="max-width:580px;">
     <div class="mh"><div class="mt">Add IT Asset</div><button class="mx" onclick="closeMod('nam')">&#x2715;</button></div>
     <div class="mb"><div class="g2">
       <div class="ff"><label>Asset Code *</label><input id="as1" placeholder="e.g. LAP-001"></div>
@@ -5522,29 +5313,6 @@ if (tok && CU) { startApp(); } else { document.getElementById('LP').style.displa
       <div class="ff"><label>Location</label><input id="as10" placeholder="e.g. Coimbatore Office"></div>
     </div></div>
     <div class="mf"><button class="btn bto" onclick="closeMod('nam')">Cancel</button><button class="btn btp" onclick="addAsset()">Add Asset</button></div>
-  </div>
-</div>
-
-<div class="ov" id="njm" onclick="if(event.target===this)closeMod('njm')">
-  <div class="mo" style="max-width:580px;">
-    <div class="mh"><div class="mt">Post New Job</div><button class="mx" onclick="closeMod('njm')">&#x2715;</button></div>
-    <div class="mb">
-      <div class="ff"><label>Job Title *</label><input id="nj1" placeholder="e.g. Software Engineer"></div>
-      <div class="g2">
-        <div class="ff"><label>Department</label><select id="nj2"><option value="">Select</option></select></div>
-        <div class="ff"><label>Location</label><input id="nj3" placeholder="e.g. Coimbatore" value="Coimbatore"></div>
-        <div class="ff"><label>Employment Type</label><select id="nj4"><option>Full Time</option><option>Part Time</option><option>Contract</option><option>Internship</option></select></div>
-        <div class="ff"><label>Experience (Years)</label><input id="nj5" type="number" placeholder="0" value="0"></div>
-        <div class="ff"><label>Salary Range</label><input id="nj6" placeholder="e.g. 3-5 LPA"></div>
-        <div class="ff"><label>Vacancies</label><input id="nj7" type="number" placeholder="1" value="1"></div>
-      </div>
-      <div class="ff"><label>Job Description</label><textarea id="nj8" rows="4" style="border:1.5px solid #E2E8F0;border-radius:8px;padding:8px 11px;font-family:inherit;font-size:13px;width:100%;resize:vertical;" placeholder="Key responsibilities and requirements..."></textarea></div>
-      <div class="ff"><label>Skills Required</label><input id="nj9" placeholder="e.g. React, Node.js, Python"></div>
-    </div>
-    <div class="mf">
-      <button class="btn bto" onclick="closeMod('njm')">Cancel</button>
-      <button class="btn btp" onclick="postJob()">Post Job</button>
-    </div>
   </div>
 </div>
 </body>
