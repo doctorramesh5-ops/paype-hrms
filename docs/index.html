@@ -3064,6 +3064,8 @@ function generatePayslipPDF(s, month, year) {
   win.document.write('</table>');
   win.document.write('<p style="margin-top:16px;font-size:10px;color:#718096;text-align:center;">This is a computer-generated payslip. No signature required.</p>');
   win.document.write('</body></html>');
+
+
   win.document.close();
   setTimeout(function() { win.print(); }, 500);
 }
@@ -4996,5 +4998,30 @@ if (tok && CU) { startApp(); } else { document.getElementById('LP').style.displa
 
 
 <script src="https://doctorramesh5-ops.github.io/paype-erp/paype-chatbot.js"></script>
+
+
+
+
+
+<div class="ov" id="ncm" onclick="if(event.target===this)closeMod('ncm')">
+  <div class="mod" style="max-width:560px;">
+    <div class="mh"><div class="mt">Add Candidate</div><button class="mx" onclick="closeMod('ncm')">&#x2715;</button></div>
+    <div class="g2">
+      <div class="ff"><label>First Name *</label><input id="cf1" placeholder="First name"></div>
+      <div class="ff"><label>Last Name *</label><input id="cf2" placeholder="Last name"></div>
+      <div class="ff"><label>Email *</label><input id="cf3" type="email" placeholder="email@example.com"></div>
+      <div class="ff"><label>Mobile</label><input id="cf4" placeholder="+91 XXXXX XXXXX"></div>
+      <div class="ff"><label>Current Company</label><input id="cf5" placeholder="Company name"></div>
+      <div class="ff"><label>Current Position</label><input id="cf6" placeholder="Job title"></div>
+      <div class="ff"><label>Experience (Years)</label><input id="cf7" type="number" placeholder="0"></div>
+      <div class="ff"><label>Current CTC (Rs)</label><input id="cf8" type="number" placeholder="0"></div>
+      <div class="ff"><label>Expected CTC (Rs)</label><input id="cf9" type="number" placeholder="0"></div>
+      <div class="ff"><label>Notice Period (Days)</label><input id="cf10" type="number" placeholder="30"></div>
+      <div class="ff"><label>Location</label><input id="cf11" placeholder="City"></div>
+      <div class="ff"><label>Source</label><select id="cf12"><option>Direct</option><option>LinkedIn</option><option>Referral</option><option>Job Portal</option><option>Walk-in</option><option>Other</option></select></div>
+    </div>
+    <div class="ma"><button class="btn bto" onclick="closeMod('ncm')">Cancel</button><button class="btn btp" onclick="addCandidate()">Add Candidate</button></div>
+  </div>
+</div>
 </body>
 </html>
