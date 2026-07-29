@@ -1782,7 +1782,8 @@ async function loadAssets() {
   document.getElementById('asc').innerHTML = h;
 }
 async function addAsset() {
-  var body = { assetCode:document.getElementById('af1').value.trim(), name:document.getElementById('af2').value.trim(), category:document.getElementById('af3').value, brand:document.getElementById('af4').value.trim(), model:document.getElementById('af5').value.trim(), serialNumber:document.getElementById('af6').value.trim(), purchaseDate:document.getElementById('af7').value||undefined, warrantyTill:document.getElementById('af8').value||undefined };
+  var g = function(id){var e=document.getElementById(id);return e?e.value.trim():'';};
+  var body = { assetCode:g('as1'), name:g('as2'), category:g('as3'), brand:g('as4'), model:g('as5'), serialNumber:g('as6'), purchaseDate:g('as7')||undefined, purchaseCost:parseFloat(g('as8'))||undefined, condition:g('as9'), location:g('as10') };
   if (!body.assetCode||!body.name) { toast('Asset code and name required','err'); return; }
   var res = await req('POST', '/api/assets', body);
   if (res.success) { toast('Asset added!'); closeMod('nam'); loadAssets(); ['af1','af2','af4','af5','af6','af7','af8'].forEach(function(id){document.getElementById(id).value='';}); }
@@ -5021,6 +5022,25 @@ if (tok && CU) { startApp(); } else { document.getElementById('LP').style.displa
       <div class="ff"><label>Source</label><select id="cf12"><option>Direct</option><option>LinkedIn</option><option>Referral</option><option>Job Portal</option><option>Walk-in</option><option>Other</option></select></div>
     </div>
     <div class="ma"><button class="btn bto" onclick="closeMod('ncm')">Cancel</button><button class="btn btp" onclick="addCandidate()">Add Candidate</button></div>
+  </div>
+</div>
+
+<div class="ov" id="nam" onclick="if(event.target===this)closeMod('nam')">
+  <div class="mod" style="max-width:480px;">
+    <div class="mh"><div class="mt">Add IT Asset</div><button class="mx" onclick="closeMod('nam')">&#x2715;</button></div>
+    <div class="g2">
+      <div class="ff"><label>Asset Code *</label><input id="as1" placeholder="e.g. LAP-001"></div>
+      <div class="ff"><label>Asset Name *</label><input id="as2" placeholder="e.g. Dell Laptop"></div>
+      <div class="ff"><label>Category</label><select id="as3"><option>Laptop</option><option>Desktop</option><option>Mobile</option><option>Tablet</option><option>Monitor</option><option>Printer</option><option>Server</option><option>Other</option></select></div>
+      <div class="ff"><label>Brand</label><input id="as4" placeholder="e.g. Dell, HP, Apple"></div>
+      <div class="ff"><label>Model</label><input id="as5" placeholder="Model number"></div>
+      <div class="ff"><label>Serial Number</label><input id="as6" placeholder="Serial number"></div>
+      <div class="ff"><label>Purchase Date</label><input id="as7" type="date"></div>
+      <div class="ff"><label>Purchase Cost (Rs)</label><input id="as8" type="number" placeholder="0"></div>
+      <div class="ff"><label>Condition</label><select id="as9"><option>New</option><option>Good</option><option>Fair</option><option>Poor</option></select></div>
+      <div class="ff"><label>Location</label><input id="as10" placeholder="e.g. Coimbatore Office"></div>
+    </div>
+    <div class="ma"><button class="btn bto" onclick="closeMod('nam')">Cancel</button><button class="btn btp" onclick="addAsset()">Add Asset</button></div>
   </div>
 </div>
 </body>
