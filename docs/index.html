@@ -5132,7 +5132,7 @@ async function loadOffers() {
   var res = await req('GET', '/api/applications');
   var offers = [];
   if (res.success && res.data) {
-    offers = res.data.filter(function(a){ return a.stage==='Offer' || a.stage==='Hired'; });
+    offers = res.data.filter(function(a){ return a.stage==='Offer' || a.stage==='Hired' || a.stage==='Rejected'; });
   }
   if (!offers.length) {
     c2.innerHTML = '<div class="card"><div class="cb"><div class="em"><h3>No offer letters yet</h3><p>Move candidates to Offer stage in ATS Pipeline first</p></div></div></div>';
@@ -5180,73 +5180,165 @@ async function openCreateOffer() {
 
 async function generateOfferLetter(candidateName, position, ctc) {
   var today = new Date().toLocaleDateString('en-IN',{day:'2-digit',month:'long',year:'numeric'});
-  var refNo = 'PPC/HR/OL/' + new Date().getFullYear() + '/' + Math.floor(Math.random()*9000+1000);
+  var refNo = 'PPC/HR/' + new Date().getFullYear() + '/' + String(Math.floor(Math.random()*900+100));
+  var joiningDate = new Date(); joiningDate.setDate(joiningDate.getDate()+30);
+  var joiningStr = joiningDate.toLocaleDateString('en-IN',{day:'2-digit',month:'long',year:'numeric'});
+  var expiryDate = new Date(); expiryDate.setDate(expiryDate.getDate()+7);
+  var expiryStr = expiryDate.toLocaleDateString('en-IN',{day:'2-digit',month:'long',year:'numeric'});
+  var monthly = ctc > 0 ? Math.round(ctc/12) : 0;
+  var basic = Math.round(monthly*0.4);
+  var hra = Math.round(monthly*0.2);
+  var special = monthly - basic - hra;
+
   var win = window.open('','_blank');
-  var html = '<html><head><title>Offer Letter - '+candidateName+'</title>';
-  html += '<style>';
-  html += 'body{font-family:Arial,sans-serif;margin:0;padding:0;background:#fff;color:#1a1a2e;}';
-  html += '.page{max-width:794px;margin:0 auto;padding:0;}';
-  html += '.header{background:#0D1B3E;color:white;padding:20px 40px;display:flex;align-items:center;justify-content:space-between;}';
-  html += '.logo-text{font-size:28px;font-weight:900;letter-spacing:-1px;}';
-  html += '.logo-text span{color:#00C2A8;}';
-  html += '.header-right{text-align:right;font-size:11px;opacity:.8;line-height:1.8;}';
-  html += '.teal-bar{background:#00C2A8;height:4px;}';
-  html += '.content{padding:40px;}';
-  html += '.ref{font-size:11px;color:#718096;margin-bottom:20px;}';
-  html += 'h2{color:#0D1B3E;font-size:18px;text-align:center;margin:20px 0;text-transform:uppercase;letter-spacing:1px;border-bottom:2px solid #00C2A8;padding-bottom:10px;}';
-  html += 'table{width:100%;border-collapse:collapse;margin:20px 0;}';
-  html += 'td{padding:10px 14px;border:1px solid #e2e8f0;font-size:13px;}';
-  html += 'tr:nth-child(even) td{background:#f7fafc;}';
-  html += 'td:first-child{font-weight:700;color:#0D1B3E;width:40%;}';
-  html += '.footer{background:#f7fafc;border-top:2px solid #0D1B3E;padding:20px 40px;margin-top:40px;}';
-  html += '.sign-box{display:flex;justify-content:space-between;margin-top:50px;}';
-  html += '.sign-line{text-align:center;width:45%;}';
-  html += '.sign-line hr{border:none;border-top:1px solid #333;margin-bottom:8px;}';
-  html += '.watermark{position:fixed;top:50%;left:50%;transform:translate(-50%,-50%) rotate(-45deg);font-size:80px;color:rgba(0,194,168,.06);font-weight:900;pointer-events:none;z-index:0;}';
-  html += '@media print{.watermark{position:fixed;}}';
-  html += '</style></head><body>';
-  html += '<div class="watermark">PayPe</div>';
-  html += '<div class="page">';
-  html += '<div class="header">';
-  html += '<div><div class="logo-text">Pay<span>Pe</span></div><div style="font-size:11px;opacity:.7;margin-top:4px;">Technologies Pvt. Ltd.</div></div>';
-  html += '<div class="header-right">277/1A, Annamalai Industrial Park<br>Kalapatti, Coimbatore - 641048<br>Tamil Nadu, India<br>hr@paype.co.in | +91 99448 57191</div>';
-  html += '</div>';
-  html += '<div class="teal-bar"></div>';
-  html += '<div class="content">';
-  html += '<div class="ref">Ref No: '+refNo+' &nbsp;&nbsp;|&nbsp;&nbsp; Date: '+today+'</div>';
-  html += '<p>To,<br><strong>'+candidateName+'</strong></p>';
-  html += '<h2>Letter of Offer</h2>';
-  html += '<p>Dear <strong>'+candidateName+'</strong>,</p>';
-  html += '<p>We are delighted to offer you the position of <strong>'+position+'</strong> at <strong>PayPe Technologies Pvt. Ltd.</strong> We believe your skills and experience will be a valuable addition to our team.</p>';
-  html += '<table>';
-  html += '<tr><td>Position / Designation</td><td>'+position+'</td></tr>';
-  html += '<tr><td>Department</td><td>Technology & Products</td></tr>';
-  html += '<tr><td>Location</td><td>Coimbatore, Tamil Nadu</td></tr>';
-  html += '<tr><td>Employment Type</td><td>Full Time, Permanent</td></tr>';
-  if (ctc && ctc > 0) {
-    html += '<tr><td>Annual CTC</td><td><strong>Rs '+Number(ctc).toLocaleString('en-IN')+'</strong> per annum</td></tr>';
-    html += '<tr><td>Monthly Gross</td><td>Rs '+Number(Math.round(ctc/12)).toLocaleString('en-IN')+'</td></tr>';
-  }
-  html += '<tr><td>Probation Period</td><td>6 Months</td></tr>';
-  html += '<tr><td>Notice Period</td><td>30 Days (post probation)</td></tr>';
-  html += '<tr><td>Date of Joining</td><td>To be confirmed</td></tr>';
-  html += '</table>';
-  html += '<p><strong>Benefits:</strong> PF, ESI (if applicable), paid leaves as per company policy, performance bonus, and professional development opportunities.</p>';
-  html += '<p>This offer is subject to successful completion of reference checks and document verification. Please confirm your acceptance within <strong>7 working days</strong>.</p>';
-  html += '<div class="sign-box">';
-  html += '<div class="sign-line"><hr><p><strong>Authorised Signatory</strong><br>HR Department<br>PayPe Technologies Pvt. Ltd.</p></div>';
-  html += '<div class="sign-line"><hr><p><strong>Candidate Acceptance</strong><br>'+candidateName+'<br>Date: _______________</p></div>';
-  html += '</div></div>';
-  html += '<div class="footer">';
-  html += '<div style="display:flex;justify-content:space-between;font-size:11px;color:#718096;">';
-  html += '<div><strong style="color:#0D1B3E;">PayPe Technologies Pvt. Ltd.</strong><br>CIN: U74994TN2022PTC151114 | GST: 33AAMCP7960K1ZU | PAN: AAMCP7960K</div>';
-  html += '<div style="text-align:right;">paype.co.in | hr.paype.co.in<br>Confidential Document</div>';
-  html += '</div></div>';
-  html += '</div></body></html>';
+  var html = `<!DOCTYPE html><html><head><meta charset="UTF-8"><title>Offer Letter</title>
+  <style>
+    *{margin:0;padding:0;box-sizing:border-box;}
+    body{font-family:'Times New Roman',serif;background:#fff;color:#1a1a1a;font-size:13px;line-height:1.7;}
+    .page{width:794px;min-height:1123px;margin:0 auto;padding:0;position:relative;}
+    .header{display:flex;justify-content:space-between;align-items:flex-start;padding:32px 48px 20px;border-bottom:3px solid #0D1B3E;}
+    .logo-section{display:flex;flex-direction:column;}
+    .logo-name{font-family:Arial,sans-serif;font-size:26px;font-weight:900;color:#0D1B3E;letter-spacing:-0.5px;}
+    .logo-name span{color:#00C2A8;}
+    .logo-sub{font-size:10px;color:#666;letter-spacing:1px;text-transform:uppercase;margin-top:2px;}
+    .header-right{text-align:right;font-size:11px;color:#555;line-height:1.8;}
+    .teal-strip{height:5px;background:linear-gradient(90deg,#0D1B3E,#00C2A8);}
+    .ref-bar{background:#f8f9fa;padding:10px 48px;display:flex;justify-content:space-between;font-size:11px;color:#555;border-bottom:1px solid #e0e0e0;}
+    .content{padding:32px 48px;}
+    .subject{background:#0D1B3E;color:white;padding:12px 20px;border-radius:4px;font-size:14px;font-weight:bold;text-align:center;letter-spacing:1px;margin:20px 0;text-transform:uppercase;}
+    .salutation{margin:16px 0 8px;}
+    .body-text{margin:10px 0;text-align:justify;}
+    .details-box{border:1px solid #ddd;border-radius:6px;overflow:hidden;margin:20px 0;}
+    .details-header{background:#0D1B3E;color:white;padding:10px 16px;font-size:12px;font-weight:bold;letter-spacing:.5px;}
+    .details-row{display:flex;border-bottom:1px solid #eee;}
+    .details-row:last-child{border-bottom:none;}
+    .details-label{width:45%;padding:9px 16px;background:#f8f9fa;font-weight:600;font-size:12px;color:#333;}
+    .details-value{width:55%;padding:9px 16px;font-size:12px;color:#1a1a1a;}
+    .ctc-table{width:100%;border-collapse:collapse;margin:16px 0;}
+    .ctc-table th{background:#0D1B3E;color:white;padding:8px 12px;text-align:left;font-size:11px;}
+    .ctc-table td{padding:7px 12px;border-bottom:1px solid #eee;font-size:12px;}
+    .ctc-table tr:nth-child(even) td{background:#f8f9fa;}
+    .ctc-table .total td{background:#00C2A8;color:white;font-weight:bold;}
+    .conditions{margin:16px 0;}
+    .conditions h4{color:#0D1B3E;font-size:12px;margin-bottom:8px;border-bottom:1px solid #eee;padding-bottom:4px;}
+    .conditions ol{padding-left:18px;}
+    .conditions li{margin-bottom:4px;font-size:11.5px;color:#444;}
+    .signature-section{display:flex;justify-content:space-between;margin-top:40px;padding-top:20px;}
+    .sign-box{width:45%;text-align:center;}
+    .sign-line{border-top:1px solid #333;margin-bottom:6px;}
+    .sign-label{font-size:11px;color:#555;}
+    .sign-name{font-size:12px;font-weight:bold;color:#1a1a1a;}
+    .footer{background:#0D1B3E;color:white;padding:14px 48px;display:flex;justify-content:space-between;align-items:center;margin-top:30px;}
+    .footer-left{font-size:10px;line-height:1.8;}
+    .footer-right{text-align:right;font-size:10px;line-height:1.8;}
+    .confidential{text-align:center;font-size:10px;color:#999;padding:8px;letter-spacing:2px;text-transform:uppercase;}
+    @media print{body{-webkit-print-color-adjust:exact;print-color-adjust:exact;}}
+  </style></head><body>
+  <div class="page">
+    <div class="header">
+      <div class="logo-section">
+        <div class="logo-name">Pay<span>Pe</span></div>
+        <div class="logo-sub">Technologies Private Limited</div>
+        <div style="margin-top:8px;font-size:10px;color:#888;">Est. 2022 &nbsp;|&nbsp; CIN: U74994TN2022PTC151114</div>
+      </div>
+      <div class="header-right">
+        277/1A, Annamalai Industrial Park<br>
+        Kalapatti, Coimbatore - 641048<br>
+        Tamil Nadu, India<br>
+        hr@paype.co.in | +91 99448 57191<br>
+        www.paype.co.in
+      </div>
+    </div>
+    <div class="teal-strip"></div>
+    <div class="ref-bar">
+      <span>Ref: ${refNo}</span>
+      <span>Date: ${today}</span>
+      <span>CONFIDENTIAL</span>
+    </div>
+    <div class="content">
+      <p>To,</p>
+      <p style="font-weight:bold;font-size:14px;margin:6px 0;">${candidateName}</p>
+      <div class="subject">Letter of Offer — ${position}</div>
+      <p class="salutation">Dear <strong>${candidateName}</strong>,</p>
+      <p class="body-text">We are delighted to extend this offer of employment for the position of <strong>${position}</strong> at <strong>PayPe Technologies Pvt. Ltd.</strong> After careful consideration, we believe your skills, experience, and enthusiasm make you an ideal candidate to join our growing team.</p>
+      <p class="body-text">Please review the details of this offer below:</p>
+
+      <div class="details-box">
+        <div class="details-header">EMPLOYMENT DETAILS</div>
+        <div class="details-row"><div class="details-label">Position / Designation</div><div class="details-value"><strong>${position}</strong></div></div>
+        <div class="details-row"><div class="details-label">Department</div><div class="details-value">Technology & Products</div></div>
+        <div class="details-row"><div class="details-label">Reporting To</div><div class="details-value">Department Head</div></div>
+        <div class="details-row"><div class="details-label">Work Location</div><div class="details-value">Coimbatore, Tamil Nadu</div></div>
+        <div class="details-row"><div class="details-label">Employment Type</div><div class="details-value">Full Time, Permanent</div></div>
+        <div class="details-row"><div class="details-label">Proposed Date of Joining</div><div class="details-value">${joiningStr}</div></div>
+        <div class="details-row"><div class="details-label">Probation Period</div><div class="details-value">6 Months (extendable based on performance)</div></div>
+        <div class="details-row"><div class="details-label">Notice Period (Post Probation)</div><div class="details-value">30 Days</div></div>
+        <div class="details-row"><div class="details-label">Offer Valid Until</div><div class="details-value"><strong>${expiryStr}</strong></div></div>
+      </div>
+
+      ${ctc > 0 ? `
+      <div class="details-box" style="margin-top:16px;">
+        <div class="details-header">COMPENSATION STRUCTURE (ANNUAL)</div>
+        <table class="ctc-table">
+          <thead><tr><th>Component</th><th>Monthly (Rs)</th><th>Annual (Rs)</th></tr></thead>
+          <tbody>
+            <tr><td>Basic Salary</td><td>${basic.toLocaleString('en-IN')}</td><td>${(basic*12).toLocaleString('en-IN')}</td></tr>
+            <tr><td>House Rent Allowance (HRA)</td><td>${hra.toLocaleString('en-IN')}</td><td>${(hra*12).toLocaleString('en-IN')}</td></tr>
+            <tr><td>Special Allowance</td><td>${special.toLocaleString('en-IN')}</td><td>${(special*12).toLocaleString('en-IN')}</td></tr>
+            <tr class="total"><td><strong>Gross CTC</strong></td><td><strong>Rs ${monthly.toLocaleString('en-IN')}</strong></td><td><strong>Rs ${Number(ctc).toLocaleString('en-IN')}</strong></td></tr>
+          </tbody>
+        </table>
+        <div style="padding:8px 16px;font-size:11px;color:#666;background:#fff9e6;">* PF, ESI and TDS will be deducted as per applicable laws</div>
+      </div>` : ''}
+
+      <div class="conditions">
+        <h4>TERMS & CONDITIONS</h4>
+        <ol>
+          <li>This offer is subject to satisfactory reference checks and document verification.</li>
+          <li>Please submit your acceptance by signing and returning this letter before <strong>${expiryStr}</strong>.</li>
+          <li>Original educational certificates, experience letters and ID proof must be submitted on joining.</li>
+          <li>You will be required to sign a Non-Disclosure Agreement (NDA) on your date of joining.</li>
+          <li>This offer is confidential and should not be disclosed to third parties.</li>
+        </ol>
+      </div>
+
+      <p class="body-text">We look forward to welcoming you to the PayPe Technologies family. Please feel free to contact us at <strong>hr@paype.co.in</strong> or <strong>+91 99448 57191</strong> for any queries.</p>
+
+      <div class="signature-section">
+        <div class="sign-box">
+          <div class="sign-line"></div>
+          <div class="sign-name">Authorised Signatory</div>
+          <div class="sign-label">HR Department</div>
+          <div class="sign-label">PayPe Technologies Pvt. Ltd.</div>
+        </div>
+        <div class="sign-box">
+          <div class="sign-line"></div>
+          <div class="sign-name">${candidateName}</div>
+          <div class="sign-label">Candidate Signature & Date</div>
+          <div class="sign-label">Acceptance of Offer</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="footer">
+      <div class="footer-left">
+        <strong>PayPe Technologies Pvt. Ltd.</strong><br>
+        CIN: U74994TN2022PTC151114 | GST: 33AAMCP7960K1ZU | PAN: AAMCP7960K
+      </div>
+      <div class="footer-right">
+        paype.co.in | hr.paype.co.in<br>
+        Ref: ${refNo}
+      </div>
+    </div>
+    <div class="confidential">— Confidential Document — For Addressee Only —</div>
+  </div>
+  </body></html>`;
+
   win.document.write(html);
   win.document.close();
   setTimeout(function(){win.print();},800);
 }
+
 async function viewOfferLetter(id) {
   toast('Loading offer letter...');
   var res = await req('GET', '/api/offer-letters/' + id);
