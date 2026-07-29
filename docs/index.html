@@ -1641,13 +1641,10 @@ async function loadCandidates() {
   document.getElementById('cdc').innerHTML = h;
 }
 async function deleteCandidate(id) {
-  if (!confirm('Remove this candidate from view?')) return;
-  // Store hidden IDs in localStorage
-  var hidden = JSON.parse(localStorage.getItem('hidden_candidates') || '[]');
-  if (!hidden.includes(id)) hidden.push(id);
-  localStorage.setItem('hidden_candidates', JSON.stringify(hidden));
-  toast('Candidate removed!');
-  loadCandidates();
+  if (!confirm('Delete this candidate? This cannot be undone.')) return;
+  var res = await req('DELETE', '/api/candidates/' + id);
+  if (res.success) { toast('Candidate deleted!'); loadCandidates(); }
+  else toast(res.message||'Failed','err');
 }
 async function addCandidate() {
   var body = { firstName:document.getElementById('cf1').value.trim(), lastName:document.getElementById('cf2').value.trim(), email:document.getElementById('cf3').value.trim(), mobile:document.getElementById('cf4').value.trim(), currentCompany:document.getElementById('cf5').value.trim(), currentPosition:document.getElementById('cf6').value.trim(), experienceYrs:parseFloat(document.getElementById('cf7').value)||undefined, currentCtc:parseFloat(document.getElementById('cf8').value)||undefined, expectedCtc:parseFloat(document.getElementById('cf9').value)||undefined, noticePeriod:parseInt(document.getElementById('cf10').value)||undefined, location:document.getElementById('cf11').value.trim(), source:document.getElementById('cf12').value };
