@@ -1087,7 +1087,7 @@ function showAllOff(title) {
 }
 
 function goPage(name) {
-  if (name === 'interviews') { showAllOff('Interviews'); loadInterviews(); return; }
+  if (name === 'interviews') { showAllOff('Interviews'); loadInterviewsList(); return; }
   if (name === 'reports') { showAllOff('Reports'); loadReports(); return; }
   if (name === 'helpdesk') { showAllOff('Helpdesk'); loadHelpdesk(); return; }
   if (name === 'performance') { showAllOff('Performance'); loadPerformance(); return; }
@@ -3598,9 +3598,9 @@ function exportAttendanceReport() {
       var hrs = '';
       if (a.punch_in && a.punch_out) hrs = ((new Date(a.punch_out)-new Date(a.punch_in))/3600000).toFixed(1);
       var status = a.punch_out?'Complete':a.punch_in?'Working':'Absent';
-      var dist = a.distance !== null && a.distance !== undefined ? a.distance : '';
+      var dist = (a.distance !== null && a.distance !== undefined && a.distance !== '') ? a.distance : '';
       var locType = dist !== '' ? (dist<=50?'Office':dist<=500?'Near Office':'Remote/WFH') : 'No GPS';
-      var coords = a.latitude ? a.latitude.toFixed(5)+','+a.longitude.toFixed(5) : '';
+      var coords = (a.latitude && typeof a.latitude === 'number') ? a.latitude.toFixed(5)+','+a.longitude.toFixed(5) : '';
       csv += [today, '"'+nm+'"', a.emp_code||a.employee_id||'', pIn, pOut, hrs, status, locType, dist, coords].join(',') + '\n';
     });
     var blob = new Blob([csv], {type:'text/csv;charset=utf-8;'});
