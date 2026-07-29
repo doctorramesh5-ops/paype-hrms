@@ -341,7 +341,7 @@ tr:hover td{background:#F7FAFC;}
       </div>
     </div>
     <div class="pg on" id="pg-dashboard"><div id="dbc"><div class="ld"><div class="sp"></div>Loading...</div></div></div>
-    <div class="pg" id="pg-employees">
+    <div class="pg" id="pg-employees" style="background:white;">
       <div class="ph"><div><h1>Employees</h1><p id="esub"></p></div><div id="eact"></div></div>
       <div class="card">
         <div class="ch"><div class="ct">All Employees</div>
@@ -353,7 +353,7 @@ tr:hover td{background:#F7FAFC;}
         <div class="tw"><div id="etbl"><div class="ld"><div class="sp"></div>Loading...</div></div></div>
       </div>
     </div>
-    <div class="pg" id="pg-attendance">
+    <div class="pg" id="pg-attendance" style="background:white;">
       <div class="ph"><div><h1>Attendance</h1><p>Punch, shifts and overtime</p></div>
         <button class="btn btp" id="att-export-btn" onclick="exportAttendanceReport()">Export</button>
       </div>
@@ -365,11 +365,11 @@ tr:hover td{background:#F7FAFC;}
       </div>
       <div id="atc"><div class="ld"><div class="sp"></div>Loading...</div></div>
     </div>
-    <div class="pg" id="pg-leave">
+    <div class="pg" id="pg-leave" style="background:white;">
       <div class="ph"><div><h1>Leave</h1><p>Manage leave requests</p></div><button class="btn btp" onclick="openMod('lvm')" id="albtn" style="display:none">+ Apply Leave</button></div>
       <div id="lvc"><div class="ld"><div class="sp"></div>Loading...</div></div>
     </div>
-    <div class="pg" id="pg-payroll">
+    <div class="pg" id="pg-payroll" style="background:white;">
       <div class="ph"><div><h1>Payroll & Compliance</h1><p>Salary, PF, ESI and statutory</p></div>
         <div style="display:flex;gap:7px;"><button class="btn btp" onclick="runPayroll()" id="rpbtn" style="display:none">Run Payroll</button></div>
       </div>
@@ -382,7 +382,7 @@ tr:hover td{background:#F7FAFC;}
       </div>
       <div id="prc"><div class="ld"><div class="sp"></div>Loading...</div></div>
     </div>
-    <div class="pg" id="pg-recruitment">
+    <div class="pg" id="pg-recruitment" style="background:white;">
       <div class="ph"><div><h1>Recruitment</h1><p>ATS Pipeline</p></div>
         <div style="display:flex;gap:8px;">
           <button class="btn bto" onclick="goPage('jobs')">&#x1F4CB; Jobs</button>
@@ -391,23 +391,23 @@ tr:hover td{background:#F7FAFC;}
       </div>
       <div id="rdc"><div class="ld"><div class="sp"></div>Loading...</div></div>
     </div>
-    <div class="pg" id="pg-jobs">
+    <div class="pg" id="pg-jobs" style="background:white;">
       <div class="ph"><div><h1>Job Listings</h1><p>All open positions</p></div><button class="btn btp" onclick="openMod('nom')">+ Post Job</button></div>
       <div id="jbc"><div class="ld"><div class="sp"></div>Loading...</div></div>
     </div>
-    <div class="pg" id="pg-candidates">
+    <div class="pg" id="pg-candidates" style="background:white;">
       <div class="ph"><div><h1>Candidates</h1><p>Talent database</p></div><button class="btn btp" onclick="openMod('ncm')">+ Add Candidate</button></div>
       <div id="cdc"><div class="ld"><div class="sp"></div>Loading...</div></div>
     </div>
-    <div class="pg" id="pg-onboarding">
+    <div class="pg" id="pg-onboarding" style="background:white;">
       <div class="ph"><div><h1>Onboarding</h1><p>Employee onboarding tracker</p></div></div>
       <div id="obc"><div class="ld"><div class="sp"></div>Loading...</div></div>
     </div>
-    <div class="pg" id="pg-assets">
+    <div class="pg" id="pg-assets" style="background:white;">
       <div class="ph"><div><h1>IT Assets</h1><p>Asset management</p></div><button class="btn btp" onclick="openMod('nam')">+ Add Asset</button></div>
       <div id="asc"><div class="ld"><div class="sp"></div>Loading...</div></div>
     </div>
-    <div class="pg" id="pg-profile">
+    <div class="pg" id="pg-profile" style="background:white;">
       <div class="ph"><div><h1>My Profile</h1><p>Your information and documents</p></div></div>
       <div style="display:flex;gap:5px;margin-bottom:16px;background:white;padding:5px;border-radius:10px;border:1px solid #E2E8F0;flex-wrap:wrap;">
         <button class="btn btp" id="prof-tab1" onclick="showProfTab('info',this)" style="flex:1;justify-content:center;min-width:80px;">My Info</button>
@@ -426,25 +426,25 @@ tr:hover td{background:#F7FAFC;}
     </div>
 
     
-    <div class="pg" id="pg-interviews">
+    <div class="pg" id="pg-interviews" style="background:white;">
       <div class="ph"><div><h1>Interviews</h1><p>Schedule and track interviews</p></div>
         <button class="btn btp" onclick="openScheduleInterview()">+ Schedule Interview</button>
       </div>
       <div id="ivc"><div class="ld"><div class="sp"></div>Loading...</div></div>
     </div>
 
-    <div class="pg" id="pg-orgchart">
+    <div class="pg" id="pg-orgchart" style="background:white;">
       <div class="ph"><div><h1>Org Chart</h1><p>Organisation hierarchy</p></div></div>
       <div id="ogc"><div class="ld"><div class="sp"></div>Loading...</div></div>
     </div>
-    <div class="pg" id="pg-offers">
+    <div class="pg" id="pg-offers" style="background:white;">
       <div class="ph"><div><h1>Offer Letters</h1><p>Manage offer letters</p></div><button class="btn btp" onclick="openMod('nom')">+ Create Offer</button></div>
       <div id="ofc"><div class="ld"><div class="sp"></div>Loading...</div></div>
     </div>
-    <div class="pg" id="pg-settings">
+    <div class="pg" id="pg-settings" style="background:white;">
       <div class="ph"><div><h1>Settings</h1><p>Account settings</p></div></div>
       <div id="stc"></div>
-    </div>    <div class="pg" id="pg-digitalid">
+    </div>    <div class="pg" id="pg-digitalid" style="background:white;">
       <div class="ph">
         <div><h1>Digital Identity</h1><p>Visiting cards, ID cards, agreements and QR codes</p></div>
       </div>
@@ -607,7 +607,7 @@ tr:hover td{background:#F7FAFC;}
         <div class="mf"><button class="btn bto" onclick="closeMod('signMod')">Cancel</button><button class="btn btp" onclick="saveSign()">Apply Signature</button></div>
       </div>
     </div>    <!-- REPORTS PAGE -->
-    <div class="pg" id="pg-reports">
+    <div class="pg" id="pg-reports" style="background:white;">
       <div class="ph"><div><h1>Reports & Analytics</h1><p>HR insights and data export</p></div>
         <button class="btn btp" onclick="exportAllReport()">Export Excel</button>
       </div>
@@ -622,7 +622,7 @@ tr:hover td{background:#F7FAFC;}
     </div>
 
     <!-- PERFORMANCE PAGE -->
-    <div class="pg" id="pg-performance">
+    <div class="pg" id="pg-performance" style="background:white;">
       <div class="ph"><div><h1>Performance</h1><p>Goals, appraisals and ratings</p></div>
         <button class="btn btp" id="perf-add-btn" onclick="openMod('perf-mod')" style="display:none;">+ Set Goal</button>
       </div>
@@ -634,7 +634,7 @@ tr:hover td{background:#F7FAFC;}
       <div id="perf-content"><div class="ld"><div class="sp"></div>Loading...</div></div>
     </div>
 
-    <!-- NOTIFICATIONS BELL - shown in topbar -->    <div class="pg" id="pg-helpdesk">
+    <!-- NOTIFICATIONS BELL - shown in topbar -->    <div class="pg" id="pg-helpdesk" style="background:white;">
       <div class="ph"><div><h1>Helpdesk</h1><p>Tickets, IT requests and complaints</p></div>
         <button class="btn btp" onclick="openMod('hdm')">+ Raise Ticket</button>
       </div>
