@@ -386,13 +386,13 @@ tr:hover td{background:#F7FAFC;}
       <div class="ph"><div><h1>Recruitment</h1><p>ATS Pipeline</p></div>
         <div style="display:flex;gap:8px;">
           <button class="btn bto" onclick="goPage('jobs')">&#x1F4CB; Jobs</button>
-          <button class="btn btp" onclick="openMod('nom')">+ Post Job</button>
+          <button class="btn btp" onclick="openPostJob()">+ Post Job</button>
         </div>
       </div>
       <div id="rdc"><div class="ld"><div class="sp"></div>Loading...</div></div>
     </div>
     <div class="pg" id="pg-jobs" style="background:white;">
-      <div class="ph"><div><h1>Job Listings</h1><p>All open positions</p></div><button class="btn btp" onclick="openMod('nom')">+ Post Job</button></div>
+      <div class="ph"><div><h1>Job Listings</h1><p>All open positions</p></div><button class="btn btp" onclick="openPostJob()">+ Post Job</button></div>
       <div id="jbc"><div class="ld"><div class="sp"></div>Loading...</div></div>
     </div>
     <div class="pg" id="pg-candidates" style="background:white;">
@@ -1545,7 +1545,7 @@ async function loadRecruitment() {
     h += '<div class="sc c3"><div class="sv">' + d.upcomingInterviews + '</div><div class="sl">Upcoming Interviews</div></div>';
     h += '</div>';
   }
-  h += '<div class="card"><div class="ch"><div class="ct">ATS Pipeline</div><div style="display:flex;gap:6px;"><button class="btn bto btsm" onclick="goPage(&apos;candidates&apos;)">Candidates</button><button class="btn btp btsm" onclick="openMod(&apos;nom&apos;)">+ Post Job</button></div></div><div class="cb">';
+  h += '<div class="card"><div class="ch"><div class="ct">ATS Pipeline</div><div style="display:flex;gap:6px;"><button class="btn bto btsm" onclick="goPage(&apos;candidates&apos;)">Candidates</button><button class="btn btp btsm" onclick="openPostJob()">+ Post Job</button></div></div><div class="cb">';
   h += '<div class="pipe">';
   var stages = ['Screening','Interview','Offer','Hired','Rejected'];
   var stageClrs = {Screening:'#00C2A8',Interview:'#805AD5',Offer:'#D69E2E',Hired:'#38A169',Rejected:'#E63329'};
@@ -5311,6 +5311,48 @@ async function loadObProgress(empId) {
   if (pctEl) pctEl.textContent = pct + '%';
 }
 
+async function openPostJob() {
+  // Load departments into dropdown
+  var sel = document.getElementById('nj2');
+  if (sel && sel.options.length <= 1) {
+    var res = await req('GET', '/api/departments');
+    if (res.success && res.data) {
+      res.data.forEach(function(d) {
+        var op = document.createElement('option');
+        op.value = d.id;
+        op.textContent = d.name;
+        sel.appendChild(op);
+      });
+    }
+  }
+  openMod('njm');
+}
+
+async function postJob() {
+  var title = document.getElementById('nj1').value.trim();
+  if (!title) { toast('Job title required','err'); return; }
+  var body = {
+    title: title,
+    departmentId: document.getElementById('nj2').value || undefined,
+    location: document.getElementById('nj3').value || 'Coimbatore',
+    employmentType: document.getElementById('nj4').value,
+    experienceMin: parseInt(document.getElementById('nj5').value) || 0,
+    salaryRange: document.getElementById('nj6').value || undefined,
+    vacancies: parseInt(document.getElementById('nj7').value) || 1,
+    description: document.getElementById('nj8').value || undefined,
+    skills: document.getElementById('nj9').value || undefined,
+    status: 'Active'
+  };
+  var res = await req('POST', '/api/jobs', body);
+  if (res.success) {
+    toast('Job posted successfully!');
+    closeMod('njm');
+    ['nj1','nj3','nj6','nj8','nj9'].forEach(function(id){ var e=document.getElementById(id); if(e) e.value=''; });
+    if (typeof loadJobs === 'function') loadJobs();
+    else if (typeof loadRecruitment === 'function') loadRecruitment();
+  } else toast(res.message||'Failed','err');
+}
+
 if (tok && CU) { startApp(); } else { document.getElementById('LP').style.display = 'flex'; document.getElementById('AP').style.display = 'none'; }
 </script>
 
@@ -5362,6 +5404,29 @@ if (tok && CU) { startApp(); } else { document.getElementById('LP').style.displa
       <div class="ff"><label>Location</label><input id="as10" placeholder="e.g. Coimbatore Office"></div>
     </div></div>
     <div class="mf"><button class="btn bto" onclick="closeMod('nam')">Cancel</button><button class="btn btp" onclick="addAsset()">Add Asset</button></div>
+  </div>
+</div>
+
+<div class="ov" id="njm" onclick="if(event.target===this)closeMod('njm')">
+  <div class="mo" style="max-width:580px;">
+    <div class="mh"><div class="mt">Post New Job</div><button class="mx" onclick="closeMod('njm')">&#x2715;</button></div>
+    <div class="mb">
+      <div class="ff"><label>Job Title *</label><input id="nj1" placeholder="e.g. Software Engineer"></div>
+      <div class="g2">
+        <div class="ff"><label>Department</label><select id="nj2"><option value="">Select</option></select></div>
+        <div class="ff"><label>Location</label><input id="nj3" placeholder="e.g. Coimbatore" value="Coimbatore"></div>
+        <div class="ff"><label>Employment Type</label><select id="nj4"><option>Full Time</option><option>Part Time</option><option>Contract</option><option>Internship</option></select></div>
+        <div class="ff"><label>Experience (Years)</label><input id="nj5" type="number" placeholder="0" value="0"></div>
+        <div class="ff"><label>Salary Range</label><input id="nj6" placeholder="e.g. 3-5 LPA"></div>
+        <div class="ff"><label>Vacancies</label><input id="nj7" type="number" placeholder="1" value="1"></div>
+      </div>
+      <div class="ff"><label>Job Description</label><textarea id="nj8" rows="4" style="border:1.5px solid #E2E8F0;border-radius:8px;padding:8px 11px;font-family:inherit;font-size:13px;width:100%;resize:vertical;" placeholder="Key responsibilities and requirements..."></textarea></div>
+      <div class="ff"><label>Skills Required</label><input id="nj9" placeholder="e.g. React, Node.js, Python"></div>
+    </div>
+    <div class="mf">
+      <button class="btn bto" onclick="closeMod('njm')">Cancel</button>
+      <button class="btn btp" onclick="postJob()">Post Job</button>
+    </div>
   </div>
 </div>
 </body>
