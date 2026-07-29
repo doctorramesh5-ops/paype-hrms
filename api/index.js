@@ -699,9 +699,12 @@ app.post('/api/leave/apply', auth, async (req, res) => {
     if (!policyId || !fDate || !tDate || !reason) {
       return res.status(400).json({ success: false, message: 'All fields required' });
     }
-    let d = new Date(fromDate), days = 0;
-    while (d <= new Date(toDate)) { if (d.getDay() !== 0 && d.getDay() !== 6) days++; d.setDate(d.getDate() + 1); }
-    if (days <= 0) return res.status(400).json({ success: false, message: 'Invalid date range' });
+    let d = new Date(fDate), days = 0;
+    const endD = new Date(tDate);
+    // Same day is valid - at least 1 day
+    while (d <= endD) { if (d.getDay() !== 0 && d.getDay() !== 6) days++; d.setDate(d.getDate() + 1); }
+    if (days <= 0) days = 1; // minimum 1 day for same day leave
+    if (new Date(tDate) < new Date(fDate)) return res.status(400).json({ success: false, message: 'End date cannot be before start date' });
     const bal = await db(`SELECT balance FROM leave_balances WHERE employee_id=$1 AND leave_policy_id=$2 AND year=EXTRACT(YEAR FROM NOW())`,
       [req.user.employee_id, leavePolicyId]);
     if (bal.rows.length && parseFloat(bal.rows[0].balance) < days) {

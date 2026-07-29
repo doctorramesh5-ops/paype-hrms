@@ -3905,7 +3905,7 @@ setInterval(function() {
   if (!startDate) { toast('Please select start date','err'); return; }
   if (!endDate) { toast('Please select end date','err'); return; }
   if (!reason) { toast('Please enter reason for leave','err'); return; }
-  if (endDate < startDate) { toast('End date must be after start date','err'); return; }
+  if (endDate < startDate) { toast('End date cannot be before start date','err'); return; }
   var res = await req('POST', '/api/leave/apply', { leaveTypeId, leave_type_id: leaveTypeId, startDate, start_date: startDate, endDate, end_date: endDate, reason });
   if (res.success) {
     toast('Leave request submitted!');
