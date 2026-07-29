@@ -287,24 +287,26 @@ tr:hover td{background:#F7FAFC;}
   </div>
 
   <!-- RIGHT PANEL — Login -->
-  <div class="lr" style="width:420px;background:white;display:flex;flex-direction:column;justify-content:center;padding:60px 50px;flex-shrink:0;">
-    <div style="font-family:Syne,sans-serif;font-size:20px;font-weight:800;color:#0D1B3E;margin-bottom:4px;">Pay<span style="color:#00C2A8;">Pe</span> HRMS</div>
-    <div style="display:inline-flex;align-items:center;gap:6px;padding:3px 12px;background:rgba(0,194,168,.1);border-radius:20px;font-size:11px;font-weight:700;color:#00C2A8;margin-bottom:20px;border:1px solid rgba(0,194,168,.2);width:fit-content;">&#x1F465; HR Management Platform</div>
-    <h2 style="font-size:22px;font-weight:800;color:#0D1B3E;margin-bottom:6px;">Welcome Back! &#x1F44B;</h2>
-    <p style="font-size:13px;color:#718096;margin-bottom:24px;">Sign in to your HR dashboard</p>
-    <div class="rtabs">
-      <button class="rtab on" onclick="setRole('admin',this)">&#x1F511; Admin</button>
-      <button class="rtab" onclick="setRole('hr',this)">&#x1F469; HR</button>
-      <button class="rtab" onclick="setRole('employee',this)">&#x1F464; Employee</button>
-    </div>
-    <div id="lerr"></div>
-    <div class="fi"><label>Email</label><input type="email" id="lem" placeholder="Enter your email"></div>
-    <div class="fi"><label>Password</label><input type="password" id="lpw" placeholder="Enter your password" onkeydown="if(event.key===String.fromCharCode(13))doLogin()"></div>
-    <button id="lbtn" onclick="doLogin()" style="width:100%;padding:13px;background:linear-gradient(135deg,#0D1B3E,#1a3a7c);color:white;border:none;border-radius:10px;font-size:14px;font-weight:700;cursor:pointer;font-family:inherit;margin-top:8px;transition:.2s;">Sign In</button>
-    <div style="margin-top:20px;padding-top:16px;border-top:1px solid #E2E8F0;text-align:center;">
-      <div style="font-size:11px;color:#718096;margin-bottom:8px;">&#x1F512; Secured by PayPe Technologies</div>
-      <div style="font-size:11px;color:#718096;">PayPe Technologies Pvt. Ltd. &nbsp;|&nbsp; <span style="color:#00C2A8;">hr.paype.co.in</span></div>
-      <div style="font-size:10px;color:#A0AEC0;margin-top:4px;">CIN: U74994TN2022PTC151114</div>
+  <div class="lr">
+    <div class="lbox">
+      <div style="font-family:Syne,sans-serif;font-size:20px;font-weight:800;color:#0D1B3E;margin-bottom:4px;">Pay<span style="color:#00C2A8;">Pe</span> HRMS</div>
+      <div style="display:inline-flex;align-items:center;gap:6px;padding:3px 12px;background:rgba(0,194,168,.1);border-radius:20px;font-size:11px;font-weight:700;color:#00C2A8;margin-bottom:20px;border:1px solid rgba(0,194,168,.2);">&#x1F465; HR Management Platform</div>
+      <h2>Welcome Back! &#x1F44B;</h2>
+      <p>Sign in to your HR dashboard</p>
+      <div class="rtabs">
+        <button class="rtab on" onclick="setRole('admin',this)">&#x1F511; Admin</button>
+        <button class="rtab" onclick="setRole('hr',this)">&#x1F469; HR</button>
+        <button class="rtab" onclick="setRole('employee',this)">&#x1F464; Employee</button>
+      </div>
+      <div id="lerr"></div>
+      <div class="fi"><label>Email</label><input type="email" id="lem" placeholder="Enter your email"></div>
+      <div class="fi"><label>Password</label><input type="password" id="lpw" placeholder="Enter your password" onkeydown="if(event.key===String.fromCharCode(13))doLogin()"></div>
+      <button id="lbtn" onclick="doLogin()">Sign In</button>
+      <div style="margin-top:20px;padding-top:16px;border-top:1px solid #E2E8F0;text-align:center;">
+        <div style="font-size:11px;color:#718096;margin-bottom:6px;">&#x1F512; Secured by PayPe Technologies</div>
+        <div style="font-size:11px;color:#718096;">PayPe Technologies Pvt. Ltd. &nbsp;|&nbsp; <span style="color:#00C2A8;">hr.paype.co.in</span></div>
+        <div style="font-size:10px;color:#A0AEC0;margin-top:4px;">CIN: U74994TN2022PTC151114</div>
+      </div>
     </div>
   </div>
 </div>
