@@ -1098,7 +1098,7 @@ function showAllOff(title) {
 }
 
 function goPage(name) {
-  if (name === 'interviews') { showAllOff('Interviews'); loadInterviews(); return; }
+  if (name === 'interviews') { showAllOff('Interviews'); loadInterviewsList(); return; }
   if (name === 'reports') { showAllOff('Reports'); loadReports(); return; }
   if (name === 'helpdesk') { showAllOff('Helpdesk'); loadHelpdesk(); return; }
   if (name === 'performance') { showAllOff('Performance'); loadPerformance(); return; }
@@ -5363,33 +5363,6 @@ async function viewOfferLetter(id) {
 }
 
 // ── ONBOARDING ENHANCED ────────────────────────
-async function loadInterviewsList() {
-  var c2 = document.getElementById('ivc');
-  if (!c2) return;
-  c2.innerHTML = '<div class="ld"><div class="sp"></div>Loading...</div>';
-  var res = await req('GET', '/api/interviews');
-  if (!res.success || !res.data || !res.data.length) {
-    c2.innerHTML = '<div class="card"><div class="cb"><div class="em"><h3>No interviews scheduled</h3><p>Click + Schedule Interview to add</p></div></div></div>';
-    return;
-  }
-  var h = '<div class="card"><div class="ch"><div class="ct">Scheduled Interviews</div></div><div class="tw"><table><thead><tr><th>Candidate</th><th>Round</th><th>Type</th><th>Date & Time</th><th>Interviewer</th><th>Status</th></tr></thead><tbody>';
-  res.data.forEach(function(iv) {
-    var nm = ((iv.candidate_first||'') + ' ' + (iv.candidate_last||'')).trim() || '--';
-    var interviewer = ((iv.interviewer_first||'') + ' ' + (iv.interviewer_last||'')).trim() || '--';
-    var dt = iv.scheduled_at ? new Date(iv.scheduled_at).toLocaleString('en-IN',{day:'2-digit',month:'short',year:'numeric',hour:'2-digit',minute:'2-digit'}) : '--';
-    var sc = iv.status==='Completed'?'bg':iv.status==='Cancelled'?'br':'bt';
-    h += '<tr>';
-    h += '<td><div style="font-weight:600;">' + nm + '</div><div style="font-size:11px;color:#718096;">' + (iv.job_title||'') + '</div></td>';
-    h += '<td>' + (iv.round_name||'Round '+iv.round||'Round 1') + '</td>';
-    h += '<td>' + (iv.interview_type||'--') + '</td>';
-    h += '<td>' + dt + '</td>';
-    h += '<td>' + interviewer + '</td>';
-    h += '<td><span class="b ' + sc + '">' + (iv.status||'Scheduled') + '</span></td>';
-    h += '</tr>';
-  });
-  h += '</tbody></table></div></div>';
-  c2.innerHTML = h;
-}
 
 async function toggleObTask(taskId, isCompleted) {
   var newStatus = isCompleted ? 'Pending' : 'Completed';
