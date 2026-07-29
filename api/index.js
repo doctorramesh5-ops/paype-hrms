@@ -969,6 +969,27 @@ app.post('/api/candidates', auth, async (req, res) => {
   }
 });
 
+// ── LINK USER TO EMPLOYEE ────────────────────────
+app.put('/api/auth/link-employee', auth, async (req, res) => {
+  try {
+    const { userId, employeeId } = req.body;
+    await db('UPDATE users SET employee_id=$1 WHERE id=$2', [employeeId, userId]);
+    res.json({ success: true, message: 'User linked to employee' });
+  } catch(e) {
+    res.status(500).json({ success: false, message: e.message });
+  }
+});
+
+// Get all users
+app.get('/api/auth/users', auth, async (req, res) => {
+  try {
+    const r = await db('SELECT id, username, role, employee_id FROM users');
+    res.json({ success: true, data: r.rows });
+  } catch(e) {
+    res.status(500).json({ success: false, message: e.message });
+  }
+});
+
 // ── DELETE CANDIDATE ──────────────────────────────
 app.delete('/api/candidates/:id', auth, async (req, res) => {
   try {
