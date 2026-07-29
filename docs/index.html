@@ -1742,15 +1742,16 @@ async function loadInterviewsList() {
   }
   var h = '<div class="card"><div class="tw"><table><thead><tr><th>Candidate</th><th>Round</th><th>Type</th><th>Date & Time</th><th>Interviewer</th><th>Status</th></tr></thead><tbody>';
   res.data.forEach(function(iv) {
-    var nm = (iv.candidate_name || iv.first_name + ' ' + iv.last_name || '--');
+    var nm = ((iv.candidate_first||'') + ' ' + (iv.candidate_last||'')).trim() || '--';
+    var interviewer = ((iv.interviewer_first||'') + ' ' + (iv.interviewer_last||'')).trim() || '--';
     var dt = iv.scheduled_at ? new Date(iv.scheduled_at).toLocaleString('en-IN',{day:'2-digit',month:'short',year:'numeric',hour:'2-digit',minute:'2-digit'}) : '--';
     var sc = iv.status==='Completed'?'bg':iv.status==='Cancelled'?'br':'bt';
     h += '<tr>';
-    h += '<td><div style="font-weight:600;">' + nm + '</div></td>';
-    h += '<td>' + (iv.round_name||iv.round||'Round 1') + '</td>';
+    h += '<td><div style="font-weight:600;">' + nm + '</div><div style="font-size:11px;color:#718096;">' + (iv.job_title||'') + '</div></td>';
+    h += '<td>' + (iv.round_name||'Round '+iv.round||'Round 1') + '</td>';
     h += '<td>' + (iv.interview_type||'--') + '</td>';
     h += '<td>' + dt + '</td>';
-    h += '<td>' + (iv.interviewer_name||'--') + '</td>';
+    h += '<td>' + interviewer + '</td>';
     h += '<td><span class="b ' + sc + '">' + (iv.status||'Scheduled') + '</span></td>';
     h += '</tr>';
   });
@@ -5090,24 +5091,27 @@ async function loadOffers() {
   var c2 = document.getElementById('ofc');
   if (!c2) return;
   c2.innerHTML = '<div class="ld"><div class="sp"></div>Loading...</div>';
-  var res = await req('GET', '/api/offer-letters');
-  if (!res.success) {
-    // Try alternate endpoint
-    res = await req('GET', '/api/applications?stage=Offer');
+  var res = await req('GET', '/api/applications');
+  var offers = [];
+  if (res.success && res.data) {
+    offers = res.data.filter(function(a){ return a.stage==='Offer' || a.stage==='Hired'; });
   }
-  if (!res.success || !res.data || !res.data.length) {
-    c2.innerHTML = '<div class="card"><div class="cb"><div class="em"><h3>No offer letters yet</h3><p>Create offer letters for selected candidates</p><button class="btn btp" onclick="openCreateOffer()">+ Create Offer Letter</button></div></div></div>';
+  if (!offers.length) {
+    c2.innerHTML = '<div class="card"><div class="cb"><div class="em"><h3>No offer letters yet</h3><p>Move candidates to Offer stage in ATS Pipeline first</p></div></div></div>';
     return;
   }
-  var h = '<div class="card"><div class="ch"><div class="ct">Offer Letters</div><button class="btn btp btsm" onclick="openCreateOffer()">+ Create</button></div><div class="tw"><table><thead><tr><th>Candidate</th><th>Position</th><th>CTC</th><th>Status</th><th>Action</th></tr></thead><tbody>';
-  res.data.forEach(function(o) {
+  var h = '<div class="card"><div class="tw"><table><thead><tr><th>Candidate</th><th>Position</th><th>CTC</th><th>Stage</th><th>Action</th></tr></thead><tbody>';
+  offers.forEach(function(o) {
     var nm = (o.first_name||'') + ' ' + (o.last_name||'');
-    var sc = o.status==='Accepted'?'bg':o.status==='Rejected'?'br':'by';
-    h += '<tr><td><div style="font-weight:600;">' + nm + '</div><div style="font-size:11px;color:#718096;">' + (o.email||'') + '</div></td>';
-    h += '<td>' + (o.job_title||o.position||'--') + '</td>';
-    h += '<td>' + (o.offered_ctc ? 'Rs '+Number(o.offered_ctc).toLocaleString('en-IN') : '--') + '</td>';
-    h += '<td><span class="b ' + sc + '">' + (o.status||'Pending') + '</span></td>';
-    var oid=o.id||""; h += '<td><button class="btn bto btsm" onclick="viewOfferLetter(&quot;'+oid+'&quot;)">View</button></td></tr>';
+    var sc = o.stage==='Hired'?'bg':'by';
+    var ctc = o.expected_ctc || 0;
+    h += '<tr>';
+    h += '<td><div style="font-weight:600;">'+nm+'</div><div style="font-size:11px;color:#718096;">'+(o.email||'')+'</div></td>';
+    h += '<td>'+(o.job_title||'--')+'</td>';
+    h += '<td>'+(ctc?'Rs '+Number(ctc/1000).toFixed(0)+'k/yr':'--')+'</td>';
+    h += '<td><span class="b '+sc+'">'+(o.stage||'Offer')+'</span></td>';
+    h += '<td><button class="btn btp btsm" onclick="generateOfferLetter(this.dataset.nm,this.dataset.pos,this.dataset.ctc)" data-nm="'+nm.replace(/"/g,"")+'" data-pos="'+(o.job_title||'').replace(/"/g,"")+'" data-ctc="'+ctc+'">Generate</button></td>';
+    h += '</tr>';
   });
   h += '</tbody></table></div></div>';
   c2.innerHTML = h;
@@ -5135,6 +5139,27 @@ async function openCreateOffer() {
   }
 }
 
+async function generateOfferLetter(candidateName, position, ctc) {
+  var today = new Date().toLocaleDateString('en-IN',{day:'2-digit',month:'long',year:'numeric'});
+  var win = window.open('','_blank');
+  var html = '<html><head><title>Offer Letter - '+candidateName+'</title><style>body{font-family:Arial,sans-serif;padding:40px;max-width:750px;margin:0 auto;line-height:1.8;}h1{color:#0D1B3E;}h2{color:#00C2A8;}.header{text-align:center;border-bottom:2px solid #0D1B3E;padding-bottom:20px;margin-bottom:30px;}.footer{margin-top:50px;border-top:1px solid #ddd;padding-top:20px;}</style></head><body>';
+  html += '<div class="header"><h1>PayPe Technologies Pvt. Ltd.</h1><p>277/1A Annamalai Industrial Park, Kalapatti, Coimbatore - 641048</p><p>CIN: U74994TN2022PTC151114 | GST: 33AAMCP7960K1ZU</p></div>';
+  html += '<p>Date: '+today+'</p>';
+  html += '<p>Dear <strong>'+candidateName+'</strong>,</p>';
+  html += '<p>We are pleased to offer you the position of <strong>'+position+'</strong> at PayPe Technologies Pvt. Ltd.</p>';
+  html += '<h2>Offer Details</h2>';
+  html += '<table style="width:100%;border-collapse:collapse;"><tr style="background:#f5f5f5;"><td style="padding:10px;border:1px solid #ddd;"><strong>Position</strong></td><td style="padding:10px;border:1px solid #ddd;">'+position+'</td></tr>';
+  if (ctc && ctc > 0) html += '<tr><td style="padding:10px;border:1px solid #ddd;"><strong>Annual CTC</strong></td><td style="padding:10px;border:1px solid #ddd;">Rs '+Number(ctc).toLocaleString('en-IN')+'</td></tr>';
+  html += '<tr style="background:#f5f5f5;"><td style="padding:10px;border:1px solid #ddd;"><strong>Location</strong></td><td style="padding:10px;border:1px solid #ddd;">Coimbatore, Tamil Nadu</td></tr>';
+  html += '<tr><td style="padding:10px;border:1px solid #ddd;"><strong>Employment Type</strong></td><td style="padding:10px;border:1px solid #ddd;">Full Time, Permanent</td></tr></table>';
+  html += '<p style="margin-top:24px;">This offer is contingent upon successful completion of background verification. Please sign and return a copy of this letter within 7 days.</p>';
+  html += '<div class="footer"><p>Yours sincerely,</p><br><p><strong>HR Department</strong><br>PayPe Technologies Pvt. Ltd.<br>hr@paype.co.in | +91 99448 57191</p></div>';
+  html += '<p style="margin-top:40px;">Accepted by: _____________________ Date: ___________</p>';
+  html += '</body></html>';
+  win.document.write(html);
+  win.document.close();
+  setTimeout(function(){win.print();},500);
+}
 async function viewOfferLetter(id) {
   toast('Loading offer letter...');
   var res = await req('GET', '/api/offer-letters/' + id);
@@ -5157,15 +5182,16 @@ async function loadInterviewsList() {
   }
   var h = '<div class="card"><div class="tw"><table><thead><tr><th>Candidate</th><th>Round</th><th>Type</th><th>Date & Time</th><th>Interviewer</th><th>Status</th></tr></thead><tbody>';
   res.data.forEach(function(iv) {
-    var nm = (iv.candidate_name || iv.first_name + ' ' + iv.last_name || '--');
+    var nm = ((iv.candidate_first||'') + ' ' + (iv.candidate_last||'')).trim() || '--';
+    var interviewer = ((iv.interviewer_first||'') + ' ' + (iv.interviewer_last||'')).trim() || '--';
     var dt = iv.scheduled_at ? new Date(iv.scheduled_at).toLocaleString('en-IN',{day:'2-digit',month:'short',year:'numeric',hour:'2-digit',minute:'2-digit'}) : '--';
     var sc = iv.status==='Completed'?'bg':iv.status==='Cancelled'?'br':'bt';
     h += '<tr>';
-    h += '<td><div style="font-weight:600;">' + nm + '</div></td>';
-    h += '<td>' + (iv.round_name||iv.round||'Round 1') + '</td>';
+    h += '<td><div style="font-weight:600;">' + nm + '</div><div style="font-size:11px;color:#718096;">' + (iv.job_title||'') + '</div></td>';
+    h += '<td>' + (iv.round_name||'Round '+iv.round||'Round 1') + '</td>';
     h += '<td>' + (iv.interview_type||'--') + '</td>';
     h += '<td>' + dt + '</td>';
-    h += '<td>' + (iv.interviewer_name||'--') + '</td>';
+    h += '<td>' + interviewer + '</td>';
     h += '<td><span class="b ' + sc + '">' + (iv.status||'Scheduled') + '</span></td>';
     h += '</tr>';
   });
