@@ -187,32 +187,124 @@ tr:hover td{background:#F7FAFC;}
 </head>
 <body>
 
-<div id="LP">
-  <div class="ll">
-    <div style="font-family:Syne,sans-serif;font-size:22px;font-weight:800;color:white;letter-spacing:-1px;">Pay<span style="color:#00C2A8">Pe</span></div>
-    <h1>PayPe HRMS</h1>
-    <p>Human Resource Management System</p>
-    <div class="feats">
-      <div class="feat"><span>&#x1F465;</span><span>Employee Management</span></div>
-      <div class="feat"><span>&#x1F3AF;</span><span>Recruitment &amp; ATS</span></div>
-      <div class="feat"><span>&#x2705;</span><span>Onboarding Tracker</span></div>
-      <div class="feat"><span>&#x1F4B0;</span><span>Payroll Processing</span></div>
+<div id="LP" style="display:flex;min-height:100vh;">
+  <!-- LEFT PANEL -->
+  <div class="ll" style="flex:1;background:linear-gradient(135deg,#0D1B3E 0%,#0a1628 60%,#0d2040 100%);display:flex;flex-direction:column;justify-content:center;padding:60px;position:relative;overflow:hidden;">
+    <!-- Background orbs -->
+    <div style="position:absolute;top:-80px;right:-80px;width:400px;height:400px;border-radius:50%;background:radial-gradient(circle,rgba(0,194,168,.08),transparent 70%);pointer-events:none;"></div>
+    <div style="position:absolute;bottom:-100px;left:-60px;width:350px;height:350px;border-radius:50%;background:radial-gradient(circle,rgba(128,90,213,.06),transparent 70%);pointer-events:none;"></div>
+    <div style="position:absolute;top:50%;right:5%;width:200px;height:200px;border-radius:50%;background:radial-gradient(circle,rgba(0,194,168,.05),transparent 70%);pointer-events:none;"></div>
+
+    <!-- Brand -->
+    <div style="position:relative;z-index:1;margin-bottom:8px;">
+      <div style="font-family:Syne,sans-serif;font-size:28px;font-weight:800;color:white;letter-spacing:-1px;">Pay<span style="color:#00C2A8;">Pe</span> <span style="opacity:.4;font-size:20px;">HRMS</span></div>
+      <div style="font-size:10px;color:rgba(255,255,255,.3);letter-spacing:2px;text-transform:uppercase;margin-top:3px;">Human Resource Management System</div>
+    </div>
+
+    <!-- Main headline -->
+    <div style="position:relative;z-index:1;margin-bottom:16px;">
+      <div style="display:inline-flex;align-items:center;gap:7px;background:rgba(0,194,168,.1);border:1px solid rgba(0,194,168,.2);border-radius:30px;padding:5px 14px;font-size:11px;font-weight:700;color:#00C2A8;margin-bottom:16px;">
+        <span style="width:6px;height:6px;border-radius:50%;background:#00C2A8;display:inline-block;animation:pulse 2s infinite;"></span>
+        AI-Powered HR Platform
+      </div>
+      <h1 style="font-family:Syne,sans-serif;font-size:clamp(28px,3.5vw,42px);font-weight:900;color:white;line-height:1.15;margin-bottom:12px;">Complete <span style="background:linear-gradient(135deg,#00C2A8,#7B61FF);-webkit-background-clip:text;-webkit-text-fill-color:transparent;">HR Management</span><br/>for Modern Teams</h1>
+      <p style="font-size:14px;color:rgba(255,255,255,.5);line-height:1.7;max-width:420px;">From hiring to payroll — manage your entire workforce with AI-powered insights, automated workflows, and real-time analytics.</p>
+    </div>
+
+    <!-- Feature grid -->
+    <div style="position:relative;z-index:1;display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:28px;">
+      <div style="padding:12px 14px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.07);border-radius:10px;display:flex;align-items:center;gap:10px;">
+        <span style="font-size:18px;">&#x1F465;</span>
+        <div>
+          <div style="font-size:12px;font-weight:700;color:white;">Employee Management</div>
+          <div style="font-size:10px;color:rgba(255,255,255,.4);">Digital ID, documents, profiles</div>
+        </div>
+      </div>
+      <div style="padding:12px 14px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.07);border-radius:10px;display:flex;align-items:center;gap:10px;">
+        <span style="font-size:18px;">&#x1F4B0;</span>
+        <div>
+          <div style="font-size:12px;font-weight:700;color:white;">Payroll Processing</div>
+          <div style="font-size:10px;color:rgba(255,255,255,.4);">Auto salary, PF, ESI, TDS</div>
+        </div>
+      </div>
+      <div style="padding:12px 14px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.07);border-radius:10px;display:flex;align-items:center;gap:10px;">
+        <span style="font-size:18px;">&#x1F4C5;</span>
+        <div>
+          <div style="font-size:12px;font-weight:700;color:white;">Attendance & Leave</div>
+          <div style="font-size:10px;color:rgba(255,255,255,.4);">Biometric, mobile punch in/out</div>
+        </div>
+      </div>
+      <div style="padding:12px 14px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.07);border-radius:10px;display:flex;align-items:center;gap:10px;">
+        <span style="font-size:18px;">&#x1F3AF;</span>
+        <div>
+          <div style="font-size:12px;font-weight:700;color:white;">Recruitment ATS</div>
+          <div style="font-size:10px;color:rgba(255,255,255,.4);">Jobs, candidates, pipeline</div>
+        </div>
+      </div>
+      <div style="padding:12px 14px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.07);border-radius:10px;display:flex;align-items:center;gap:10px;">
+        <span style="font-size:18px;">&#x2705;</span>
+        <div>
+          <div style="font-size:12px;font-weight:700;color:white;">Onboarding Tracker</div>
+          <div style="font-size:10px;color:rgba(255,255,255,.4);">Checklist, documents, progress</div>
+        </div>
+      </div>
+      <div style="padding:12px 14px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.07);border-radius:10px;display:flex;align-items:center;gap:10px;">
+        <span style="font-size:18px;">&#x1F4BB;</span>
+        <div>
+          <div style="font-size:12px;font-weight:700;color:white;">IT Assets</div>
+          <div style="font-size:10px;color:rgba(255,255,255,.4);">Track laptops, devices, tools</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Stats -->
+    <div style="position:relative;z-index:1;display:flex;gap:28px;padding-top:20px;border-top:1px solid rgba(255,255,255,.08);">
+      <div>
+        <div style="font-family:Syne,sans-serif;font-size:22px;font-weight:800;color:#00C2A8;">AI</div>
+        <div style="font-size:10px;color:rgba(255,255,255,.35);margin-top:2px;">Powered</div>
+      </div>
+      <div>
+        <div style="font-family:Syne,sans-serif;font-size:22px;font-weight:800;color:#00C2A8;">8+</div>
+        <div style="font-size:10px;color:rgba(255,255,255,.35);margin-top:2px;">HR Modules</div>
+      </div>
+      <div>
+        <div style="font-family:Syne,sans-serif;font-size:22px;font-weight:800;color:#00C2A8;">GST</div>
+        <div style="font-size:10px;color:rgba(255,255,255,.35);margin-top:2px;">Compliant</div>
+      </div>
+      <div>
+        <div style="font-family:Syne,sans-serif;font-size:22px;font-weight:800;color:#00C2A8;">&#x1F1EE;&#x1F1F3;</div>
+        <div style="font-size:10px;color:rgba(255,255,255,.35);margin-top:2px;">Made in India</div>
+      </div>
+    </div>
+
+    <!-- Links to other modules -->
+    <div style="position:relative;z-index:1;margin-top:20px;display:flex;gap:8px;flex-wrap:wrap;">
+      <a href="https://erp.paype.co.in" target="_blank" style="padding:5px 12px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);border-radius:20px;font-size:11px;color:rgba(255,255,255,.5);text-decoration:none;transition:.15s;">&#x1F4CA; Accounting</a>
+      <a href="https://doctorramesh5-ops.github.io/paype-erp/inventory.html" target="_blank" style="padding:5px 12px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);border-radius:20px;font-size:11px;color:rgba(255,255,255,.5);text-decoration:none;">&#x1F4E6; Inventory</a>
+      <a href="https://doctorramesh5-ops.github.io/paype-erp/ai.html" target="_blank" style="padding:5px 12px;background:rgba(0,194,168,.1);border:1px solid rgba(0,194,168,.2);border-radius:20px;font-size:11px;color:#00C2A8;text-decoration:none;">&#x1F916; AI Assistant</a>
+      <a href="https://doctorramesh5-ops.github.io/paype-erp/ceo.html" target="_blank" style="padding:5px 12px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);border-radius:20px;font-size:11px;color:rgba(255,255,255,.5);text-decoration:none;">&#x1F451; CEO Dashboard</a>
     </div>
   </div>
-  <div class="lr">
-    <div class="lbox">
-      <h2>Welcome Back!</h2>
-      <p>Sign in to PayPe HRMS</p>
-      <div class="rtabs">
-        <button class="rtab on" onclick="setRole('admin',this)">&#x1F511; Admin</button>
-        <button class="rtab" onclick="setRole('hr',this)">&#x1F469; HR</button>
-        <button class="rtab" onclick="setRole('employee',this)">&#x1F464; Employee</button>
-      </div>
-      <div id="lerr"></div>
-      <div class="fi"><label>Email</label><input type="email" id="lem" placeholder="Enter your email"></div>
-      <div class="fi"><label>Password</label><input type="password" id="lpw" placeholder="Enter your password" onkeydown="if(event.key===String.fromCharCode(13))doLogin()"></div>
-      <button id="lbtn" onclick="doLogin()">Sign In</button>
-      <div class="lft">PayPe Technologies Pvt. Ltd. &nbsp;|&nbsp; <span style="color:#00C2A8">hr.paype.co.in</span></div>
+
+  <!-- RIGHT PANEL — Login -->
+  <div class="lr" style="width:420px;background:white;display:flex;flex-direction:column;justify-content:center;padding:60px 50px;flex-shrink:0;">
+    <div style="font-family:Syne,sans-serif;font-size:20px;font-weight:800;color:#0D1B3E;margin-bottom:4px;">Pay<span style="color:#00C2A8;">Pe</span> HRMS</div>
+    <div style="display:inline-flex;align-items:center;gap:6px;padding:3px 12px;background:rgba(0,194,168,.1);border-radius:20px;font-size:11px;font-weight:700;color:#00C2A8;margin-bottom:20px;border:1px solid rgba(0,194,168,.2);width:fit-content;">&#x1F465; HR Management Platform</div>
+    <h2 style="font-size:22px;font-weight:800;color:#0D1B3E;margin-bottom:6px;">Welcome Back! &#x1F44B;</h2>
+    <p style="font-size:13px;color:#718096;margin-bottom:24px;">Sign in to your HR dashboard</p>
+    <div class="rtabs">
+      <button class="rtab on" onclick="setRole('admin',this)">&#x1F511; Admin</button>
+      <button class="rtab" onclick="setRole('hr',this)">&#x1F469; HR</button>
+      <button class="rtab" onclick="setRole('employee',this)">&#x1F464; Employee</button>
+    </div>
+    <div id="lerr"></div>
+    <div class="fi"><label>Email</label><input type="email" id="lem" placeholder="Enter your email"></div>
+    <div class="fi"><label>Password</label><input type="password" id="lpw" placeholder="Enter your password" onkeydown="if(event.key===String.fromCharCode(13))doLogin()"></div>
+    <button id="lbtn" onclick="doLogin()">Sign In</button>
+    <div style="margin-top:20px;padding-top:16px;border-top:1px solid #E2E8F0;text-align:center;">
+      <div style="font-size:11px;color:#718096;margin-bottom:8px;">&#x1F512; Secured by PayPe Technologies</div>
+      <div style="font-size:11px;color:#718096;">PayPe Technologies Pvt. Ltd. &nbsp;|&nbsp; <span style="color:#00C2A8;">hr.paype.co.in</span></div>
+      <div style="font-size:10px;color:#A0AEC0;margin-top:4px;">CIN: U74994TN2022PTC151114</div>
     </div>
   </div>
 </div>
@@ -2205,7 +2297,8 @@ function downloadAgreement() {
   var el2 = document.querySelector('#agr-output > div');
   if (!el2) { toast('Generate agreement first','err'); return; }
   var win = window.open('', '_blank');
-  win.document.write('<html><head><title>PayPe Agreement</title><style>body{font-family:Arial,sans-serif;padding:30px;max-width:750px;margin:0 auto;}img{max-height:65px;}</style></head><body>' + el2.innerHTML + '</body></html>');
+  win.document.write('<html><head><title>PayPe Agreement</title><style>body{font-family:Arial,sans-serif;padding:30px;max-width:750px;margin:0 auto;}img{max-height:65px;}</style></head><body>' + el2.innerHTML + '</body></html>'
+</body></html>');
   win.document.close();
   setTimeout(function() { win.print(); }, 500);
 }
@@ -2423,7 +2516,8 @@ function downloadAllMyDocs(nm) {
       buildMyNDA(e,nm,today) + '<hr style="margin:30px 0;">' +
       buildMyOffer(e,nm,today,joined) + '<hr style="margin:30px 0;">' +
       buildMyPolicy(e,nm,today);
-    win.document.write('<html><head><title>PayPe Documents - ' + nm + '</title><style>body{font-family:Arial,sans-serif;padding:30px;max-width:750px;margin:0 auto;font-size:13px;line-height:1.7;}h2{color:#0D1B3E;text-align:center;}h3{color:#0D1B3E;margin:12px 0 6px;}table{width:100%;border-collapse:collapse;}td,th{padding:7px 10px;border:1px solid #E2E8F0;}th{background:#F7FAFC;}</style></head><body>' + body + '</body></html>');
+    win.document.write('<html><head><title>PayPe Documents - ' + nm + '</title><style>body{font-family:Arial,sans-serif;padding:30px;max-width:750px;margin:0 auto;font-size:13px;line-height:1.7;}h2{color:#0D1B3E;text-align:center;}h3{color:#0D1B3E;margin:12px 0 6px;}table{width:100%;border-collapse:collapse;}td,th{padding:7px 10px;border:1px solid #E2E8F0;}th{background:#F7FAFC;}</style></head><body>' + body + '</body></html>'
+</body></html>');
     win.document.close();
     setTimeout(function() { win.print(); }, 500);
   });
@@ -2924,7 +3018,8 @@ function generatePayslipPDF(s, month, year) {
   win.document.write('<tr><td class="ttl">Net Take Home</td><td class="ttl">Rs ' + Number(s.net_salary||0).toLocaleString('en-IN') + '</td></tr>');
   win.document.write('</table>');
   win.document.write('<p style="margin-top:16px;font-size:10px;color:#718096;text-align:center;">This is a computer-generated payslip. No signature required.</p>');
-  win.document.write('</body></html>');
+  win.document.write('')
+</body></html>');
   win.document.close();
   setTimeout(function() { win.print(); }, 500);
 }
@@ -4863,5 +4958,8 @@ if (tok && CU) { startApp(); } else { document.getElementById('LP').style.displa
 
 
 
+
+
+<script src="https://doctorramesh5-ops.github.io/paype-erp/paype-chatbot.js"></script>
 </body>
 </html>
