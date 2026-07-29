@@ -74,7 +74,7 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);}
 .ph{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:17px;flex-wrap:wrap;gap:10px;}
 .ph h1{font-family:'Syne',sans-serif;font-size:20px;font-weight:700;color:#0D1B3E;}
 .ph p{font-size:13px;color:#718096;margin-top:3px;}
-.card{background:white;border-radius:12px;border:1px solid #E2E8F0;overflow:hidden;margin-bottom:15px;}
+.card{background:white;border-radius:12px;border:1px solid #E2E8F0;overflow:hidden;margin-bottom:15px;box-shadow:0 1px 3px rgba(0,0,0,.06);}
 .ch{padding:13px 16px;border-bottom:1px solid #E2E8F0;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;}
 .ct{font-size:13px;font-weight:700;color:#0D1B3E;}
 .cb{padding:16px;}
@@ -89,7 +89,7 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);}
 .g3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;}
 .g4{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;}
 .tw{overflow-x:auto;}
-table{width:100%;border-collapse:collapse;font-size:13px;}
+table{width:100%;border-collapse:collapse;font-size:13px;}th{background:#F7FAFC;color:#4A5568;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;padding:10px 14px;border-bottom:2px solid #E2E8F0;}td{padding:10px 14px;border-bottom:1px solid #F0F4F8;color:#1A202C;}tr:last-child td{border-bottom:none;}tr:hover td{background:#F7FAFC;}
 th{background:#F7FAFC;padding:8px 12px;text-align:left;font-size:10px;font-weight:700;color:#718096;text-transform:uppercase;letter-spacing:.5px;border-bottom:1px solid #E2E8F0;}
 td{padding:10px 12px;border-bottom:1px solid #E2E8F0;vertical-align:middle;}
 tr:last-child td{border-bottom:none;}
@@ -386,13 +386,13 @@ tr:hover td{background:#F7FAFC;}
       <div class="ph"><div><h1>Recruitment</h1><p>ATS Pipeline</p></div>
         <div style="display:flex;gap:8px;">
           <button class="btn bto" onclick="goPage('jobs')">&#x1F4CB; Jobs</button>
-          <button class="btn btp" onclick="openCreateOffer()">+ Post Job</button>
+          <button class="btn btp" onclick="openMod('nom')">+ Post Job</button>
         </div>
       </div>
       <div id="rdc"><div class="ld"><div class="sp"></div>Loading...</div></div>
     </div>
     <div class="pg" id="pg-jobs">
-      <div class="ph"><div><h1>Job Listings</h1><p>All open positions</p></div><button class="btn btp" onclick="openCreateOffer()">+ Post Job</button></div>
+      <div class="ph"><div><h1>Job Listings</h1><p>All open positions</p></div><button class="btn btp" onclick="openMod('nom')">+ Post Job</button></div>
       <div id="jbc"><div class="ld"><div class="sp"></div>Loading...</div></div>
     </div>
     <div class="pg" id="pg-candidates">
@@ -438,7 +438,7 @@ tr:hover td{background:#F7FAFC;}
       <div id="ogc"><div class="ld"><div class="sp"></div>Loading...</div></div>
     </div>
     <div class="pg" id="pg-offers">
-      <div class="ph"><div><h1>Offer Letters</h1><p>Manage offer letters</p></div><button class="btn btp" onclick="openCreateOffer()">+ Create Offer</button></div>
+      <div class="ph"><div><h1>Offer Letters</h1><p>Manage offer letters</p></div><button class="btn btp" onclick="openMod('nom')">+ Create Offer</button></div>
       <div id="ofc"><div class="ld"><div class="sp"></div>Loading...</div></div>
     </div>
     <div class="pg" id="pg-settings">
@@ -906,6 +906,36 @@ function toast(msg, type) {
 }
 function openMod(id) {
   document.getElementById(id).classList.add('on');
+  if (id === 'nom') {
+    // Populate candidate dropdown
+    var olCand = document.getElementById('ol-candidate');
+    if (olCand && olCand.options.length <= 1) {
+      req('GET', '/api/candidates').then(function(r) {
+        if (r.success && r.data) {
+          r.data.forEach(function(cd) {
+            var op = document.createElement('option');
+            op.value = cd.id;
+            op.textContent = cd.first_name + ' ' + cd.last_name;
+            olCand.appendChild(op);
+          });
+        }
+      });
+    }
+    // Populate department dropdown
+    var olDept = document.getElementById('ol-dept');
+    if (olDept && olDept.options.length <= 1) {
+      req('GET', '/api/departments').then(function(r) {
+        if (r.success && r.data) {
+          r.data.forEach(function(d) {
+            var op = document.createElement('option');
+            op.value = d.id;
+            op.textContent = d.name;
+            olDept.appendChild(op);
+          });
+        }
+      });
+    }
+  }
   if (id === 'lvm') {
     // Load leave types
     req('GET', '/api/leave/policies').then(function(res) {
