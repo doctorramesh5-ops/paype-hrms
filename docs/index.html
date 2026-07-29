@@ -101,7 +101,7 @@ tr:hover td{background:#F7FAFC;}
 .btp{background:#0D1B3E;color:white;}.btt{background:#00C2A8;color:white;}.bto{background:white;color:#0D1B3E;border:1.5px solid #E2E8F0;}.btr{background:#E63329;color:white;}.btsm{padding:4px 9px;font-size:11px;}
 .ov{position:fixed;inset:0;background:rgba(13,27,62,.5);z-index:200;display:none;align-items:center;justify-content:center;backdrop-filter:blur(3px);}
 .ov.on{display:flex;}
-.mo{background:white;border-radius:13px;width:90%;max-width:520px;max-height:88vh;overflow-y:auto;}
+.mo{background:white;border-radius:13px;width:92%;max-width:640px;max-height:90vh;overflow-y:auto;}
 .mh{padding:13px 17px;border-bottom:1px solid #E2E8F0;display:flex;align-items:center;justify-content:space-between;}
 .mt{font-size:14px;font-weight:700;color:#0D1B3E;}
 .mx{width:25px;height:25px;border-radius:6px;background:#F7FAFC;border:none;cursor:pointer;font-size:13px;}
@@ -5326,7 +5326,7 @@ if (tok && CU) { startApp(); } else { document.getElementById('LP').style.displa
 <div class="ov" id="ncm" onclick="if(event.target===this)closeMod('ncm')">
   <div class="mo" style="max-width:620px;width:95%;padding:28px;">
     <div class="mh"><div class="mt">Add Candidate</div><button class="mx" onclick="closeMod('ncm')">&#x2715;</button></div>
-    <div class="g2">
+    <div class="mb"><div class="g2">
       <div class="ff"><label>First Name *</label><input id="cf1" placeholder="First name"></div>
       <div class="ff"><label>Last Name *</label><input id="cf2" placeholder="Last name"></div>
       <div class="ff"><label>Email *</label><input id="cf3" type="email" placeholder="email@example.com"></div>
@@ -5339,15 +5339,15 @@ if (tok && CU) { startApp(); } else { document.getElementById('LP').style.displa
       <div class="ff"><label>Notice Period (Days)</label><input id="cf10" type="number" placeholder="30"></div>
       <div class="ff"><label>Location</label><input id="cf11" placeholder="City"></div>
       <div class="ff"><label>Source</label><select id="cf12"><option>Direct</option><option>LinkedIn</option><option>Referral</option><option>Job Portal</option><option>Walk-in</option><option>Other</option></select></div>
-    </div>
-    <div class="ma"><button class="btn bto" onclick="closeMod('ncm')">Cancel</button><button class="btn btp" onclick="addCandidate()">Add Candidate</button></div>
+    </div></div>
+    <div class="mf"><button class="btn bto" onclick="closeMod('ncm')">Cancel</button><button class="btn btp" onclick="addCandidate()">Add Candidate</button></div>
   </div>
 </div>
 
 <div class="ov" id="nam" onclick="if(event.target===this)closeMod('nam')">
   <div class="mo" style="max-width:580px;width:95%;padding:28px;">
     <div class="mh"><div class="mt">Add IT Asset</div><button class="mx" onclick="closeMod('nam')">&#x2715;</button></div>
-    <div class="g2">
+    <div class="mb"><div class="g2">
       <div class="ff"><label>Asset Code *</label><input id="as1" placeholder="e.g. LAP-001"></div>
       <div class="ff"><label>Asset Name *</label><input id="as2" placeholder="e.g. Dell Laptop"></div>
       <div class="ff"><label>Category</label><select id="as3"><option>Laptop</option><option>Desktop</option><option>Mobile</option><option>Tablet</option><option>Monitor</option><option>Printer</option><option>Server</option><option>Other</option></select></div>
@@ -5358,8 +5358,8 @@ if (tok && CU) { startApp(); } else { document.getElementById('LP').style.displa
       <div class="ff"><label>Purchase Cost (Rs)</label><input id="as8" type="number" placeholder="0"></div>
       <div class="ff"><label>Condition</label><select id="as9"><option>New</option><option>Good</option><option>Fair</option><option>Poor</option></select></div>
       <div class="ff"><label>Location</label><input id="as10" placeholder="e.g. Coimbatore Office"></div>
-    </div>
-    <div class="ma"><button class="btn bto" onclick="closeMod('nam')">Cancel</button><button class="btn btp" onclick="addAsset()">Add Asset</button></div>
+    </div></div>
+    <div class="mf"><button class="btn bto" onclick="closeMod('nam')">Cancel</button><button class="btn btp" onclick="addAsset()">Add Asset</button></div>
   </div>
 </div>
 </body>
