@@ -1601,10 +1601,17 @@ async function loadCandidates() {
     h += '<td>' + (c.notice_period?c.notice_period+' days':'--') + '</td>';
     h += '<td><span class="b bn">' + (c.source||'Direct') + '</span></td>';
     h += '<td style="text-align:center;">' + (c.total_applications||0) + '</td>';
-    h += '<td><div style="display:flex;gap:4px;"><button class="btn btt btsm" onclick="applyToJob(' + "'" + c.id + "','" + nm + "'" + ')">Apply</button><button class="btn bto btsm" onclick="addToPool(' + "'" + c.id + "'" + ')">Pool</button></div></td></tr>';
+    var cid = c.id;
+    h += '<td><div style="display:flex;gap:4px;"><button class="btn btt btsm" onclick="applyToJob(\"'+cid+'\",\"'+nm+'\")">Apply</button><button class="btn bto btsm" onclick="addToPool(\"'+cid+'\")">Pool</button><button class="btn btsm" style="background:rgba(230,51,41,.08);color:#E63329;border:1px solid rgba(230,51,41,.2);border-radius:6px;padding:4px 8px;cursor:pointer;font-size:11px;" onclick="deleteCandidate(\"'+cid+'\")">&#x2715;</button></div></td></tr>';
   });
   h += '</tbody></table></div></div>';
   document.getElementById('cdc').innerHTML = h;
+}
+async function deleteCandidate(id) {
+  if (!confirm('Delete this candidate?')) return;
+  var res = await req('DELETE', '/api/candidates/' + id);
+  if (res.success) { toast('Candidate deleted!'); loadCandidates(); }
+  else toast(res.message||'Failed','err');
 }
 async function addCandidate() {
   var body = { firstName:document.getElementById('cf1').value.trim(), lastName:document.getElementById('cf2').value.trim(), email:document.getElementById('cf3').value.trim(), mobile:document.getElementById('cf4').value.trim(), currentCompany:document.getElementById('cf5').value.trim(), currentPosition:document.getElementById('cf6').value.trim(), experienceYrs:parseFloat(document.getElementById('cf7').value)||undefined, currentCtc:parseFloat(document.getElementById('cf8').value)||undefined, expectedCtc:parseFloat(document.getElementById('cf9').value)||undefined, noticePeriod:parseInt(document.getElementById('cf10').value)||undefined, location:document.getElementById('cf11').value.trim(), source:document.getElementById('cf12').value };
