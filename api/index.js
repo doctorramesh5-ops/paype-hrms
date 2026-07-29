@@ -969,6 +969,22 @@ app.post('/api/candidates', auth, async (req, res) => {
   }
 });
 
+// ── DELETE CANDIDATE ──────────────────────────────
+app.delete('/api/candidates/:id', auth, async (req, res) => {
+  try {
+    const { id } = req.params;
+    const apps = await db('SELECT COUNT(*) as cnt FROM applications WHERE candidate_id=$1', [id]);
+    if (parseInt(apps.rows[0].cnt) > 0) {
+      await db("UPDATE candidates SET source='Deleted' WHERE id=$1", [id]);
+    } else {
+      await db('DELETE FROM candidates WHERE id=$1', [id]);
+    }
+    res.json({ success: true, message: 'Candidate deleted' });
+  } catch(e) {
+    res.status(500).json({ success: false, message: e.message });
+  }
+});
+
 // ── APPLICATIONS ──────────────────────────────────
 
 app.get('/api/applications', auth, async (req, res) => {
