@@ -5132,7 +5132,7 @@ async function loadOffers() {
   var res = await req('GET', '/api/applications');
   var offers = [];
   if (res.success && res.data) {
-    offers = res.data.filter(function(a){ return a.stage==='Offer' || a.stage==='Hired' || a.stage==='Rejected'; });
+    offers = res.data.filter(function(a){ return a.stage==='Offer' || a.stage==='Hired' || a.stage==='Rejected' || a.status==='Rejected' || a.status==='Selected'; });
   }
   if (!offers.length) {
     c2.innerHTML = '<div class="card"><div class="cb"><div class="em"><h3>No offer letters yet</h3><p>Move candidates to Offer stage in ATS Pipeline first</p></div></div></div>';
@@ -5302,7 +5302,7 @@ async function generateOfferLetter(candidateName, position, ctc) {
         </ol>
       </div>
 
-      <p class="body-text">We look forward to welcoming you to the PayPe Technologies family. Please feel free to contact us at <strong>hr@paype.co.in</strong> or <strong>+91 99448 57191</strong> for any queries.</p>
+      <p class="body-text">We look forward to welcoming you to the PayPe Technologies family. Please feel free to contact us at <strong>hr@paype.co.in</strong> for any queries.</p>
 
       <div class="signature-section">
         <div class="sign-box">
