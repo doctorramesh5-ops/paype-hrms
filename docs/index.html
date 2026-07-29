@@ -906,6 +906,28 @@ function toast(msg, type) {
 }
 function openMod(id) {
   document.getElementById(id).classList.add('on');
+  if (id === 'nom') {
+    var of1 = document.getElementById('of1');
+    if (of1 && of1.options.length <= 1) {
+      req('GET', '/api/candidates').then(function(r) {
+        if (r.success) r.data.filter(function(cd){return cd.source!=='Deleted';}).forEach(function(cd) {
+          var op = document.createElement('option');
+          op.value = cd.id; op.textContent = cd.first_name + ' ' + cd.last_name;
+          of1.appendChild(op);
+        });
+      });
+    }
+    var of3 = document.getElementById('of3');
+    if (of3 && of3.options.length <= 1) {
+      req('GET', '/api/departments').then(function(r) {
+        if (r.success) r.data.forEach(function(d) {
+          var op = document.createElement('option');
+          op.value = d.id; op.textContent = d.name;
+          of3.appendChild(op);
+        });
+      });
+    }
+  }
   if (id === 'lvm') {
     // Load leave types
     req('GET', '/api/leave/policies').then(function(res) {
@@ -1093,6 +1115,8 @@ function goPage(name) {
   if (name === 'jobs') loadJobs();
   if (name === 'candidates') loadCandidates();
   if (name === 'onboarding') loadOnboarding();
+  if (name === 'offers') loadOffers();
+  if (name === 'interviews') loadInterviewsList();
   if (name === 'assets') loadAssets();
   if (name === 'profile') loadProf();
 }
@@ -5246,6 +5270,73 @@ async function viewOnboardingDetail(empId, nm) {
   modal.appendChild(inner);
   document.body.appendChild(modal);
   modal.addEventListener('click', function(e){ if(e.target===modal) modal.remove(); });
+}
+
+async function generateOfferLetter(candidateName, position, ctc) {
+  ctc = parseFloat(ctc) || 0;
+  var today = new Date().toLocaleDateString('en-IN',{day:'2-digit',month:'long',year:'numeric'});
+  var refNo = 'PPC/HR/' + new Date().getFullYear() + '/' + String(Math.floor(Math.random()*900+100));
+  var monthly = ctc > 0 ? Math.round(ctc/12) : 0;
+  var basic = Math.round(monthly*0.4);
+  var hra = Math.round(monthly*0.2);
+  var special = monthly - basic - hra;
+  var joiningDate = new Date(); joiningDate.setDate(joiningDate.getDate()+30);
+  var joiningStr = joiningDate.toLocaleDateString('en-IN',{day:'2-digit',month:'long',year:'numeric'});
+  var expiryDate = new Date(); expiryDate.setDate(expiryDate.getDate()+7);
+  var expiryStr = expiryDate.toLocaleDateString('en-IN',{day:'2-digit',month:'long',year:'numeric'});
+  var win = window.open('','_blank');
+  var html = '<!DOCTYPE html><html><head><meta charset="UTF-8"><title>Offer Letter</title>';
+  html += '<style>*{margin:0;padding:0;box-sizing:border-box;}body{font-family:"Times New Roman",serif;background:#fff;color:#1a1a1a;font-size:13px;line-height:1.7;}.page{width:794px;min-height:1123px;margin:0 auto;}.header{display:flex;justify-content:space-between;align-items:flex-start;padding:32px 48px 20px;border-bottom:3px solid #0D1B3E;}.logo-name{font-family:Arial,sans-serif;font-size:26px;font-weight:900;color:#0D1B3E;letter-spacing:-0.5px;}.logo-name span{color:#00C2A8;}.header-right{text-align:right;font-size:11px;color:#555;line-height:1.8;}.teal-strip{height:5px;background:linear-gradient(90deg,#0D1B3E,#00C2A8);}.ref-bar{background:#f8f9fa;padding:10px 48px;display:flex;justify-content:space-between;font-size:11px;color:#555;border-bottom:1px solid #e0e0e0;}.content{padding:32px 48px;}.subject{background:#0D1B3E;color:white;padding:12px 20px;border-radius:4px;font-size:14px;font-weight:bold;text-align:center;letter-spacing:1px;margin:20px 0;text-transform:uppercase;}.details-box{border:1px solid #ddd;border-radius:6px;overflow:hidden;margin:20px 0;}.details-header{background:#0D1B3E;color:white;padding:10px 16px;font-size:12px;font-weight:bold;}.details-row{display:flex;border-bottom:1px solid #eee;}.details-row:last-child{border-bottom:none;}.details-label{width:45%;padding:9px 16px;background:#f8f9fa;font-weight:600;font-size:12px;color:#333;}.details-value{width:55%;padding:9px 16px;font-size:12px;}.ctc-table{width:100%;border-collapse:collapse;margin:16px 0;}.ctc-table th{background:#0D1B3E;color:white;padding:8px 12px;text-align:left;font-size:11px;}.ctc-table td{padding:7px 12px;border-bottom:1px solid #eee;font-size:12px;}.ctc-table tr:nth-child(even) td{background:#f8f9fa;}.ctc-total td{background:#00C2A8;color:white;font-weight:bold;}.conditions ol{padding-left:18px;}.conditions li{margin-bottom:4px;font-size:11.5px;color:#444;}.sign-section{display:flex;justify-content:space-between;margin-top:40px;}.sign-box{width:45%;text-align:center;}.sign-line{border-top:1px solid #333;margin-bottom:6px;}.footer-bar{background:#0D1B3E;color:white;padding:14px 48px;display:flex;justify-content:space-between;margin-top:30px;font-size:10px;line-height:1.8;}@media print{body{-webkit-print-color-adjust:exact;print-color-adjust:exact;}}</style>';
+  html += '</head><body><div class="page">';
+  html += '<div class="header"><div><div class="logo-name">Pay<span>Pe</span></div><div style="font-size:10px;color:#888;margin-top:4px;">Technologies Private Limited | Est. 2022</div></div>';
+  html += '<div class="header-right">277/1A, Annamalai Industrial Park<br>Kalapatti, Coimbatore - 641048<br>Tamil Nadu, India<br>hr@paype.co.in | www.paype.co.in</div></div>';
+  html += '<div class="teal-strip"></div>';
+  html += '<div class="ref-bar"><span>Ref: '+refNo+'</span><span>Date: '+today+'</span><span>CONFIDENTIAL</span></div>';
+  html += '<div class="content">';
+  html += '<p>To,<br><strong style="font-size:14px;">'+candidateName+'</strong></p>';
+  html += '<div class="subject">Letter of Offer &mdash; '+position+'</div>';
+  html += '<p>Dear <strong>'+candidateName+'</strong>,</p>';
+  html += '<p style="margin:12px 0;text-align:justify;">We are delighted to extend this offer of employment for the position of <strong>'+position+'</strong> at <strong>PayPe Technologies Pvt. Ltd.</strong> We believe your skills and experience make you an ideal addition to our team.</p>';
+  html += '<div class="details-box"><div class="details-header">EMPLOYMENT DETAILS</div>';
+  html += '<div class="details-row"><div class="details-label">Position / Designation</div><div class="details-value"><strong>'+position+'</strong></div></div>';
+  html += '<div class="details-row"><div class="details-label">Work Location</div><div class="details-value">Coimbatore, Tamil Nadu</div></div>';
+  html += '<div class="details-row"><div class="details-label">Employment Type</div><div class="details-value">Full Time, Permanent</div></div>';
+  html += '<div class="details-row"><div class="details-label">Proposed Date of Joining</div><div class="details-value">'+joiningStr+'</div></div>';
+  html += '<div class="details-row"><div class="details-label">Probation Period</div><div class="details-value">6 Months</div></div>';
+  html += '<div class="details-row"><div class="details-label">Notice Period (Post Probation)</div><div class="details-value">30 Days</div></div>';
+  html += '<div class="details-row"><div class="details-label">Offer Valid Until</div><div class="details-value"><strong>'+expiryStr+'</strong></div></div>';
+  html += '</div>';
+  if (ctc > 0) {
+    html += '<div class="details-box"><div class="details-header">COMPENSATION STRUCTURE (ANNUAL)</div>';
+    html += '<table class="ctc-table"><thead><tr><th>Component</th><th>Monthly (Rs)</th><th>Annual (Rs)</th></tr></thead><tbody>';
+    html += '<tr><td>Basic Salary</td><td>'+basic.toLocaleString('en-IN')+'</td><td>'+(basic*12).toLocaleString('en-IN')+'</td></tr>';
+    html += '<tr><td>House Rent Allowance</td><td>'+hra.toLocaleString('en-IN')+'</td><td>'+(hra*12).toLocaleString('en-IN')+'</td></tr>';
+    html += '<tr><td>Special Allowance</td><td>'+special.toLocaleString('en-IN')+'</td><td>'+(special*12).toLocaleString('en-IN')+'</td></tr>';
+    html += '<tr class="ctc-total"><td><strong>Gross CTC</strong></td><td><strong>Rs '+monthly.toLocaleString('en-IN')+'</strong></td><td><strong>Rs '+Number(ctc).toLocaleString('en-IN')+'</strong></td></tr>';
+    html += '</tbody></table>';
+    html += '<div style="padding:8px 16px;font-size:11px;color:#666;">* PF, ESI and TDS will be deducted as per applicable laws</div></div>';
+  }
+  html += '<div class="conditions" style="margin:16px 0;"><h4 style="color:#0D1B3E;font-size:12px;margin-bottom:8px;border-bottom:1px solid #eee;padding-bottom:4px;">TERMS & CONDITIONS</h4><ol>';
+  html += '<li>This offer is subject to satisfactory reference checks and document verification.</li>';
+  html += '<li>Please confirm acceptance by signing and returning this letter before <strong>'+expiryStr+'</strong>.</li>';
+  html += '<li>Original certificates, experience letters and ID proof must be submitted on joining.</li>';
+  html += '<li>You will be required to sign a Non-Disclosure Agreement (NDA) on joining.</li>';
+  html += '<li>This offer is confidential and should not be disclosed to third parties.</li>';
+  html += '</ol></div>';
+  html += '<p style="margin:12px 0;">We look forward to welcoming you to the PayPe Technologies family. Please contact us at <strong>hr@paype.co.in</strong> for any queries.</p>';
+  html += '<div class="sign-section">';
+  html += '<div class="sign-box"><div style="border:1px dashed #00C2A8;border-radius:6px;padding:12px;min-height:55px;background:#f0fff8;display:flex;align-items:center;justify-content:center;margin-bottom:8px;"><div style="text-align:center;font-size:11px;color:#00C2A8;font-weight:bold;">&#x2713; Digitally Signed<br>HR Department</div></div>';
+  html += '<div class="sign-line"></div><div style="font-size:12px;font-weight:bold;">Authorised Signatory</div><div style="font-size:11px;color:#555;">HR Dept | PayPe Technologies Pvt. Ltd.</div></div>';
+  html += '<div class="sign-box"><div style="border:1px dashed #ccc;border-radius:6px;padding:12px;min-height:55px;background:#f9f9f9;display:flex;align-items:center;justify-content:center;margin-bottom:8px;"><div style="text-align:center;font-size:11px;color:#999;">Sign Here</div></div>';
+  html += '<div class="sign-line"></div><div style="font-size:12px;font-weight:bold;">'+candidateName+'</div><div style="font-size:11px;color:#555;">Candidate Signature & Date</div></div>';
+  html += '</div></div>';
+  html += '<div class="footer-bar"><div><strong>PayPe Technologies Pvt. Ltd.</strong><br>CIN: U74994TN2022PTC151114 | GST: 33AAMCP7960K1ZU | PAN: AAMCP7960K</div>';
+  html += '<div style="text-align:right;">paype.co.in | hr.paype.co.in<br>Ref: '+refNo+'</div></div>';
+  html += '<div style="text-align:center;font-size:10px;color:#999;padding:8px;letter-spacing:2px;">— CONFIDENTIAL DOCUMENT — FOR ADDRESSEE ONLY —</div>';
+  html += '</div></body></html>';
+  win.document.write(html);
+  win.document.close();
+  setTimeout(function(){win.print();},800);
 }
 
 if (tok && CU) { startApp(); } else { document.getElementById('LP').style.display = 'flex'; document.getElementById('AP').style.display = 'none'; }
