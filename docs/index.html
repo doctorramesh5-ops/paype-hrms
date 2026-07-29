@@ -386,13 +386,13 @@ tr:hover td{background:#F7FAFC;}
       <div class="ph"><div><h1>Recruitment</h1><p>ATS Pipeline</p></div>
         <div style="display:flex;gap:8px;">
           <button class="btn bto" onclick="goPage('jobs')">&#x1F4CB; Jobs</button>
-          <button class="btn btp" onclick="openMod('nom')">+ Post Job</button>
+          <button class="btn btp" onclick="openCreateOffer()">+ Post Job</button>
         </div>
       </div>
       <div id="rdc"><div class="ld"><div class="sp"></div>Loading...</div></div>
     </div>
     <div class="pg" id="pg-jobs">
-      <div class="ph"><div><h1>Job Listings</h1><p>All open positions</p></div><button class="btn btp" onclick="openMod('nom')">+ Post Job</button></div>
+      <div class="ph"><div><h1>Job Listings</h1><p>All open positions</p></div><button class="btn btp" onclick="openCreateOffer()">+ Post Job</button></div>
       <div id="jbc"><div class="ld"><div class="sp"></div>Loading...</div></div>
     </div>
     <div class="pg" id="pg-candidates">
@@ -428,7 +428,7 @@ tr:hover td{background:#F7FAFC;}
     
     <div class="pg" id="pg-interviews">
       <div class="ph"><div><h1>Interviews</h1><p>Schedule and track interviews</p></div>
-        <button class="btn btp" onclick="openMod('sim')">+ Schedule Interview</button>
+        <button class="btn btp" onclick="openScheduleInterview()">+ Schedule Interview</button>
       </div>
       <div id="ivc"><div class="ld"><div class="sp"></div>Loading...</div></div>
     </div>
@@ -438,7 +438,7 @@ tr:hover td{background:#F7FAFC;}
       <div id="ogc"><div class="ld"><div class="sp"></div>Loading...</div></div>
     </div>
     <div class="pg" id="pg-offers">
-      <div class="ph"><div><h1>Offer Letters</h1><p>Manage offer letters</p></div><button class="btn btp" onclick="openMod('nom')">+ Create Offer</button></div>
+      <div class="ph"><div><h1>Offer Letters</h1><p>Manage offer letters</p></div><button class="btn btp" onclick="openCreateOffer()">+ Create Offer</button></div>
       <div id="ofc"><div class="ld"><div class="sp"></div>Loading...</div></div>
     </div>
     <div class="pg" id="pg-settings">
@@ -4995,6 +4995,140 @@ function openBase64File(base64Data, fileName) {
   } catch(e) {
     toast('Cannot open file: ' + e.message, 'err');
   }
+}
+
+
+// ── SCHEDULE INTERVIEW ─────────────────────────
+async function scheduleInterview() {
+  var appId = document.getElementById('iv1').value;
+  var date = document.getElementById('iv6').value;
+  if (!appId || !date) { toast('Select candidate and date','err'); return; }
+  var body = {
+    applicationId: appId,
+    round: document.getElementById('iv2').value,
+    roundName: document.getElementById('iv3').value || 'Interview',
+    interviewType: document.getElementById('iv4').value,
+    interviewerId: document.getElementById('iv5').value || undefined,
+    scheduledAt: date,
+    duration: parseInt(document.getElementById('iv7').value) || 60,
+    meetLink: document.getElementById('iv8').value || undefined
+  };
+  var res = await req('POST', '/api/interviews', body);
+  if (res.success) {
+    toast('Interview scheduled!');
+    closeMod('sim');
+    if (typeof loadInterviews === 'function') loadInterviews();
+  } else {
+    toast(res.message || 'Failed', 'err');
+  }
+}
+
+async function openScheduleInterview() {
+  // Load candidates/applications into dropdown
+  var res = await req('GET', '/api/applications');
+  var sel = document.getElementById('iv1');
+  if (sel && res.success) {
+    sel.innerHTML = '<option value="">Select Candidate</option>';
+    res.data.forEach(function(a) {
+      var op = document.createElement('option');
+      op.value = a.id;
+      op.textContent = (a.first_name||'') + ' ' + (a.last_name||'') + ' - ' + (a.job_title||'');
+      sel.appendChild(op);
+    });
+  }
+  // Load interviewers
+  var empRes = await req('GET', '/api/employees');
+  var iv5 = document.getElementById('iv5');
+  if (iv5 && empRes.success) {
+    iv5.innerHTML = '<option value="">Select Interviewer</option>';
+    (empRes.data.employees||[]).forEach(function(e) {
+      var op = document.createElement('option');
+      op.value = e.id;
+      op.textContent = e.first_name + ' ' + e.last_name;
+      iv5.appendChild(op);
+    });
+  }
+  openMod('sim');
+}
+
+// ── OFFER LETTERS ──────────────────────────────
+async function loadOffers() {
+  var c2 = document.getElementById('ofc');
+  if (!c2) return;
+  c2.innerHTML = '<div class="ld"><div class="sp"></div>Loading...</div>';
+  var res = await req('GET', '/api/offer-letters');
+  if (!res.success) {
+    // Try alternate endpoint
+    res = await req('GET', '/api/applications?stage=Offer');
+  }
+  if (!res.success || !res.data || !res.data.length) {
+    c2.innerHTML = '<div class="card"><div class="cb"><div class="em"><h3>No offer letters yet</h3><p>Create offer letters for selected candidates</p><button class="btn btp" onclick="openCreateOffer()">+ Create Offer Letter</button></div></div></div>';
+    return;
+  }
+  var h = '<div class="card"><div class="ch"><div class="ct">Offer Letters</div><button class="btn btp btsm" onclick="openCreateOffer()">+ Create</button></div><div class="tw"><table><thead><tr><th>Candidate</th><th>Position</th><th>CTC</th><th>Status</th><th>Action</th></tr></thead><tbody>';
+  res.data.forEach(function(o) {
+    var nm = (o.first_name||'') + ' ' + (o.last_name||'');
+    var sc = o.status==='Accepted'?'bg':o.status==='Rejected'?'br':'by';
+    h += '<tr><td><div style="font-weight:600;">' + nm + '</div><div style="font-size:11px;color:#718096;">' + (o.email||'') + '</div></td>';
+    h += '<td>' + (o.job_title||o.position||'--') + '</td>';
+    h += '<td>' + (o.offered_ctc ? 'Rs '+Number(o.offered_ctc).toLocaleString('en-IN') : '--') + '</td>';
+    h += '<td><span class="b ' + sc + '">' + (o.status||'Pending') + '</span></td>';
+    var oid=o.id||""; h += '<td><button class="btn bto btsm" onclick="viewOfferLetter(&quot;'+oid+'&quot;)">View</button></td></tr>';
+  });
+  h += '</tbody></table></div></div>';
+  c2.innerHTML = h;
+}
+
+async function openCreateOffer() {
+  // Load candidates into nom modal
+  var res = await req('GET', '/api/candidates');
+  var sel = document.getElementById('ol-candidate');
+  if (sel && res.success) {
+    sel.innerHTML = '<option value="">Select Candidate</option>';
+    res.data.forEach(function(c3) {
+      var op = document.createElement('option');
+      op.value = c3.id;
+      op.textContent = c3.first_name + ' ' + c3.last_name + ' (' + (c3.email||'') + ')';
+      sel.appendChild(op);
+    });
+  }
+  openMod('nom');
+}
+
+async function viewOfferLetter(id) {
+  toast('Loading offer letter...');
+  var res = await req('GET', '/api/offer-letters/' + id);
+  if (res.success) {
+    openMod('ofv');
+  } else {
+    toast('Offer letter not found','err');
+  }
+}
+
+// ── ONBOARDING ENHANCED ────────────────────────
+async function toggleObTask(taskId, isCompleted) {
+  var newStatus = isCompleted ? 'Pending' : 'Completed';
+  var empId = CU && CU.employeeId ? CU.employeeId : null;
+  if (!empId) { toast('Employee profile not linked','err'); return; }
+  await req('POST', '/api/onboarding/' + empId + '/init', {});
+  var res = await req('PUT', '/api/onboarding/' + empId + '/task/' + taskId, { status: newStatus });
+  toast(isCompleted ? 'Task marked pending' : 'Task completed!');
+  loadOnboarding();
+}
+
+async function loadObProgress(empId) {
+  await req('POST', '/api/onboarding/' + empId + '/init', {});
+  var res = await req('GET', '/api/onboarding/' + empId);
+  if (!res.success) return;
+  var pct = 0;
+  try {
+    var d = res.data;
+    if (d && d.summary && d.summary.total > 0) pct = Math.round((d.summary.done / d.summary.total) * 100);
+  } catch(e) { pct = 0; }
+  var bar = document.getElementById('ob-bar-' + empId);
+  var pctEl = document.getElementById('ob-pct-' + empId);
+  if (bar) bar.style.width = pct + '%';
+  if (pctEl) pctEl.textContent = pct + '%';
 }
 
 if (tok && CU) { startApp(); } else { document.getElementById('LP').style.display = 'flex'; document.getElementById('AP').style.display = 'none'; }
