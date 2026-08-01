@@ -1298,8 +1298,15 @@ function editEmp(id, status) {
 }
 async function loadPaymentWidget() {
   try {
+    // Get ERP token using admin credentials
+    var loginRes = await fetch('https://erpapi.paype.co.in/api/auth/login', {
+      method:'POST', headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({email:'admin@paype.co.in', password:'Admin@PayPe2026'})
+    });
+    var loginData = await loginRes.json();
+    var erpToken = loginData.token || '';
     var pres = await fetch('https://erpapi.paype.co.in/api/payments/stats', {
-      headers: { 'Authorization': 'Bearer ' + tok }
+      headers: { 'Authorization': 'Bearer ' + erpToken }
     });
     var pd = await pres.json();
     if (!pd.success) return;
@@ -4498,8 +4505,15 @@ function showAttTab(tab, el) {
 
 async function loadPaymentWidget() {
   try {
+    // Get ERP token using admin credentials
+    var loginRes = await fetch('https://erpapi.paype.co.in/api/auth/login', {
+      method:'POST', headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({email:'admin@paype.co.in', password:'Admin@PayPe2026'})
+    });
+    var loginData = await loginRes.json();
+    var erpToken = loginData.token || '';
     var pres = await fetch('https://erpapi.paype.co.in/api/payments/stats', {
-      headers: { 'Authorization': 'Bearer ' + tok }
+      headers: { 'Authorization': 'Bearer ' + erpToken }
     });
     var pd = await pres.json();
     if (!pd.success) return;
