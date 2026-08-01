@@ -1168,6 +1168,7 @@ async function loadDash() {
     }
   }
   h += '</div></div>';
+  h += '<div class="card"><div class="ch"><div class="ct">&#x1F4B3; SaaS Payments</div><a href="https://erp.paype.co.in" target="_blank" style="font-size:11px;color:#00C2A8;font-weight:600;text-decoration:none;">ERP &#x2192;</a></div><div class="cb"><div id="payment-widget"><div class="ld"><div class="sp"></div>Loading...</div></div></div></div>';
   h += '<div class="card"><div class="ch"><div class="ct">Quick Actions</div></div><div class="cb">';
   h += '<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">';
   var acts = [
@@ -1187,7 +1188,8 @@ async function loadDash() {
   // Employee quick links
   if (role === 'employee') {
     h += '<div class="g2" style="margin-top:14px;">';
-    h += '<div class="card"><div class="ch"><div class="ct">Quick Actions</div></div><div class="cb">';
+    h += '<div class="card"><div class="ch"><div class="ct">&#x1F4B3; SaaS Payments</div><a href="https://erp.paype.co.in" target="_blank" style="font-size:11px;color:#00C2A8;font-weight:600;text-decoration:none;">ERP &#x2192;</a></div><div class="cb"><div id="payment-widget"><div class="ld"><div class="sp"></div>Loading...</div></div></div></div>';
+  h += '<div class="card"><div class="ch"><div class="ct">Quick Actions</div></div><div class="cb">';
     h += '<div style="display:flex;flex-direction:column;gap:8px;">';
     h += '<button class="btn btp" onclick="goPage(&apos;attendance&apos;)" style="justify-content:flex-start;">Punch In / Out</button>';
     h += '<button class="btn bto" onclick="goPage(&apos;leave&apos;)" style="justify-content:flex-start;">Apply Leave</button>';
@@ -1294,6 +1296,28 @@ function editEmp(id, status) {
     });
   }
 }
+async function loadPaymentWidget() {
+  try {
+    var pres = await fetch('https://erpapi.paype.co.in/api/payments/stats', {
+      headers: { 'Authorization': 'Bearer ' + tok }
+    });
+    var pd = await pres.json();
+    if (!pd.success) return;
+    var s = pd.data.subscriptions;
+    var el = document.getElementById('payment-widget');
+    if (!el) return;
+    el.innerHTML = '<div class="g3" style="margin-bottom:10px;">'
+      + '<div class="kp"><div class="kv" style="color:#00C2A8;font-size:20px;">'+s.total+'</div><div class="kl">Customers</div></div>'
+      + '<div class="kp"><div class="kv" style="color:#38A169;font-size:20px;">'+s.paid+'</div><div class="kl">Paid</div></div>'
+      + '<div class="kp"><div class="kv" style="color:#E63329;font-size:20px;">'+s.unpaid+'</div><div class="kl">Unpaid</div></div>'
+      + '</div>'
+      + '<div style="padding:10px;background:rgba(56,161,105,.05);border-radius:8px;display:flex;justify-content:space-between;align-items:center;">'
+      + '<span style="font-size:12px;color:#718096;">Total Revenue</span>'
+      + '<span style="font-size:15px;font-weight:800;color:#38A169;">Rs ' + Number(s.revenue).toLocaleString('en-IN') + '</span>'
+      + '</div>';
+  } catch(e) { console.log('Payment widget error:', e); }
+}
+
 async function loadAtt() {
   var myRes = await req('GET', '/api/attendance/my'), role = CU.role;
   var tdRes = { success: false };
@@ -1364,6 +1388,7 @@ async function doPunch() {
         var locMsg = dist !== null ? ' | ' + locType + ' (' + dist + 'm from office)' : '';
         toast(res.message + locMsg);
         loadAttTab('today');
+  loadPaymentWidget();
         loadAtt();
       } else {
         toast(res.message||'Failed','err');
@@ -4469,6 +4494,28 @@ function showAttTab(tab, el) {
   });
   el.className = el.className.replace('bto','btp');
   loadAttTab(tab);
+}
+
+async function loadPaymentWidget() {
+  try {
+    var pres = await fetch('https://erpapi.paype.co.in/api/payments/stats', {
+      headers: { 'Authorization': 'Bearer ' + tok }
+    });
+    var pd = await pres.json();
+    if (!pd.success) return;
+    var s = pd.data.subscriptions;
+    var el = document.getElementById('payment-widget');
+    if (!el) return;
+    el.innerHTML = '<div class="g3" style="margin-bottom:10px;">'
+      + '<div class="kp"><div class="kv" style="color:#00C2A8;font-size:20px;">'+s.total+'</div><div class="kl">Customers</div></div>'
+      + '<div class="kp"><div class="kv" style="color:#38A169;font-size:20px;">'+s.paid+'</div><div class="kl">Paid</div></div>'
+      + '<div class="kp"><div class="kv" style="color:#E63329;font-size:20px;">'+s.unpaid+'</div><div class="kl">Unpaid</div></div>'
+      + '</div>'
+      + '<div style="padding:10px;background:rgba(56,161,105,.05);border-radius:8px;display:flex;justify-content:space-between;align-items:center;">'
+      + '<span style="font-size:12px;color:#718096;">Total Revenue</span>'
+      + '<span style="font-size:15px;font-weight:800;color:#38A169;">Rs ' + Number(s.revenue).toLocaleString('en-IN') + '</span>'
+      + '</div>';
+  } catch(e) { console.log('Payment widget error:', e); }
 }
 
 async function loadAtt() {
