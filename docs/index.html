@@ -1168,7 +1168,7 @@ async function loadDash() {
     }
   }
   h += '</div></div>';
-  h += '<div class="card"><div class="ch"><div class="ct">&#x1F4B3; SaaS Payments</div><a href="https://erp.paype.co.in" target="_blank" style="font-size:11px;color:#00C2A8;font-weight:600;text-decoration:none;">ERP &#x2192;</a></div><div class="cb"><div id="payment-widget"><div class="ld"><div class="sp"></div>Loading...</div></div></div></div>';
+  if (CU && CU.role === 'admin') h += '<div class="card"><div class="ch"><div class="ct">&#x1F4B3; SaaS Payments</div><a href="https://erp.paype.co.in" target="_blank" style="font-size:11px;color:#00C2A8;font-weight:600;text-decoration:none;">ERP &#x2192;</a></div><div class="cb"><div id="payment-widget"><div class="ld"><div class="sp"></div>Loading...</div></div></div></div>';
   h += '<div class="card"><div class="ch"><div class="ct">Quick Actions</div></div><div class="cb">';
   h += '<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">';
   var acts = [
@@ -1188,7 +1188,7 @@ async function loadDash() {
   // Employee quick links
   if (role === 'employee') {
     h += '<div class="g2" style="margin-top:14px;">';
-    h += '<div class="card"><div class="ch"><div class="ct">&#x1F4B3; SaaS Payments</div><a href="https://erp.paype.co.in" target="_blank" style="font-size:11px;color:#00C2A8;font-weight:600;text-decoration:none;">ERP &#x2192;</a></div><div class="cb"><div id="payment-widget"><div class="ld"><div class="sp"></div>Loading...</div></div></div></div>';
+    if (CU && CU.role === 'admin') h += '<div class="card"><div class="ch"><div class="ct">&#x1F4B3; SaaS Payments</div><a href="https://erp.paype.co.in" target="_blank" style="font-size:11px;color:#00C2A8;font-weight:600;text-decoration:none;">ERP &#x2192;</a></div><div class="cb"><div id="payment-widget"><div class="ld"><div class="sp"></div>Loading...</div></div></div></div>';
   h += '<div class="card"><div class="ch"><div class="ct">Quick Actions</div></div><div class="cb">';
     h += '<div style="display:flex;flex-direction:column;gap:8px;">';
     h += '<button class="btn btp" onclick="goPage(&apos;attendance&apos;)" style="justify-content:flex-start;">Punch In / Out</button>';
@@ -1395,7 +1395,7 @@ async function doPunch() {
         var locMsg = dist !== null ? ' | ' + locType + ' (' + dist + 'm from office)' : '';
         toast(res.message + locMsg);
         loadAttTab('today');
-  loadPaymentWidget();
+  if (CU && CU.role === 'admin') loadPaymentWidget();
         loadAtt();
       } else {
         toast(res.message||'Failed','err');
