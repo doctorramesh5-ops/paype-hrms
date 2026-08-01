@@ -1386,7 +1386,7 @@ async function doPunch() {
         var locMsg = dist !== null ? ' | ' + locType + ' (' + dist + 'm from office)' : '';
         toast(res.message + locMsg);
         loadAttTab('today');
-  if (CU && CU.role === 'admin') loadPaymentWidget();
+  if (CU && CU.role === 'admin') setTimeout(loadPaymentWidget, 500);
         loadAtt();
       } else {
         toast(res.message||'Failed','err');
