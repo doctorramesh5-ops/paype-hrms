@@ -692,20 +692,26 @@ app.get('/api/leave/requests', auth, canHR, async (req, res) => {
 
 app.post('/api/leave/apply', auth, async (req, res) => {
   try {
-    const { leavePolicyId, fromDate, toDate, reason } = req.body;
-    if (!leavePolicyId || !fromDate || !toDate || !reason) {
+    const { leavePolicyId, leaveTypeId, leave_type_id, fromDate, startDate, start_date, toDate, endDate, end_date, reason } = req.body;
+    const policyId = leavePolicyId || leaveTypeId || leave_type_id;
+    const fDate = fromDate || startDate || start_date;
+    const tDate = toDate || endDate || end_date;
+    if (!policyId || !fDate || !tDate || !reason) {
       return res.status(400).json({ success: false, message: 'All fields required' });
     }
-    let d = new Date(fromDate), days = 0;
-    while (d <= new Date(toDate)) { if (d.getDay() !== 0 && d.getDay() !== 6) days++; d.setDate(d.getDate() + 1); }
-    if (days <= 0) return res.status(400).json({ success: false, message: 'Invalid date range' });
+    let d = new Date(fDate), days = 0;
+    const endD = new Date(tDate);
+    // Same day is valid - at least 1 day
+    while (d <= endD) { if (d.getDay() !== 0 && d.getDay() !== 6) days++; d.setDate(d.getDate() + 1); }
+    if (days <= 0) days = 1; // minimum 1 day for same day leave
+    if (new Date(tDate) < new Date(fDate)) return res.status(400).json({ success: false, message: 'End date cannot be before start date' });
     const bal = await db(`SELECT balance FROM leave_balances WHERE employee_id=$1 AND leave_policy_id=$2 AND year=EXTRACT(YEAR FROM NOW())`,
       [req.user.employee_id, leavePolicyId]);
     if (bal.rows.length && parseFloat(bal.rows[0].balance) < days) {
       return res.status(400).json({ success: false, message: `Insufficient balance. Available: ${bal.rows[0].balance}, Requested: ${days}` });
     }
     await db(`INSERT INTO leave_requests (id,employee_id,leave_policy_id,from_date,to_date,days,reason,status) VALUES (gen_random_uuid(),$1,$2,$3,$4,$5,$6,'Pending')`,
-      [req.user.employee_id, leavePolicyId, fromDate, toDate, days, reason]);
+      [req.user.employee_id, policyId, fDate, tDate, days, reason]);
     res.status(201).json({ success: true, message: `Leave applied for ${days} day(s). Pending HR approval.` });
   } catch (e) { res.status(500).json({ success: false, message: e.message }); }
 });
