@@ -1304,14 +1304,14 @@ async function loadPaymentWidget() {
     var s = pd.data.subscriptions;
     var el = document.getElementById('payment-widget');
     if (!el) return;
-    el.innerHTML = '<div class="g3" style="margin-bottom:10px;">'
-      + '<div class="kp"><div class="kv" style="color:#00C2A8;font-size:20px;">'+s.total+'</div><div class="kl">Customers</div></div>'
-      + '<div class="kp"><div class="kv" style="color:#38A169;font-size:20px;">'+s.paid+'</div><div class="kl">Paid</div></div>'
-      + '<div class="kp"><div class="kv" style="color:#E63329;font-size:20px;">'+s.unpaid+'</div><div class="kl">Unpaid</div></div>'
+    el.innerHTML = '<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:12px;">'
+      + '<div style="text-align:center;padding:10px;background:#f7fafc;border-radius:8px;"><div style="font-size:22px;font-weight:800;color:#00C2A8;">'+s.total+'</div><div style="font-size:11px;color:#718096;">Customers</div></div>'
+      + '<div style="text-align:center;padding:10px;background:#f7fafc;border-radius:8px;"><div style="font-size:22px;font-weight:800;color:#38A169;">'+s.paid+'</div><div style="font-size:11px;color:#718096;">Paid</div></div>'
+      + '<div style="text-align:center;padding:10px;background:#f7fafc;border-radius:8px;"><div style="font-size:22px;font-weight:800;color:#E63329;">'+s.unpaid+'</div><div style="font-size:11px;color:#718096;">Unpaid</div></div>'
       + '</div>'
       + '<div style="padding:10px;background:rgba(56,161,105,.05);border-radius:8px;display:flex;justify-content:space-between;align-items:center;">'
       + '<span style="font-size:12px;color:#718096;">Total Revenue</span>'
-      + '<span style="font-size:15px;font-weight:800;color:#38A169;">Rs ' + Number(s.revenue).toLocaleString('en-IN') + '</span>'
+      + '<span style="font-size:15px;font-weight:800;color:#38A169;">Rs '+Number(s.revenue).toLocaleString("en-IN")+'</span>'
       + '</div>';
   } catch(e) { console.log('Payment widget error:', e); }
 }
@@ -4502,14 +4502,14 @@ async function loadPaymentWidget() {
     var s = pd.data.subscriptions;
     var el = document.getElementById('payment-widget');
     if (!el) return;
-    el.innerHTML = '<div class="g3" style="margin-bottom:10px;">'
-      + '<div class="kp"><div class="kv" style="color:#00C2A8;font-size:20px;">'+s.total+'</div><div class="kl">Customers</div></div>'
-      + '<div class="kp"><div class="kv" style="color:#38A169;font-size:20px;">'+s.paid+'</div><div class="kl">Paid</div></div>'
-      + '<div class="kp"><div class="kv" style="color:#E63329;font-size:20px;">'+s.unpaid+'</div><div class="kl">Unpaid</div></div>'
+    el.innerHTML = '<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:12px;">'
+      + '<div style="text-align:center;padding:10px;background:#f7fafc;border-radius:8px;"><div style="font-size:22px;font-weight:800;color:#00C2A8;">'+s.total+'</div><div style="font-size:11px;color:#718096;">Customers</div></div>'
+      + '<div style="text-align:center;padding:10px;background:#f7fafc;border-radius:8px;"><div style="font-size:22px;font-weight:800;color:#38A169;">'+s.paid+'</div><div style="font-size:11px;color:#718096;">Paid</div></div>'
+      + '<div style="text-align:center;padding:10px;background:#f7fafc;border-radius:8px;"><div style="font-size:22px;font-weight:800;color:#E63329;">'+s.unpaid+'</div><div style="font-size:11px;color:#718096;">Unpaid</div></div>'
       + '</div>'
       + '<div style="padding:10px;background:rgba(56,161,105,.05);border-radius:8px;display:flex;justify-content:space-between;align-items:center;">'
       + '<span style="font-size:12px;color:#718096;">Total Revenue</span>'
-      + '<span style="font-size:15px;font-weight:800;color:#38A169;">Rs ' + Number(s.revenue).toLocaleString('en-IN') + '</span>'
+      + '<span style="font-size:15px;font-weight:800;color:#38A169;">Rs '+Number(s.revenue).toLocaleString("en-IN")+'</span>'
       + '</div>';
   } catch(e) { console.log('Payment widget error:', e); }
 }
