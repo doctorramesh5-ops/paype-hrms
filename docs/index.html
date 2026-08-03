@@ -182,12 +182,196 @@ tr:hover td{background:#F7FAFC;}
   .tb{padding-top:env(safe-area-inset-top,0);}
   body{padding-bottom:env(safe-area-inset-bottom,0);}
 }
+
+.hrlp{display:block;}
+.hrlp-nav{background:#0D1B3E;padding:14px 48px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100;}
+.hrlp-brand{font-family:'Syne',sans-serif;font-size:20px;font-weight:900;color:white;}
+.hrlp-brand span{color:#00C2A8;}
+.hrlp-nav-links{display:flex;gap:18px;align-items:center;}
+.hrlp-nav-links a{font-size:12px;color:rgba(255,255,255,.6);text-decoration:none;}
+.hrlp-nav-btn{background:#00C2A8;color:#0D1B3E;border:none;padding:8px 18px;border-radius:8px;font-size:12px;font-weight:700;cursor:pointer;font-family:inherit;}
+.hrlp-hero{background:linear-gradient(135deg,#7B61FF,#5B41DF,#0D1B3E);padding:70px 48px;text-align:center;color:white;}
+.hrlp-hero-title{font-family:'Syne',sans-serif;font-size:40px;font-weight:900;line-height:1.1;margin-bottom:14px;}
+.hrlp-hero-title span{color:#00C2A8;}
+.hrlp-section{padding:55px 48px;}
+.hrlp-section-title{font-family:'Syne',sans-serif;font-size:28px;font-weight:900;color:#0D1B3E;margin-bottom:8px;text-align:center;}
+.hrlp-section-sub{font-size:13px;color:#718096;text-align:center;margin-bottom:36px;}
+.hrlp-modules{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;max-width:1100px;margin:0 auto;}
+.hrlp-mod{background:white;border-radius:14px;padding:18px;border:1px solid #E2E8F0;box-shadow:0 2px 8px rgba(0,0,0,.05);}
+.hrlp-mod-icon{font-size:28px;margin-bottom:10px;}
+.hrlp-mod-name{font-size:13px;font-weight:700;color:#0D1B3E;margin-bottom:6px;}
+.hrlp-mod-desc{font-size:11px;color:#718096;line-height:1.6;}
+.hrlp-pricing{padding:55px 48px;background:#F7FAFC;}
+.hrlp-price-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;max-width:1100px;margin:0 auto;}
+.hrlp-pc{background:white;border-radius:16px;border:1px solid #E2E8F0;padding:22px;box-shadow:0 2px 10px rgba(0,0,0,.05);}
+.hrlp-pc.pop{border-color:#7B61FF;box-shadow:0 4px 20px rgba(123,97,255,.15);position:relative;}
+.hrlp-pc-badge{position:absolute;top:-11px;left:50%;transform:translateX(-50%);background:#7B61FF;color:white;font-size:10px;font-weight:700;padding:3px 12px;border-radius:20px;}
+.hrlp-pc-plan{font-size:11px;font-weight:700;color:#718096;text-transform:uppercase;letter-spacing:.5px;margin-bottom:8px;}
+.hrlp-pc-price{font-family:'Syne',sans-serif;font-size:26px;font-weight:900;color:#0D1B3E;}
+.hrlp-pc-period{font-size:12px;font-weight:400;color:#718096;}
+.hrlp-pc-desc{font-size:12px;color:#718096;margin:8px 0 16px;}
+.hrlp-pc-features{font-size:12px;line-height:2.2;margin-bottom:16px;color:#4A5568;}
+.hrlp-pc-btn{width:100%;padding:11px;border:none;border-radius:9px;font-size:12px;font-weight:700;cursor:pointer;font-family:inherit;}
+.hrlp-footer{background:#0D1B3E;padding:36px 48px;color:white;}
+.hrlp-tw{position:fixed;bottom:20px;right:20px;z-index:9999;display:flex;flex-direction:column;gap:6px;}
+.hrlp-tst{background:#0D1B3E;color:white;padding:10px 15px;border-radius:9px;font-size:12px;opacity:0;transform:translateY(10px);transition:.3s;}
+.hrlp-tst.show{opacity:1;transform:translateY(0);}
+.hrlp-tst.ok{background:#38A169;}
+.hrlp-tst.err{background:#E63329;}
+@media(max-width:768px){.hrlp-modules{grid-template-columns:1fr 1fr;}.hrlp-price-grid{grid-template-columns:1fr 1fr;}.hrlp-nav{padding:14px 20px;}.hrlp-hero{padding:50px 20px;}.hrlp-hero-title{font-size:26px;}.hrlp-section{padding:40px 20px;}.hrlp-pricing{padding:40px 20px;}}
 </style>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
 </head>
-<body>
+<!-- HRMS LANDING PAGE -->
+<div id="hrms-lp">
+  <div class="hrlp-nav">
+    <div class="hrlp-brand">Pay<span>Pe</span> <span style="opacity:.4;font-size:14px;">HRMS</span></div>
+    <div class="hrlp-nav-links">
+      <a href="#hrms-modules">Modules</a>
+      <a href="#hrms-pricing">Pricing</a>
+      <a href="#hrms-demo">Demo</a>
+      <a href="https://signup.paype.co.in">Sign Up</a>
+      <a href="https://erp.paype.co.in">ERP</a>
+      <a href="https://social.paype.co.in">Social Hub</a>
+    </div>
+    <button class="hrlp-nav-btn" onclick="showHRMSLogin()">Login →</button>
+  </div>
 
-<div id="LP" style="display:flex;min-height:100vh;">
+  <div class="hrlp-hero">
+    <div style="font-size:11px;letter-spacing:3px;color:#00C2A8;text-transform:uppercase;margin-bottom:12px;">AI-Powered HR Management</div>
+    <div class="hrlp-hero-title">Manage Your People<br><span>Smarter & Faster</span></div>
+    <div style="font-size:15px;color:rgba(255,255,255,.6);max-width:580px;margin:0 auto 28px;line-height:1.7;">Employee Management, Attendance, Recruitment ATS, Payroll, Onboarding — all powered by Claude AI.</div>
+    <div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap;">
+      <button style="background:linear-gradient(135deg,#00C2A8,#009E8A);color:white;border:none;padding:13px 30px;border-radius:10px;font-size:14px;font-weight:700;cursor:pointer;font-family:inherit;" onclick="document.getElementById('hrms-pricing').scrollIntoView({behavior:'smooth'})">🚀 Start Free Trial — 14 Days</button>
+      <button style="background:rgba(255,255,255,.1);color:white;border:1px solid rgba(255,255,255,.2);padding:13px 30px;border-radius:10px;font-size:14px;font-weight:700;cursor:pointer;font-family:inherit;" onclick="showHRMSLogin()">Login to HRMS →</button>
+    </div>
+    <div style="display:flex;gap:40px;justify-content:center;margin-top:44px;flex-wrap:wrap;">
+      <div><div style="font-family:'Syne',sans-serif;font-size:28px;font-weight:900;color:#00C2A8;">8+</div><div style="font-size:12px;color:rgba(255,255,255,.5);">HR Modules</div></div>
+      <div><div style="font-family:'Syne',sans-serif;font-size:28px;font-weight:900;color:#00C2A8;">AI</div><div style="font-size:12px;color:rgba(255,255,255,.5);">Claude Powered</div></div>
+      <div><div style="font-family:'Syne',sans-serif;font-size:28px;font-weight:900;color:#00C2A8;">14</div><div style="font-size:12px;color:rgba(255,255,255,.5);">Day Free Trial</div></div>
+      <div><div style="font-family:'Syne',sans-serif;font-size:28px;font-weight:900;color:#00C2A8;">∞</div><div style="font-size:12px;color:rgba(255,255,255,.5);">Employees</div></div>
+    </div>
+  </div>
+
+  <!-- MODULES -->
+  <div class="hrlp-section" id="hrms-modules">
+    <div class="hrlp-section-title">Complete HR Suite</div>
+    <div class="hrlp-section-sub">Everything you need to manage your team</div>
+    <div class="hrlp-modules">
+      <div class="hrlp-mod"><div class="hrlp-mod-icon">👤</div><div class="hrlp-mod-name">Employee Management</div><div class="hrlp-mod-desc">Profiles, Documents, Department, Designation, Employment history</div></div>
+      <div class="hrlp-mod"><div class="hrlp-mod-icon">📅</div><div class="hrlp-mod-name">Attendance & Leave</div><div class="hrlp-mod-desc">Daily attendance, Leave apply/approve, Holiday calendar, CSV export</div></div>
+      <div class="hrlp-mod"><div class="hrlp-mod-icon">🎯</div><div class="hrlp-mod-name">Recruitment ATS</div><div class="hrlp-mod-desc">Job postings, Candidate pipeline, Interview scheduling, Status tracking</div></div>
+      <div class="hrlp-mod"><div class="hrlp-mod-icon">📄</div><div class="hrlp-mod-name">Offer Letters</div><div class="hrlp-mod-desc">Professional letterhead, Digital signatures, Hired & rejected templates</div></div>
+      <div class="hrlp-mod"><div class="hrlp-mod-icon">🚀</div><div class="hrlp-mod-name">Onboarding</div><div class="hrlp-mod-desc">Task checklists, Progress tracking, Document collection, Welcome kit</div></div>
+      <div class="hrlp-mod"><div class="hrlp-mod-icon">💻</div><div class="hrlp-mod-name">IT Asset Management</div><div class="hrlp-mod-desc">Laptop, Phone, Equipment tracking, Assignment & return history</div></div>
+      <div class="hrlp-mod"><div class="hrlp-mod-icon">💰</div><div class="hrlp-mod-name">Payroll</div><div class="hrlp-mod-desc">Salary processing, Payslips, PF/ESI, Tax deduction, Bank transfer</div></div>
+      <div class="hrlp-mod"><div class="hrlp-mod-icon">🤖</div><div class="hrlp-mod-name">AI Assistant</div><div class="hrlp-mod-desc">HR policy generator, Job description writer, Interview questions</div></div>
+    </div>
+  </div>
+
+  <!-- PRICING -->
+  <div class="hrlp-pricing" id="hrms-pricing">
+    <div class="hrlp-section-title">Simple, Transparent Pricing</div>
+    <div class="hrlp-section-sub">All plans include 14-day free trial. No credit card required.</div>
+    <div class="hrlp-price-grid">
+      <div class="hrlp-pc">
+        <div class="hrlp-pc-plan">Starter</div>
+        <div class="hrlp-pc-price">Rs 999<span class="hrlp-pc-period">/mo</span></div>
+        <div class="hrlp-pc-desc">Up to 10 employees</div>
+        <div class="hrlp-pc-features">✅ Employee Profiles<br>✅ Attendance & Leave<br>✅ Basic Recruitment<br>✅ Offer Letters<br>✅ Email Support<br>❌ Payroll<br>❌ IT Assets</div>
+        <button class="hrlp-pc-btn" style="background:transparent;border:1.5px solid #E2E8F0;color:#0D1B3E;" onclick="buyHRMS('Starter',999)">Start Free Trial</button>
+      </div>
+      <div class="hrlp-pc pop">
+        <div class="hrlp-pc-badge">POPULAR</div>
+        <div class="hrlp-pc-plan" style="color:#7B61FF;">Growth</div>
+        <div class="hrlp-pc-price">Rs 2,999<span class="hrlp-pc-period">/mo</span></div>
+        <div class="hrlp-pc-desc">Up to 50 employees</div>
+        <div class="hrlp-pc-features">✅ Everything in Starter<br>✅ Full ATS Pipeline<br>✅ Onboarding Module<br>✅ IT Asset Management<br>✅ Payroll Processing<br>✅ AI Assistant<br>✅ Priority Support</div>
+        <button class="hrlp-pc-btn" style="background:linear-gradient(135deg,#7B61FF,#5B41DF);color:white;" onclick="buyHRMS('Growth',2999)">Start Free Trial</button>
+      </div>
+      <div class="hrlp-pc">
+        <div class="hrlp-pc-plan" style="color:#00C2A8;">Business</div>
+        <div class="hrlp-pc-price">Rs 4,999<span class="hrlp-pc-period">/mo</span></div>
+        <div class="hrlp-pc-desc">Up to 200 employees</div>
+        <div class="hrlp-pc-features">✅ Everything in Growth<br>✅ Advanced Analytics<br>✅ Custom Reports<br>✅ API Access<br>✅ Multi-branch support<br>✅ Dedicated Support<br>✅ White Label Option</div>
+        <button class="hrlp-pc-btn" style="background:linear-gradient(135deg,#00C2A8,#009E8A);color:white;" onclick="buyHRMS('Business',4999)">Start Free Trial</button>
+      </div>
+      <div class="hrlp-pc" style="background:linear-gradient(135deg,#0D1B3E,#1a2d5a);">
+        <div class="hrlp-pc-plan" style="color:#00C2A8;">Enterprise</div>
+        <div class="hrlp-pc-price" style="color:white;">Custom</div>
+        <div class="hrlp-pc-desc" style="color:rgba(255,255,255,.5);">Unlimited employees</div>
+        <div class="hrlp-pc-features" style="color:rgba(255,255,255,.7);">✅ Everything in Business<br>✅ Unlimited employees<br>✅ Custom development<br>✅ On-premise option<br>✅ SLA guarantee<br>✅ Training & Setup<br>✅ 24/7 Support</div>
+        <button class="hrlp-pc-btn" style="background:#00C2A8;color:#0D1B3E;" onclick="window.location='mailto:admin@paype.co.in?subject=HRMS Enterprise Plan'">Contact Sales</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- DEMO -->
+  <div style="background:white;padding:40px 48px;border-top:1px solid #E2E8F0;" id="hrms-demo">
+    <div style="text-align:center;margin-bottom:28px;">
+      <div class="hrlp-section-title" style="font-size:24px;">Try Before You Buy</div>
+      <div class="hrlp-section-sub" style="margin-bottom:0;">Login with demo credentials to explore all HR modules</div>
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;max-width:800px;margin:0 auto;">
+      <div style="background:#F7FAFC;border-radius:12px;padding:18px;border:1px solid #E2E8F0;">
+        <div style="font-size:13px;font-weight:700;color:#0D1B3E;margin-bottom:10px;">🔑 Demo Login Credentials</div>
+        <div style="font-family:monospace;font-size:13px;background:white;padding:12px;border-radius:8px;line-height:2.2;">
+          Email: <strong>admin@paype.co.in</strong><br>
+          Password: <strong>Admin@PayPe2026</strong><br>
+          Role: <strong>Admin (Full Access)</strong>
+        </div>
+        <button onclick="showHRMSLogin()" style="width:100%;margin-top:12px;padding:10px;background:#0D1B3E;color:white;border:none;border-radius:8px;font-size:12px;font-weight:700;cursor:pointer;font-family:inherit;">Auto Login to Demo →</button>
+      </div>
+      <div style="background:#F7FAFC;border-radius:12px;padding:18px;border:1px solid #E2E8F0;">
+        <div style="font-size:13px;font-weight:700;color:#0D1B3E;margin-bottom:10px;">✅ What You Can Try</div>
+        <div style="font-size:12px;color:#718096;line-height:2.2;">
+          👤 Employee profiles & management<br>
+          📅 Attendance & leave management<br>
+          🎯 Recruitment ATS pipeline<br>
+          📄 Offer letter generation<br>
+          🚀 Onboarding task management<br>
+          🤖 AI HR Assistant (Claude)
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- FOOTER -->
+  <div class="hrlp-footer">
+    <div style="display:grid;grid-template-columns:2fr 1fr 1fr;gap:32px;max-width:1100px;margin:0 auto;">
+      <div>
+        <div style="font-family:'Syne',sans-serif;font-size:18px;font-weight:900;color:white;margin-bottom:8px;">Pay<span style="color:#00C2A8;">Pe</span> HRMS</div>
+        <div style="font-size:12px;color:rgba(255,255,255,.5);line-height:1.7;margin-bottom:10px;">Complete AI-powered HR management for Indian businesses.</div>
+        <div style="font-size:11px;color:rgba(255,255,255,.3);">CIN: U74994TN2022PTC151114<br>GST: 33AAMCP7960K1ZU</div>
+      </div>
+      <div>
+        <div style="font-size:11px;font-weight:700;color:rgba(255,255,255,.4);text-transform:uppercase;letter-spacing:.5px;margin-bottom:10px;">Products</div>
+        <div style="font-size:12px;line-height:2.2;">
+          <a href="https://paype.co.in" style="color:rgba(255,255,255,.6);text-decoration:none;display:block;">PayPe Main</a>
+          <a href="https://erp.paype.co.in" style="color:rgba(255,255,255,.6);text-decoration:none;display:block;">PayPe ERP</a>
+          <a href="https://social.paype.co.in" style="color:rgba(255,255,255,.6);text-decoration:none;display:block;">Social Hub</a>
+          <a href="https://bankme.co.in" style="color:rgba(255,255,255,.6);text-decoration:none;display:block;">BankMe</a>
+          <a href="https://signup.paype.co.in" style="color:rgba(255,255,255,.6);text-decoration:none;display:block;">Sign Up</a>
+        </div>
+      </div>
+      <div>
+        <div style="font-size:11px;font-weight:700;color:rgba(255,255,255,.4);text-transform:uppercase;letter-spacing:.5px;margin-bottom:10px;">Contact</div>
+        <div style="font-size:12px;color:rgba(255,255,255,.6);line-height:2.2;">
+          admin@paype.co.in<br>hr@paype.co.in<br>+91 99448 57191<br>Coimbatore, Tamil Nadu
+        </div>
+        <button class="hrlp-nav-btn" style="margin-top:12px;" onclick="document.getElementById('hrms-pricing').scrollIntoView({behavior:'smooth'})">Start Free Trial →</button>
+      </div>
+    </div>
+    <div style="border-top:1px solid rgba(255,255,255,.08);margin-top:24px;padding-top:16px;text-align:center;font-size:11px;color:rgba(255,255,255,.3);">© 2026 PayPe Technologies Pvt. Ltd. All rights reserved.</div>
+  </div>
+</div><!-- end hrms landing -->
+
+<div class="hrlp-tw" id="hrlp-tw"></div>
+
+<body style="display:block">
+
+<div id="LP" style="display:none;" style="display:flex;min-height:100vh;">
   <!-- LEFT PANEL -->
   <div class="ll" style="flex:1;background:linear-gradient(135deg,#0D1B3E 0%,#0a1628 60%,#0d2040 100%);display:flex;flex-direction:column;justify-content:center;padding:60px;position:relative;overflow:hidden;">
     <!-- Background orbs -->
@@ -5419,5 +5603,40 @@ if (tok && CU) { startApp(); } else { document.getElementById('LP').style.displa
     <div class="mf"><button class="btn bto" onclick="closeMod('nam')">Cancel</button><button class="btn btp" onclick="addAsset()">Add Asset</button></div>
   </div>
 </div>
+
+<script>
+function showHRMSLogin(){
+  document.getElementById('hrms-lp').style.display='none';
+  document.getElementById('LP').style.display='flex';
+}
+function buyHRMS(plan,amount){
+  var opts={
+    key:'rzp_live_Si0jGc1i23NVWo',
+    amount:amount*100,
+    currency:'INR',
+    name:'PayPe Technologies Pvt. Ltd.',
+    description:'PayPe HRMS — '+plan+' Plan',
+    handler:function(r){
+      fetch('https://erpapi.paype.co.in/api/payments/razorpay-webhook',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({razorpay_payment_id:r.razorpay_payment_id,plan:'HRMS '+plan,amount:amount*100,paymentType:'Monthly'})}).catch(function(){});
+      alert('Payment successful!\nPlan: HRMS '+plan+'\nTransaction ID: '+r.razorpay_payment_id+'\n\nWelcome to PayPe HRMS! Our team will email your credentials shortly.\n\nContact: admin@paype.co.in');
+      hrmsToast('Payment done! Check your email for credentials.','ok');
+    },
+    prefill:{name:'',email:'',contact:''},
+    notes:{plan:'HRMS '+plan},
+    theme:{color:'#7B61FF'}
+  };
+  new Razorpay(opts).open();
+}
+function hrmsToast(msg,type){
+  var tw=document.getElementById('hrlp-tw');
+  if(!tw)return;
+  var t=document.createElement('div');
+  t.className='hrlp-tst'+(type==='ok'?' ok':type==='err'?' err':'');
+  t.textContent=msg;
+  tw.appendChild(t);
+  setTimeout(function(){t.classList.add('show');},10);
+  setTimeout(function(){t.classList.remove('show');setTimeout(function(){t.remove();},300);},3500);
+}
+</script>
 </body>
 </html>
